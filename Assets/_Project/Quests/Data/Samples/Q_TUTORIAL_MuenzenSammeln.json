@@ -1,0 +1,21 @@
+{
+  "questID": "Q_TUTORIAL_MuenzenSammeln",
+  "displayName": "Münzsammler",
+  "description": "Sammle 10 Münzen auf der Wiese – die erste Aufgabe in Steeping Spirits.",
+  "category": "TUTORIAL",
+  "isRepeatable": false,
+  "startLocation": { "x": 0.0, "y": 0.0 },
+  "objectives": [
+    {
+      "objectiveID": "collect_coins",
+      "stepType": "Collect",
+      "description": "Münzen sammeln",
+      "targetID": "item_coin",
+      "requiredAmount": 10
+    }
+  ],
+  "rewards": [
+    { "type": "XP",   "amount": 50 },
+    { "type": "Gold", "amount": 10 }
+  ]
+}

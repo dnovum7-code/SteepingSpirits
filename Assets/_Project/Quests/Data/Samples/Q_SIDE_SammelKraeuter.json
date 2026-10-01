@@ -1,0 +1,23 @@
+{
+  "questID": "Q_SIDE_SammelKraeuter",
+  "displayName": "Kräutersammler",
+  "description": "Sammle 10 Heilkräuter für die Dorfhexe. Schon gesammelte zählen mit.",
+  "category": "SIDE",
+  "isRepeatable": false,
+  "startLocation": { "x": 120.5, "y": 85.3 },
+  "objectives": [
+    {
+      "objectiveID": "collect_herbs",
+      "stepType": "Collect",
+      "description": "Heilkräuter sammeln",
+      "targetID": "item_heilkraut",
+      "requiredAmount": 10,
+      "countExistingInventory": true
+    }
+  ],
+  "rewards": [
+    { "type": "XP",   "amount": 150 },
+    { "type": "Gold", "amount": 50  },
+    { "type": "Item", "itemID": "potion_small", "amount": 1 }
+  ]
+}

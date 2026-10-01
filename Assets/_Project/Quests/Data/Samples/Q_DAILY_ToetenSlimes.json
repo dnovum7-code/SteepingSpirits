@@ -1,0 +1,28 @@
+{
+  "questID": "Q_DAILY_ToetenSlimes",
+  "displayName": "Schleimige Plage",
+  "description": "Die Slimes vor dem Dorf werden wieder frech. Besiege 5 von ihnen und melde dich beim Wachhauptmann.",
+  "category": "DAILY",
+  "isRepeatable": true,
+  "startLocation": { "x": 42.0, "y": -17.5 },
+  "objectives": [
+    {
+      "objectiveID": "defeat_slimes",
+      "stepType": "Defeat",
+      "description": "Slimes besiegen",
+      "targetID": "enemy_slime",
+      "requiredAmount": 5
+    },
+    {
+      "objectiveID": "report_guard",
+      "stepType": "Talk",
+      "description": "Beim Wachhauptmann melden",
+      "targetID": "npc_wachhauptmann",
+      "requiredAmount": 1
+    }
+  ],
+  "rewards": [
+    { "type": "XP",   "amount": 80 },
+    { "type": "Gold", "amount": 25 }
+  ]
+}
