@@ -347,6 +347,52 @@ check("Q_DAILY_Schleimjagd gültig", bool(QID.match("Q_DAILY_Schleimjagd")))
 check("Q_SIDE_Mit_Unterstrich ungültig", not QID.match("Q_SIDE_Mit_Unterstrich"))
 check("Q_FARM_Ernte (unbekannte Kategorie) ungültig", not QID.match("Q_FARM_Ernte"))
 
+
+# ---------------- Jump'n'Run (Platformer/PlatformerController2D.cs) ----------------
+import math
+P=dict(dt=0.02,G=48.0,JV=15.0,RUN=9.0,AIRACC=70.0,MAXFALL=18.0,APEX=2.5,APEXM=0.5,DASH=21.0,DASHT=0.15,DASHEND=0.5,
+       PUMP=22.0,DAMP=0.12,MAXS=24.0,MAXANG=math.radians(110))
+def air_step(x,y,vx,vy,inx,hold=True):
+    dt=P["dt"]; tgt=inx*P["RUN"]
+    if abs(vx)>P["RUN"] and (inx==0 or math.copysign(1,vx)==math.copysign(1,tgt)):
+        vx-=math.copysign(min(abs(vx)-P["RUN"],35*0.5*dt),vx)
+    else:
+        vx+=max(-P["AIRACC"]*dt,min(P["AIRACC"]*dt,tgt-vx))
+    g=P["G"]*(P["APEXM"] if abs(vy)<P["APEX"] and hold else 1)
+    vy=max(vy-g*dt,-P["MAXFALL"])
+    return x+vx*dt,y+vy*dt,vx,vy
+def jump(dash=None,t_dash=0.25):
+    x=y=0.0;vx=P["RUN"];vy=P["JV"];t=0;top=0
+    if dash:
+        while t<t_dash: x,y,vx,vy=air_step(x,y,vx,vy,1); t+=P["dt"]
+        n=math.hypot(*dash); dx,dy=dash[0]/n,dash[1]/n
+        for _ in range(int(P["DASHT"]/P["dt"])): x+=dx*P["DASH"]*P["dt"]; y+=dy*P["DASH"]*P["dt"]
+        vx,vy=dx*P["DASH"]*P["DASHEND"],dy*P["DASH"]*P["DASHEND"]
+        if dy>0: vy=min(vy,P["JV"]*0.7)
+    while y>=-0.01:
+        x,y,vx,vy=air_step(x,y,vx,vy,1); top=max(top,y)
+    return x,top
+def swing(secs,pump=True,L=3.5):
+    th=w=amp=0.0
+    for _ in range(int(secs/P["dt"])):
+        c,s=math.cos(th),math.sin(th)
+        inx=(1 if (w*c)>0 or w==0 else -1) if pump else 0
+        w+=(-(P["G"]/L)*s+P["PUMP"]*inx*c/L)*P["dt"]; w*=1-P["DAMP"]*P["dt"]
+        w=max(-P["MAXS"]/L,min(P["MAXS"]/L,w)); th+=w*P["dt"]
+        if abs(th)>P["MAXANG"]: th=math.copysign(P["MAXANG"],th); w=0
+        amp=max(amp,abs(th))
+    return amp
+
+print("\n=== 15) Jump'n'Run: Sprung, Dash, Schwingen ===")
+w0,h0=jump()
+check(f"Sprunghöhe ~2.2 ({h0:.2f}) < Stufe 5", 2.0<h0<2.6)
+check(f"Sprung allein schafft die 8er-Lücke nicht ({w0:.1f})", w0<8)
+check("Sprung + Dash → schafft die 8er-Lücke", jump((1,0))[0]>8)
+check("Sprung + Dash ↑ schafft die 5er-Stufe", max(jump((0,1),t)[1] for t in (0.2,0.25,0.3))>5)
+check("Schwingen: ohne Pumpen keine Bewegung", swing(5,False)==0)
+check("Schwingen: Pumpen baut auf (2s > 1s)", swing(2)>swing(1)>math.radians(20))
+check("Schwingen: kein Überschlag (max 110°)", abs(swing(8)-P["MAXANG"])<1e-9)
+
 # Summary
 passed=sum(1 for _,c in results if c); total=len(results)
 print(f"\n================  {passed}/{total} Checks bestanden  ================")

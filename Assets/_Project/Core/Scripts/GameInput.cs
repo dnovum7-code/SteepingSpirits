@@ -25,6 +25,12 @@ namespace SteepingSpirits.Core
     ///   Abbrechen     Esc                   · B (Ost)
     ///   Cheats        F1 / ^
     ///   Hilfe         N
+    ///
+    /// Jump'n'Run (Platformer-Szene):
+    ///   Springen      Leertaste / C         · A (Süd)
+    ///   Dash          Shift / X / L         · X (West)
+    ///   Greifen       K / Strg (halten)     · RB / LB / RT (halten)
+    /// (Tasten nach US-Layout-Position, wie es das Input System macht.)
     /// </summary>
     public static class GameInput
     {
@@ -193,6 +199,72 @@ namespace SteepingSpirits.Core
                 return Keyboard.current != null && Keyboard.current.nKey.wasPressedThisFrame;
 #else
                 return Input.GetKeyDown(KeyCode.N);
+#endif
+            }
+        }
+
+        // ---------------------------------------------------------------
+        // Jump'n'Run
+        // ---------------------------------------------------------------
+
+        public static bool JumpPressed
+        {
+            get
+            {
+#if ENABLE_INPUT_SYSTEM
+                Keyboard k = Keyboard.current;
+                Gamepad g = Gamepad.current;
+                return (k != null && (k.spaceKey.wasPressedThisFrame || k.cKey.wasPressedThisFrame))
+                       || (g != null && g.buttonSouth.wasPressedThisFrame);
+#else
+                return Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.C);
+#endif
+            }
+        }
+
+        public static bool JumpHeld
+        {
+            get
+            {
+#if ENABLE_INPUT_SYSTEM
+                Keyboard k = Keyboard.current;
+                Gamepad g = Gamepad.current;
+                return (k != null && (k.spaceKey.isPressed || k.cKey.isPressed))
+                       || (g != null && g.buttonSouth.isPressed);
+#else
+                return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.C);
+#endif
+            }
+        }
+
+        public static bool DashPressed
+        {
+            get
+            {
+#if ENABLE_INPUT_SYSTEM
+                Keyboard k = Keyboard.current;
+                Gamepad g = Gamepad.current;
+                return (k != null && (k.leftShiftKey.wasPressedThisFrame || k.rightShiftKey.wasPressedThisFrame
+                                      || k.xKey.wasPressedThisFrame || k.lKey.wasPressedThisFrame))
+                       || (g != null && g.buttonWest.wasPressedThisFrame);
+#else
+                return Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)
+                       || Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.L);
+#endif
+            }
+        }
+
+        public static bool GrabHeld
+        {
+            get
+            {
+#if ENABLE_INPUT_SYSTEM
+                Keyboard k = Keyboard.current;
+                Gamepad g = Gamepad.current;
+                return (k != null && (k.kKey.isPressed || k.leftCtrlKey.isPressed || k.rightCtrlKey.isPressed))
+                       || (g != null && (g.rightShoulder.isPressed || g.leftShoulder.isPressed || g.rightTrigger.isPressed));
+#else
+                return Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 #endif
             }
         }

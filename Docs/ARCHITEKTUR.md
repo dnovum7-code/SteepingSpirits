@@ -185,6 +185,15 @@ Leeres ID-Feld → `QuestTarget`-Komponente → GameObject-Name.
 
 ---
 
+## 6b. Szenenwechsel
+
+`ScenePortal` lädt eine andere Szene (im Editor per Pfad, im Build per Name).
+`QuestManager`, `PlayerInventory`, `Wallet`, `PlayerProgression`, `GameClock` und
+`DialogueHUD` sind `DontDestroyOnLoad` – Quests, Inventar, Gold, XP und Datum
+bleiben also erhalten. Eine Visit-Quest von der Wiese wird z.B. vom `Goal2D` in
+der Jump'n'Run-Szene erfüllt. Szenen-eigene Teile (HUDs, Brücken, Spieler)
+baut jede Szene selbst auf (`TestMeadow` bzw. `PlatformerCourse`).
+
 ## 7. Eigene Szene ohne TestMeadow aufbauen
 
 1. **Systeme** (ein GameObject „Systems", alles drauf):
@@ -219,7 +228,7 @@ Leeres ID-Feld → `QuestTarget`-Komponente → GameObject-Name.
 | Combat | `Health`, `WeaponData`, `PlayerAttack2D`, `EnemyAI2D`, `Knockback2D`, `DamageFlash2D` |
 | Interaction | `IInteractable` (+ `IInteractLabel`), `Interactor2D` |
 | Dialogue | `DialogueHUD`, `InteractableDialogue` |
-| World | `GameClock`, `DayNightTint`, `Bed` |
+| World | `GameClock`, `DayNightTint`, `Bed`, `ScenePortal` |
 | HUD | `GameHUD` |
 | Quests/Core | `QuestData`, `QuestInstance`, `ObjectiveData`, `Reward`, `QuestState`, `QuestCategory`, `QuestStepType` |
 | Quests/Events · Manager | `GameplayEvents`, `QuestEvents` · `QuestManager` |
@@ -229,4 +238,5 @@ Leeres ID-Feld → `QuestTarget`-Komponente → GameObject-Name.
 | Quests/Markers · UI · Editor | `QuestWorldMarker` · `QuestJournalCanvas`, `QuestTrackerHUD`, `QuestToastHUD`, `QuestMarkerHUD`, `QuestUI`, `QuestLogView`, `QuestTracker`, `QuestPopup` · `QuestJsonImporterWindow` |
 | Inventory | `Inventory`, `ItemData`, `ItemStack`, `ItemCategory`, `InventoryEvents`, `PlayerInventory`, `InventoryPickupBridge`, `QuestRewardCollector`, `ItemPickup`, `CollectQuestInventoryTracker`, `ItemUseEffects`, `InventoryHUD` |
 | Economy · Progression | `Wallet`, `GoldRewardCollector` · `PlayerProgression`, `XpRewardCollector` |
-| DevTools | `TestMeadow`, `DevCheatWindow`, `IntegrationSelfTest` |
+| Platformer | `PlatformerController2D`, `GrabPoint`, `Vine`, `VineSegment`, `RopeVisual`, `AfterImage`, `Hazard2D`, `Checkpoint2D`, `Goal2D`, `PlatformerHUD` (Details: [JUMP_AND_RUN.md](JUMP_AND_RUN.md)) |
+| DevTools | `TestMeadow`, `PlatformerCourse`, `DevCheatWindow`, `IntegrationSelfTest` |

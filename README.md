@@ -9,6 +9,9 @@ Quest-System (**ohne** KI-Generierung), Inventar, Gold, XP, Kampf, Dialoge,
 Questlog, HUDs, Sounds, Dev-Cheats und Selbsttest. Was genau übernommen,
 angepasst oder weggelassen wurde: [Docs/EVERDAWN_UEBERNAHME.md](Docs/EVERDAWN_UEBERNAHME.md).
 
+**Neu: Jump'n'Run-Szene** (Celeste-artig mit Dash, Wandsprung, Haltepunkten,
+Schwingseilen und Lianen) → [Docs/JUMP_AND_RUN.md](Docs/JUMP_AND_RUN.md)
+
 > Alles läuft mit **Platzhalter-Grafiken aus Code** – zum Ausprobieren musst du
 > kein einziges Sprite importieren.
 
@@ -21,9 +24,11 @@ angepasst oder weggelassen wurde: [Docs/EVERDAWN_UEBERNAHME.md](Docs/EVERDAWN_UE
    Unity legt beim ersten Öffnen `ProjectSettings/`, `Library/` und die `.meta`-Dateien an.
    - Fragt Unity, ob die *Input System Backends* aktiviert werden sollen → **Yes**.
      (Der Code läuft aber auch mit dem alten Input Manager.)
-3. **File → New Scene** (leer oder „Basic 2D"), dann **Rechtsklick in der
-   Hierarchy → Create Empty** → **Add Component → „Test Meadow"**.
+3. **`Assets/Scenes/TestMeadow.unity`** öffnen (oder: neue Szene → leeres
+   GameObject → **Add Component → „Test Meadow"**).
 4. **Play** drücken. Taste **N** blendet die Hilfe ein/aus.
+5. Ganz links auf der Wiese führt ein lila **Portal** in die Jump'n'Run-Szene
+   (`Assets/Scenes/JumpAndRun.unity`, auch direkt startbar).
 
 Die Testwiese baut dann alles selbst auf: Spieler, Kamera, Wiese mit Teich,
 Bäumen, Haus und Bett, 6 NPCs mit je einer Quest-Art, Schleime, HUD, Uhr,
@@ -45,6 +50,7 @@ Tag/Nacht und das Cheat-Fenster.
 | **Hauptmann Rolf** | Besiegen | 3 Schleime im Südosten mit dem Schwert besiegen |
 | **Anschlagbrett** | Daily (aus JSON) | 2 Schleime – jeden Morgen neu verfügbar |
 | **Bett** (am Haus) | – | Schlafen → nächster Tag, volle Herzen, neuer Startpunkt |
+| **Kletter-Kai** + Portal | Besuchen (andere Szene) | Durch das Portal und im Jump'n'Run das Ziel erreichen |
 
 ### Steuerung
 
@@ -75,14 +81,18 @@ Assets/_Project/
 │                  Knockback2D, DamageFlash2D, WeaponData
 ├── Interaction/   IInteractable, Interactor2D („[E] Reden")
 ├── Dialogue/      DialogueHUD (Schreibmaschinen-Text, Portrait), InteractableDialogue (Schilder)
-├── World/         GameClock (Stardew-Uhr, Jahreszeiten), DayNightTint, Bed
+├── World/         GameClock (Stardew-Uhr, Jahreszeiten), DayNightTint, Bed, ScenePortal
 ├── HUD/           GameHUD (Herzen, Gold, Level, Uhr)
+├── Platformer/    Jump'n'Run: PlatformerController2D (Dash, Wandsprung, Greifen),
+│                  GrabPoint (Halten/Schwingen), Vine (Lianen), Hazard/Checkpoint/Goal, HUD
 ├── Quests/        Quest-System aus Everdawn (ohne KI) + JSON-Import + DailyQuestReset
 ├── Inventory/     Inventar aus Everdawn + ItemUseEffects (Trank heilt)
 ├── Economy/       Wallet (Gold) + GoldRewardCollector
 ├── Progression/   XP/Level + XpRewardCollector
 ├── Audio/         Ordner für eigene Quest-Sounds (Resources/QuestSfx)
-└── DevTools/      TestMeadow (Testwiese), DevCheatWindow (F1), IntegrationSelfTest
+└── DevTools/      TestMeadow (Testwiese), PlatformerCourse (Kletterpfad), DevCheatWindow (F1),
+                   IntegrationSelfTest
+Assets/Scenes/     TestMeadow.unity, JumpAndRun.unity
 ```
 
 - Architektur, Event-Flüsse und „wie baue ich eigene Inhalte": [Docs/ARCHITEKTUR.md](Docs/ARCHITEKTUR.md)
@@ -94,7 +104,7 @@ Assets/_Project/
   Fährt 28 Prüfungen durch (Quests, Inventar, Gold, XP, JSON, Daily-Reset,
   i-Frames) und zeigt PASS/FAIL oben links. *Nicht* zusammen mit der Testwiese starten.
 - **Ohne Unity:** `python3 Tests/logic_test.py` – spiegelt die Kernlogik
-  (Quests, Inventar, Uhr, Daily-Reset, Health, Tag/Nacht) mit 48 Prüfungen.
+  (Quests, Inventar, Uhr, Daily-Reset, Health, Tag/Nacht, Jump'n'Run-Physik) mit 55 Prüfungen.
 
 ## Nächste Schritte (Vorschläge)
 

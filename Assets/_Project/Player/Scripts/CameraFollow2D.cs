@@ -29,11 +29,34 @@ namespace SteepingSpirits.Player
 
         private Camera cam;
         private Vector3 velocity;
+        private Vector3 smoothed;
+
+        // Bildschirm-Wackeln (Dash, Tod) – global, weil es pro Szene nur eine Kamera gibt.
+        private static float shakeUntil;
+        private static float shakeMagnitude;
+
+        /// <summary>Kamera kurz wackeln lassen (z.B. beim Dash). magnitude in Einheiten.</summary>
+        public static void Shake(float magnitude, float duration)
+        {
+            shakeMagnitude = Mathf.Max(magnitude, Time.unscaledTime < shakeUntil ? shakeMagnitude : 0f);
+            shakeUntil = Mathf.Max(shakeUntil, Time.unscaledTime + duration);
+        }
 
         public Transform Target
         {
             get => target;
             set => target = value;
+        }
+
+        /// <summary>Sichtbare halbe Höhe (Zoom).</summary>
+        public float OrthographicSize
+        {
+            get => orthographicSize;
+            set
+            {
+                orthographicSize = Mathf.Max(1f, value);
+                if (cam != null) cam.orthographicSize = orthographicSize;
+            }
         }
 
         private void Awake()
@@ -56,6 +79,7 @@ namespace SteepingSpirits.Player
 
         private void Start()
         {
+            smoothed = transform.position;
             if (target == null)
             {
                 GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -82,7 +106,8 @@ namespace SteepingSpirits.Player
                 return;
             }
 
-            transform.position = Clamp(new Vector3(target.position.x, target.position.y, transform.position.z));
+            smoothed = Clamp(new Vector3(target.position.x, target.position.y, transform.position.z));
+            transform.position = smoothed;
             velocity = Vector3.zero;
         }
 
@@ -95,9 +120,18 @@ namespace SteepingSpirits.Player
 
             var goal = new Vector3(target.position.x, target.position.y, transform.position.z);
             Vector3 next = smoothTime > 0f
-                ? Vector3.SmoothDamp(transform.position, goal, ref velocity, smoothTime)
+                ? Vector3.SmoothDamp(smoothed, goal, ref velocity, smoothTime)
                 : goal;
-            transform.position = Clamp(next);
+            smoothed = Clamp(next);
+
+            Vector3 shake = Vector3.zero;
+            if (Time.unscaledTime < shakeUntil)
+            {
+                Vector2 r = Random.insideUnitCircle * shakeMagnitude;
+                shake = new Vector3(r.x, r.y, 0f);
+            }
+
+            transform.position = smoothed + shake;
         }
 
         private Vector3 Clamp(Vector3 pos)

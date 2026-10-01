@@ -5,6 +5,7 @@ using SteepingSpirits.Core;
 using SteepingSpirits.Economy;
 using SteepingSpirits.Inventory;
 using SteepingSpirits.Inventory.Integration;
+using SteepingSpirits.Platformer;
 using SteepingSpirits.Player;
 using SteepingSpirits.Progression;
 using SteepingSpirits.Quests;
@@ -360,6 +361,7 @@ namespace SteepingSpirits.DevTools
             GUILayout.Label("<b>Bewegung & Kampf</b>", Rich());
             Transform player = PlayerLocator.Find();
             PlayerController2D controller = player != null ? player.GetComponent<PlayerController2D>() : null;
+            PlatformerController2D platformer = player != null ? player.GetComponent<PlatformerController2D>() : null;
             if (controller != null)
             {
                 GUILayout.BeginHorizontal();
@@ -374,9 +376,19 @@ namespace SteepingSpirits.DevTools
                     controller.Teleport(Vector2.zero);
                 }
             }
-            else
+            else if (platformer == null)
             {
                 Info("Kein PlayerController2D am Spieler.");
+            }
+
+            if (platformer != null)
+            {
+                GUILayout.Label($"<b>Jump'n'Run</b>  ·  Zustand: {platformer.CurrentState}  ·  Tode: {platformer.Deaths}", Rich(12));
+                platformer.InfiniteDashes = GUILayout.Toggle(platformer.InfiniteDashes, " Unendlich Dashes");
+                if (GUILayout.Button("Zum letzten Checkpoint"))
+                {
+                    platformer.RespawnNow();
+                }
             }
 
             PlayerAttack2D attack = player != null ? player.GetComponent<PlayerAttack2D>() : null;

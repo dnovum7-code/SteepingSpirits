@@ -44,6 +44,11 @@ namespace SteepingSpirits.DevTools
         [SerializeField] private int slimeCount = 3;
         [SerializeField] private float slimeRespawnSeconds = 8f;
 
+        [Tooltip("Pfad der Jump'n'Run-Szene (Portal links auf der Wiese)")]
+        [SerializeField] private string jumpAndRunScenePath = "Assets/Scenes/JumpAndRun.unity";
+
+        private string JumpAndRunScenePath => jumpAndRunScenePath;
+
         // Daily-Quest im JSON-Format – zeigt den JSON-Weg ohne Datei.
         private const string DailyQuestJson = @"{
   ""questID"": ""Q_DAILY_Schleimjagd"",
@@ -350,7 +355,7 @@ namespace SteepingSpirits.DevTools
                 Objective("collect_tea", QuestStepType.Collect, "Teeblätter sammeln", "item_teeblatt", 5),
                 Xp(30), Gold(20));
             collect.objectives[0].countExistingInventory = true; // schon gesammelte zählen mit
-            qm.RegisterQuest(collect);
+            Register(qm, collect);
             Npc("Oma Hilde", new Vector2(-9f, -1.5f), new Color(0.85f, 0.6f, 0.9f), "npc_hilde", collect.questID,
                 new[] { "Ach, Kindchen, gut dass du da bist!", "Bring mir doch 5 Teeblätter von der Wiese im Südwesten." },
                 new[] { "Ein guter Tee braucht Geduld … und gute Blätter." });
@@ -367,7 +372,7 @@ namespace SteepingSpirits.DevTools
                 "Finn hat eine Nachricht für die Wächterin Ida.",
                 Objective("talk_ida", QuestStepType.Talk, "Mit Wächterin Ida reden", "npc_ida", 1),
                 Xp(20), Gold(10));
-            qm.RegisterQuest(talk);
+            Register(qm, talk);
             Npc("Finn", new Vector2(2.5f, 5f), new Color(0.45f, 0.75f, 1f), "npc_finn", talk.questID,
                 new[] { "Hey! Kannst du Ida im Nordosten Bescheid geben?", "Sag ihr, der Tee ist fertig." });
             Npc("Wächterin Ida", new Vector2(14f, 9f), new Color(0.75f, 0.75f, 0.4f), "npc_ida", null,
@@ -380,7 +385,7 @@ namespace SteepingSpirits.DevTools
                 "Postbote Bruno hat ein Paket für Mira.",
                 Objective("bring_mira", QuestStepType.Bring, "Paket zu Mira bringen", "npc_mira", 1),
                 Xp(25), Gold(15), Item("potion_small", 1));
-            qm.RegisterQuest(bring);
+            Register(qm, bring);
             Npc("Postbote Bruno", new Vector2(4.5f, -2.5f), new Color(1f, 0.6f, 0.3f), "npc_bruno", bring.questID,
                 new[] { "Puh, so viele Pakete heute …", "Bringst du das hier zu Mira? Sie wohnt ganz im Osten." });
             Npc("Mira", new Vector2(17f, -3f), new Color(1f, 0.5f, 0.7f), "npc_mira", null,
@@ -393,7 +398,7 @@ namespace SteepingSpirits.DevTools
                 "Späherin Lia will wissen, ob am alten Turm Geister spuken.",
                 Objective("visit_tower", QuestStepType.Visit, "Zum alten Turm gehen", "loc_alter_turm", 1),
                 Xp(20));
-            qm.RegisterQuest(visit);
+            Register(qm, visit);
             Npc("Späherin Lia", new Vector2(-2.5f, -5.5f), new Color(0.6f, 0.85f, 0.9f), "npc_lia", visit.questID,
                 new[] { "Am alten Turm im Süden soll es nachts leuchten …", "Gehst du mal nachsehen?" });
             Tower(new Vector2(-14f, -10f), "loc_alter_turm");
@@ -404,7 +409,7 @@ namespace SteepingSpirits.DevTools
                 "Hauptmann Rolf braucht Hilfe gegen die Schleime auf der Ostwiese.",
                 Objective("defeat_slimes", QuestStepType.Defeat, "Schleime besiegen", "enemy_slime", 3),
                 Xp(40), Gold(30));
-            qm.RegisterQuest(defeat);
+            Register(qm, defeat);
             Npc("Hauptmann Rolf", new Vector2(7.5f, -6f), new Color(0.9f, 0.4f, 0.4f), "npc_rolf", defeat.questID,
                 new[] { "Die Schleime fressen uns die Teepflanzen weg!", "Besiege 3 von ihnen – Schwert mit Leertaste." });
             slimeHome = new Vector2(13f, -8.5f);
@@ -416,13 +421,38 @@ namespace SteepingSpirits.DevTools
             help.Add("BESIEGEN – Hauptmann Rolf: 3 Schleime (Südosten) mit dem Schwert besiegen.");
 
             // 6) DAILY aus JSON -----------------------------------------------
-            QuestInstance daily = qm.RegisterQuestFromJson(DailyQuestJson, "TestMeadow.DailyQuestJson");
+            QuestInstance daily = qm.GetQuest("Q_DAILY_Schleimjagd")
+                                  ?? qm.RegisterQuestFromJson(DailyQuestJson, "TestMeadow.DailyQuestJson");
             SpriteRenderer board = Sprite(PlaceholderSprites.Square, Wood, new Vector2(-2.6f, 2.2f), new Vector2(1.2f, 0.9f), 0, "Anschlagbrett");
             board.gameObject.AddComponent<BoxCollider2D>();
             board.gameObject.AddComponent<QuestNpc>().Configure("npc_brett", daily != null ? daily.Data.questID : null,
                 new[] { "AUSHANG: Freiwillige gesucht! Vertreibe heute 2 Schleime.", "(Jeden Morgen gibt es einen neuen Aushang.)" },
                 "Anschlagbrett");
             help.Add("DAILY – Anschlagbrett: jeden Tag neu (Bett im Haus = schlafen = nächster Tag).");
+
+            // 7) JUMP'N'RUN (eigene Szene) ------------------------------------
+            QuestData climb = MakeQuest("Q_SIDE_Kletterpfad", "Der Kletterpfad", QuestCategory.SIDE,
+                "Kletter-Kai wettet, dass du es nicht bis ans Ende des Kletterpfads schaffst.",
+                Objective("reach_goal", QuestStepType.Visit, "Ziel des Kletterpfads erreichen", "loc_kletterpfad_ziel", 1),
+                Xp(50), Gold(40));
+            Register(qm, climb);
+            Npc("Kletter-Kai", new Vector2(-14.5f, 1.5f), new Color(1f, 0.75f, 0.35f), "npc_kai", climb.questID,
+                new[] { "Siehst du das Portal? Dahinter liegt der Kletterpfad.", "Dashen, Festhalten, Schwingen, Lianen … wetten, du schaffst es nicht bis ans Ziel?" },
+                new[] { "Respekt! Bist echt geklettert wie ein Bergspatz." });
+            SpriteRenderer portal = Sprite(PlaceholderSprites.Diamond, new Color(0.7f, 0.45f, 1f), new Vector2(-17f, 0f), new Vector2(1.2f, 1.6f), 0, "Portal");
+            portal.gameObject.AddComponent<BoxCollider2D>();
+            portal.gameObject.AddComponent<ScenePortal>().Configure(JumpAndRunScenePath, "Kletterpfad betreten");
+            labels.Add((portal.transform, "Portal: Kletterpfad"));
+            help.Add("JUMP'N'RUN – Portal ganz links: Kletterpfad (eigene Szene). Kletter-Kai hat eine Quest dazu.");
+        }
+
+        /// <summary>Registriert nur, wenn noch nicht vorhanden (beim Zurückkehren aus einer anderen Szene).</summary>
+        private static void Register(QuestManager qm, QuestData data)
+        {
+            if (qm.GetQuest(data.questID) == null)
+            {
+                qm.RegisterQuest(data);
+            }
         }
 
         private void Npc(string name, Vector2 pos, Color color, string npcID, string questID,

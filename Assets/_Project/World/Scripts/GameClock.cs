@@ -101,6 +101,7 @@ namespace SteepingSpirits.World
             }
 
             Instance = this;
+            DontDestroyOnLoad(gameObject); // Datum/Uhrzeit bleiben beim Szenenwechsel erhalten
             Day = Mathf.Clamp(startDay, 1, daysPerSeason);
             Season = startSeason;
             Year = Mathf.Max(1, startYear);
