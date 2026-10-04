@@ -37,8 +37,9 @@ namespace SteepingSpirits.Brewing.Presentation
         private int next;
 
         /// <summary>Set behaviour from code (sandbox builder).</summary>
-        public void Configure(int capacity, Vector2 acceleration, float drag, int sortingOrder)
+        public void Configure(int capacity, Vector2 acceleration, float drag, int sortingOrder, Sprite sprite = null)
         {
+            this.sprite = sprite;
             this.capacity = Mathf.Max(1, capacity);
             this.acceleration = acceleration;
             this.drag = Mathf.Max(0f, drag);

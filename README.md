@@ -9,6 +9,8 @@ Quest-System (**ohne** KI-Generierung), Inventar, Gold, XP, Kampf, Dialoge,
 Questlog, HUDs, Sounds, Dev-Cheats und Selbsttest. Was genau übernommen,
 angepasst oder weggelassen wurde: [Docs/EVERDAWN_UEBERNAHME.md](Docs/EVERDAWN_UEBERNAHME.md).
 
+**Neu: Brüh-Prototyp** (Alltagsaufguss: Wasser lesen, aufgießen, ziehen lassen) → [Docs/BREWING.md](Docs/BREWING.md)
+
 **Neu: Jump'n'Run-Szene** (Celeste-artig mit Dash, Wandsprung, Haltepunkten,
 Schwingseilen und Lianen) → [Docs/JUMP_AND_RUN.md](Docs/JUMP_AND_RUN.md)
 

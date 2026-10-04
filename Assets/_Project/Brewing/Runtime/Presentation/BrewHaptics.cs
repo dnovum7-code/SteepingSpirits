@@ -14,7 +14,9 @@ namespace SteepingSpirits.Brewing.Presentation
     public class BrewHaptics : BrewView
     {
         private BrewSession subscribed;
+#if ENABLE_INPUT_SYSTEM
         private Coroutine pulse;
+#endif
 
         private void Update()
         {

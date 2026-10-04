@@ -12,10 +12,16 @@ namespace SteepingSpirits.Brewing.Presentation
         [SerializeField] private float flickerSpeed = 3f;
 
         private float intensity;
+        private Vector3 baseScale = Vector3.one;
 
         public void Configure(SpriteRenderer fire)
         {
             this.fire = fire;
+        }
+
+        private void Start()
+        {
+            if (fire != null) baseScale = fire.transform.localScale;
         }
 
         private void Update()
@@ -33,7 +39,7 @@ namespace SteepingSpirits.Brewing.Presentation
             Color c = fireColor;
             c.a *= intensity * flicker;
             fire.color = c;
-            fire.transform.localScale = new Vector3(1f, 0.6f + 0.4f * intensity * flicker, 1f);
+            fire.transform.localScale = new Vector3(baseScale.x, baseScale.y * (0.6f + 0.4f * intensity * flicker), baseScale.z);
         }
     }
 }
