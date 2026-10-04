@@ -89,6 +89,29 @@ namespace SteepingSpirits.Brewing.Core
         public float calibrationStep = 0.02f;
     }
 
+    /// <summary>Timing of the session steps.</summary>
+    [Serializable]
+    public class SessionParams
+    {
+        /// <summary>How long pre-warming the vessel takes (s).</summary>
+        public float prewarmSeconds = 2f;
+
+        /// <summary>How long pouring takes before steeping starts (s).</summary>
+        public float pourSeconds = 1.2f;
+    }
+
+    /// <summary>Everything the simulation needs besides the teas. Serialized in the BrewingTuning asset.</summary>
+    [Serializable]
+    public class BrewConfig
+    {
+        public WaterParams water = new WaterParams();
+        public BoilStageThresholds boilStages = new BoilStageThresholds();
+        public ExtractionParams extraction = new ExtractionParams();
+        public PourParams pour = new PourParams();
+        public QualityParams quality = new QualityParams();
+        public SessionParams session = new SessionParams();
+    }
+
     /// <summary>
     /// Start values for the three Phase 1 teas. Source for the default assets the
     /// sandbox builder creates and for the tests – live tuning happens in the assets.
