@@ -37,3 +37,8 @@ Thumbs.db
 # Crash reports
 sysinfo.txt
 crashlytics-build.properties
+
+# dotnet test harness for Brewing Core (outside Assets/)
+Tests/**/bin/
+Tests/**/obj/
+!Tests/BrewingCore.DotNet/BrewingCore.DotNet.csproj

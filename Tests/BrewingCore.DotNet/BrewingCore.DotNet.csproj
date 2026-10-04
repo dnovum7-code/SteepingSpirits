@@ -1,0 +1,25 @@
+<!--
+  Runs the Brewing Core EditMode tests with plain dotnet (no Unity needed):
+    dotnet test Tests/BrewingCore.DotNet
+  Lives outside Assets/ so Unity never imports it. Compiles the same source
+  files Unity uses (Core is engine-free, tests use NUnit 3.5-compatible features).
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Assets/_Project/Brewing/Runtime/Core/**/*.cs" />
+    <Compile Include="../../Assets/_Project/Brewing/Tests/EditMode/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+  </ItemGroup>
+</Project>
