@@ -7,7 +7,16 @@
 
 ## Nächster konkreter Schritt
 
-→ siehe Backlog: erster Punkt mit Status „offen“.
+Alle Backlog-Punkte A–F sind umgesetzt und gepusht (91 dotnet-Tests grün, Kompilat gegen
+Unity-Referenzen ohne neue Warnungen). **Nächster Schritt: in Unity prüfen** – Projekt öffnen,
+*SteepingSpirits → JumpNRun → Build Levels*, dann die Editor-Checklisten unten von A1 an
+abhaken. Alles mit „ungeprüft“ ist noch nicht in Unity gesehen worden.
+
+Offene Ideen für danach:
+- Spielgefühl in Unity nachstellen (`MovementTuning`, `SpiritElementsTuning.swing`), Telemetrie auswerten.
+- Portal von der Wiese zur Lichtung (braucht eine Änderung an `TestMeadow`, bewusst nicht gemacht).
+- Sammelbeutel ans Inventar/Teehaus übergeben (IDs sind schon neutral).
+- Echte Sprites statt `PlaceholderVisual`, Schaukel-Animation (Beine ausstrecken/anziehen im Takt).
 
 ## Erkundung (Stand `main` 5629997)
 

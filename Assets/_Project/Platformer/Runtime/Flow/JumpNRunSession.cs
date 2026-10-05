@@ -79,7 +79,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         /// <summary>A spirit catches the player and brings them back. Safe to call repeatedly.</summary>
         public void Catch()
         {
-            if (Finished || player == null || !catchSequence.Begin())
+            // While a swing holds the player it owns them; a catch would fight over control.
+            if (Finished || player == null || player.IsControlled || !catchSequence.Begin())
             {
                 return;
             }
