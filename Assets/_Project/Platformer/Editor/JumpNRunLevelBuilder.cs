@@ -70,6 +70,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             level.movementTuning = AssetDatabase.LoadAssetAtPath<MovementTuning>(JumpNRunBuilder.DataFolder + "/MovementTuning.asset");
             level.cameraTuning = AssetDatabase.LoadAssetAtPath<CameraTuning>(JumpNRunBuilder.DataFolder + "/CameraTuning.asset");
             level.feedbackTuning = AssetDatabase.LoadAssetAtPath<FeedbackTuning>(JumpNRunBuilder.DataFolder + "/FeedbackTuning.asset");
+            level.elementsTuning = AssetDatabase.LoadAssetAtPath<SpiritElementsTuning>(JumpNRunBuilder.DataFolder + "/SpiritElementsTuning.asset");
             level.bounds = new Rect(0f, 0f, layout.Width, layout.Height);
             level.lanternCount = layout.All(TileKind.Lantern).Count;
             var placed = new IngredientBag();
@@ -91,6 +92,23 @@ namespace SteepingSpirits.Platformer.EditorTools
             foreach (TileRect r in layout.OneWays)
             {
                 Block(geometry, "OneWay", r, OneWayColor, true);
+            }
+
+            foreach (TileRect r in layout.GhostPlatforms)
+            {
+                GameObject g = Block(geometry, "GhostPlatform", r, new Color(0.72f, 0.8f, 1f, 0.15f), false);
+                g.AddComponent<GhostPlatform>();
+                g.AddComponent<UnsafeGround>();
+            }
+
+            foreach (TileRect r in layout.LeafPlatforms)
+            {
+                GameObject leaf = Block(geometry, "LeafPlatform", r, new Color(0.48f, 0.68f, 0.36f), false);
+                ShapeAsThinTop(leaf, 0.35f);
+                var rb = leaf.AddComponent<Rigidbody2D>();
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                leaf.AddComponent<LeafPlatform>();
+                leaf.AddComponent<UnsafeGround>();
             }
 
             Transform objects = Child(root.transform, "Objects");
@@ -133,6 +151,21 @@ namespace SteepingSpirits.Platformer.EditorTools
             visual.size = box.size;
             visual.sortingOrder = -5;
             return go;
+        }
+
+        /// <summary>Turns a block into a thin slab at the top of its tiles (leaves, dew leaves).</summary>
+        public static void ShapeAsThinTop(GameObject go, float thickness)
+        {
+            var box = go.GetComponent<BoxCollider2D>();
+            float top = go.transform.position.y + box.size.y * 0.5f;
+            box.size = new Vector2(box.size.x, thickness);
+            go.transform.position = new Vector3(go.transform.position.x, top - thickness * 0.5f, 0f);
+            var visual = go.GetComponent<PlaceholderVisual>();
+            if (visual != null)
+            {
+                visual.size = box.size;
+                visual.shape = PlaceholderVisual.Shape.Circle;
+            }
         }
 
         /// <summary>Center of a tile in world units.</summary>

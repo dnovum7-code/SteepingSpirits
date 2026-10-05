@@ -82,7 +82,7 @@
 | C1 | Laternen-Checkpoints + sanftes Auffangen | erledigt (48 Tests grün, Ablauf ungeprüft) |
 | C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | erledigt (54 Tests grün, Menü ungeprüft) |
 | D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | erledigt (58 Tests grün, UI ungeprüft) |
-| D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | offen |
+| D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | erledigt (63 Tests grün, Verhalten ungeprüft) |
 | D3 | Level 1 (Einstieg ohne Text) | offen |
 | D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | offen |
 | S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | offen |
@@ -161,3 +161,13 @@
 - [ ] Ziel erreichen → Karte „Sammelausflug beendet“ mit „gefunden / vorhanden“ je Zutat,
       Laternen; Buttons Nochmal / Zurück zur Wiese (bzw. Weiter, falls `@next`). Leertaste = Hauptweg.
 - [ ] Konsole zeigt `[JumpNRun] Bag: …` (IDs:Mengen für spätere Übergabe ans Teehaus).
+
+### D2 – Geister-Elemente
+- [ ] *Build Levels* → Prefabs unter `Assets/_Project/Platformer/Prefabs/Elements/` (Lantern, Bramble,
+      Ingredient, Goal, WindSpirit, LanternSpirit, DewLeaf) und `SpiritElementsTuning.asset` (ungeprüft).
+- [ ] Erst sichtbar, wenn ein Level die Zeichen `W S G F D` nutzt (Level 1/2, D3/D4).
+- [ ] Windgeist: in die Säule springen/fallen → wird sanft nach oben getragen, oben lässt es nach.
+- [ ] Laternengeist: berühren → folgt der Figur; blasse Geisterplattformen in seinem Licht
+      werden fest und deutlich; außerhalb wieder durchlässig.
+- [ ] Blattplattform: sinkt langsam unter der Figur, trägt sie mit, steigt danach wieder.
+- [ ] Tautropfen-Blatt: Landung federt hoch (mit gehaltener Sprungtaste höher).

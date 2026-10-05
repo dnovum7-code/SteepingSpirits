@@ -15,11 +15,25 @@ namespace SteepingSpirits.Platformer.EditorTools
 
         public static readonly Vector2 PlayerSize = new Vector2(0.7f, 1.4f);
 
+        public const string ElementFolder = Folder + "/Elements";
+
         public static void BuildAll()
         {
             JumpNRunBuilder.EnsureFolder(Folder);
+            JumpNRunBuilder.EnsureFolder(ElementFolder);
             BuildPlayer();
+            Save(JumpNRunElementFactory.CreateLantern(), ElementPath("Lantern"));
+            Save(JumpNRunElementFactory.CreateBramble(), ElementPath("Bramble"));
+            Save(JumpNRunElementFactory.CreateIngredient(), ElementPath("Ingredient"));
+            Save(JumpNRunElementFactory.CreateGoal(), ElementPath("Goal"));
+            Save(JumpNRunElementFactory.CreateWindSpirit(), ElementPath("WindSpirit"));
+            Save(JumpNRunElementFactory.CreateLanternSpirit(), ElementPath("LanternSpirit"));
+            Save(JumpNRunElementFactory.CreateDewLeaf(), ElementPath("DewLeaf"));
         }
+
+        public static string ElementPath(string name) => ElementFolder + "/" + name + ".prefab";
+
+        public static GameObject Element(string name) => AssetDatabase.LoadAssetAtPath<GameObject>(ElementPath(name));
 
         public static GameObject Player => AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPath);
 

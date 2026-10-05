@@ -140,6 +140,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 Vec2 p = checkpoints.RespawnPoint(FallProtection);
                 player.Teleport(new Vector2(p.x, p.y));
                 checkpoints.OnRespawned(p);
+                LanternSpirit.GatherAll(player.Feet);
                 var cam = FindAnyObjectByType<JumpNRunCamera>();
                 if (cam != null) cam.Snap();
             }
