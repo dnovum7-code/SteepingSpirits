@@ -152,11 +152,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 return;
             }
 
+            // Swings are friendly: coming close to the seat (walking, falling or flying) sits down.
             Vector2 seatPos = SeatPosition;
-            bool close = Vector2.Distance(player.Feet, seatPos) <= Params.mountRadius;
-            bool landing = player.Velocity.y <= 0.5f;
-            bool askedUp = player.MoveInput.y > 0.5f;
-            if (!close || !(landing || askedUp))
+            if (Vector2.Distance(player.Feet, seatPos) > Params.mountRadius)
             {
                 return;
             }

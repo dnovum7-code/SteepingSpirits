@@ -104,6 +104,8 @@ namespace SteepingSpirits.Platforming.Core
                     WindStep(o, s, ref input);
                     break;
                 case LevelReachability.MoveKind.Swing:
+                case LevelReachability.MoveKind.SwingMount:
+                case LevelReachability.MoveKind.SwingWind:
                     SwingStep(o, s, ref input);
                     break;
                 default:
@@ -137,6 +139,11 @@ namespace SteepingSpirits.Platforming.Core
 
         private static bool Arrived(RouteObservation o, RouteStep s)
         {
+            if (s.ToSeat)
+            {
+                return o.riding && Math.Abs(o.swingPivot.x - s.anchor.x) < 0.3f && Math.Abs(o.swingPivot.y - s.anchor.y) < 0.3f;
+            }
+
             Vec2 t = s.Target;
             return o.grounded && !o.riding && Math.Abs(o.feet.x - t.x) < 0.45f && Math.Abs(o.feet.y - t.y) < 0.4f;
         }
@@ -202,13 +209,18 @@ namespace SteepingSpirits.Platforming.Core
 
         private void SwingStep(RouteObservation o, RouteStep s, ref MotorInput input)
         {
-            Vec2 target = s.Target;
-            int dir = target.x >= s.anchor.x ? 1 : -1;
+            // Where we want to end up: a seat (another swing) or a cell on the ground.
+            Vec2 seat = SeatOf != null ? SeatOf(s.anchor) : new Vec2(s.anchor.x, s.anchor.y - s.rope);
+            Vec2 goal = s.ToSeat ? seat : s.Target;
+            bool viaWind = s.kind == LevelReachability.MoveKind.SwingWind;
 
             if (o.riding)
             {
+                // Riding the swing we have to leave (for SwingMount: the previous one).
                 released = false;
-                float distBeyond = Math.Max(0f, Math.Abs(target.x - s.anchor.x) - s.rope * 0.5f);
+                Vec2 aim = viaWind ? s.anchor2 : goal;
+                int dir = aim.x >= o.swingPivot.x ? 1 : -1;
+                float distBeyond = Math.Max(0f, Math.Abs(aim.x - o.swingPivot.x) - s.rope * 0.5f);
                 float need = Math.Min(o.swingMaxAngle - 0.09f, 0.45f + 0.09f * distBeyond);
                 bool ready = o.swingAmplitude >= need;
                 bool goingOut = o.swingAngularVelocity * dir > 0f;
@@ -227,15 +239,28 @@ namespace SteepingSpirits.Platforming.Core
                 return;
             }
 
-            if (released || !o.grounded && stepTime > 0.2f && o.velocity.y < -0.1f && SeatDistance(o, s) > 1.5f)
+            bool flying = released || (!o.grounded && stepTime > 0.2f && o.velocity.y < -0.1f && Vec2.Distance(seat, o.feet) > 1.5f);
+            if (flying && !s.ToSeat)
             {
-                // Flying off the swing (or falling back): steer to the target.
-                input.moveX = Steer(target.x - o.feet.x, o.velocity.x, false);
+                if (viaWind && o.feet.y < goal.y + 0.3f)
+                {
+                    // Into the updraft first, then over to the ledge.
+                    input.moveX = Steer(s.anchor2.x - o.feet.x, o.velocity.x, false);
+                    return;
+                }
+
+                input.moveX = Steer(goal.x - o.feet.x, o.velocity.x, false);
                 return;
             }
 
-            // Get onto the seat: approach and hop on.
-            Vec2 seat = SeatOf != null ? SeatOf(s.anchor) : new Vec2(s.anchor.x, s.anchor.y - s.rope);
+            if (flying && s.ToSeat && released)
+            {
+                // Flying from one swing to the next: steer onto its seat.
+                input.moveX = Steer(seat.x - o.feet.x, o.velocity.x, false);
+                return;
+            }
+
+            // On the ground: approach the seat and hop on.
             float sx = seat.x - o.feet.x;
             if (o.grounded)
             {

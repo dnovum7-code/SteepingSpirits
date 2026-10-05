@@ -16,7 +16,13 @@ namespace SteepingSpirits.Platforming.Core
         /// <summary>Rope length for swings.</summary>
         public float rope;
 
+        /// <summary>SwingWind: bottom centre of the wind column.</summary>
+        public Vec2 anchor2;
+
         public Vec2 Target => new Vec2(to.x + 0.5f, to.y);
+
+        /// <summary>True when the target is a swing seat (kind SwingMount).</summary>
+        public bool ToSeat => kind == LevelReachability.MoveKind.SwingMount;
 
         public override string ToString() => $"{kind} {from}→{to}";
     }
@@ -110,10 +116,15 @@ namespace SteepingSpirits.Platforming.Core
             {
                 s.anchor = new Vec2(e.anchor.x + 0.5f, e.anchor.y);
             }
-            else if (e.kind == LevelReachability.MoveKind.Swing)
+            else if (e.kind == LevelReachability.MoveKind.Swing || e.kind == LevelReachability.MoveKind.SwingMount
+                     || e.kind == LevelReachability.MoveKind.SwingWind)
             {
                 s.anchor = new Vec2(e.anchor.x + 0.5f, e.anchor.y + 0.5f);
                 s.rope = r.RopeLength(e.anchor);
+                if (e.kind == LevelReachability.MoveKind.SwingWind)
+                {
+                    s.anchor2 = new Vec2(e.anchor2.x + 0.5f, e.anchor2.y);
+                }
             }
 
             return s;
@@ -137,7 +148,9 @@ namespace SteepingSpirits.Platforming.Core
                 }
                 case LevelReachability.MoveKind.Dew: return 3f + dx + 0.5f * Math.Abs(dy);
                 case LevelReachability.MoveKind.Wind: return 4f + dx + 0.3f * Math.Abs(dy);
-                default: return 8f + dx;
+                case LevelReachability.MoveKind.SwingMount: return 5f + Math.Min(dx, 20f);
+                case LevelReachability.MoveKind.SwingWind: return 6f + Math.Min(dx, 20f);
+                default: return 3f + Math.Min(dx, 20f);
             }
         }
 

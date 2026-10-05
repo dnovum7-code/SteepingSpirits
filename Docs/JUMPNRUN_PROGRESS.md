@@ -29,6 +29,8 @@ hat sie Vorrang (Fehler → Gefühl → Wünsche, Status und Commit je Notiz).
 Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerController2D` bleibt).
 
 ### Annahmen Runde 2
+- R5. Schaukel-Aufsitzen ist großzügiger: Nähe zum Sitz genügt (auch im Flug), nicht mehr nur fallend.
+  Nötig für Schaukel→Schaukel und angenehmer für alle.
 - R4. Für den Zugriff von Tests und Werkzeugen gibt es eine kleine Assembly
   `SteepingSpirits.Platformer.Hooks` (Eingabe-Schnittstelle, Probe). Der Spielcode liegt in
   Assembly-CSharp; ein asmdef dafür würde andere Module mitziehen, das wäre außerhalb der Freigaben.
@@ -58,7 +60,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-7b | Kletterpfad auf neuen Controller hinter Schalter | erledigt, Schalter **aus** bis zu deiner Bestätigung (Kompilat geprüft, Spiel ungeprüft) |
 | R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | erledigt (Kompilat geprüft, Bild/Navigation ungeprüft) |
 | R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | erledigt (6 neue Tests, 117 grün; Klang/Bild ungeprüft) |
-| R2-10 | Schaukel-Kombinationen | offen |
+| R2-10 | Schaukel-Kombinationen | erledigt (Bot schafft Schaukel→Schaukel und Schaukel→Wind in der Simulation; Unity ungeprüft) |
 | R2-11 | Level 3 (Schaukel-Thema) | offen |
 | R2-12 | Hub-Lichtung lebendig | offen |
 | R2-13 | Level 4 | offen |
@@ -77,6 +79,13 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-10 – Schaukel-Kombinationen
+- [ ] Von Schaukel zu Schaukel: im Flug nahe an den nächsten Sitz kommen → man sitzt sofort (Schaukeln
+      sind „freundlich“: Nähe genügt, egal ob laufend, fallend oder fliegend) (ungeprüft; in Level 3 zu sehen).
+- [ ] Schaukel → Windgeist-Säule: abspringen, in die Säule steuern, oben auf den Vorsprung.
+- [ ] Fund im Flug: seltene Zutat am Scheitel des Bogens einsammeln.
+- Neue Lint-Warnung: Windgeist schwebt über einer Lücke (fängt dann Stürze darunter nicht ab).
 
 #### R2-9 – Schaukel-Feinschliff
 - [ ] Level-Datei: `@rope0 4.5` / `@angle0 60` ändern Seillänge und Höchstwinkel der ersten Schaukel

@@ -29,6 +29,15 @@ namespace SteepingSpirits.Platforming.Core
                 }
             }
 
+            // A wind spirit hanging above a pit cannot catch falls below it.
+            foreach (LevelMarker w in layout.All(TileKind.WindSpirit))
+            {
+                if (w.y > 0 && !layout.IsStandable(w.x, w.y - 1))
+                {
+                    warnings.Add($"wind spirit #{w.index} at ({w.x},{w.y}) floats above a gap – place it at the bottom so it catches falls");
+                }
+            }
+
             foreach (LevelMarker o in layout.All(TileKind.Swing))
             {
                 float rope = reach.RopeLength(o);

@@ -171,7 +171,15 @@ namespace SteepingSpirits.Platforming.Core
             Jump,
             Dew,
             Wind,
-            Swing
+
+            /// <summary>Seat → standing cell: pump and let go towards it.</summary>
+            Swing,
+
+            /// <summary>Standing cell or another seat → onto a swing's seat.</summary>
+            SwingMount,
+
+            /// <summary>Seat → through a wind column → standing cell above.</summary>
+            SwingWind
         }
 
         public struct Edge
@@ -179,8 +187,11 @@ namespace SteepingSpirits.Platforming.Core
             public Cell to;
             public MoveKind kind;
 
-            /// <summary>Marker of the wind spirit or swing used (kind Wind/Swing).</summary>
+            /// <summary>Marker of the wind spirit or swing used (kind Wind/Swing/SwingMount: the target swing).</summary>
             public LevelMarker anchor;
+
+            /// <summary>SwingWind: the wind spirit flown into.</summary>
+            public LevelMarker anchor2;
         }
 
         public List<Cell> StandingCells() => AllStanding();
@@ -188,6 +199,12 @@ namespace SteepingSpirits.Platforming.Core
         /// <summary>All moves from a standing cell (coarse, see class summary).</summary>
         public IEnumerable<Edge> Edges(Cell from, List<Cell> standing)
         {
+            if (IsSeat(from, out LevelMarker seatOf))
+            {
+                foreach (Edge e in SeatEdges(seatOf, standing)) yield return e;
+                yield break;
+            }
+
             bool onDew = layout.At(from.x, from.y - 1) == TileKind.DewLeaf;
             float bonus = onDew ? SpiritMath.DewBounceVelocity(elements.dew, move.Gravity, true) : 0f;
 
@@ -226,27 +243,84 @@ namespace SteepingSpirits.Platforming.Core
                 }
             }
 
-            // Swing: jump onto the seat, then fly off either way.
+            // Swing: jump onto the seat (the seat is its own node, see SeatCell).
             foreach (LevelMarker o in layout.All(TileKind.Swing))
             {
-                float rope = RopeLength(o);
-                float seatY = o.y + 0.5f - rope;
+                float seatY = SeatY(o);
                 float toSeat = Math.Max(0f, Math.Abs(o.x - from.x) - 0.5f) + Margin;
                 int rise = (int)Math.Ceiling(seatY - from.y);
-                if (Reach(rise) < toSeat)
+                if (Reach(rise) >= toSeat)
+                {
+                    yield return new Edge { to = SeatCell(o), kind = MoveKind.SwingMount, anchor = o };
+                }
+            }
+        }
+
+        /// <summary>Moves from a swing seat: fly to ground, to another swing, or through a wind column.</summary>
+        private IEnumerable<Edge> SeatEdges(LevelMarker o, List<Cell> standing)
+        {
+            float rope = RopeLength(o);
+            float seatY = SeatY(o);
+            float range = rope + 3f;
+
+            foreach (Cell to in standing)
+            {
+                if (to.y <= seatY + 2f && Math.Abs(to.x - o.x) <= range)
+                {
+                    yield return new Edge { to = to, kind = MoveKind.Swing, anchor = o };
+                }
+            }
+
+            foreach (LevelMarker other in layout.All(TileKind.Swing))
+            {
+                if (other.index == o.index) continue;
+                float otherSeat = SeatY(other);
+                if (otherSeat <= seatY + 2f && Math.Abs(other.x - o.x) <= range + RopeLength(other) * 0.5f)
+                {
+                    yield return new Edge { to = SeatCell(other), kind = MoveKind.SwingMount, anchor = other };
+                }
+            }
+
+            foreach (LevelMarker w in layout.All(TileKind.WindSpirit))
+            {
+                int top = w.y + ColumnHeight(w) - 1;
+                if (Math.Abs(w.x - o.x) > range || w.y > seatY + 1f || top < seatY)
                 {
                     continue;
                 }
 
                 foreach (Cell to in standing)
                 {
-                    float dx = Math.Abs(to.x - o.x);
-                    if (to.y <= seatY + 2f && dx <= rope + 3f)
+                    float dist = Math.Max(0f, Math.Abs(to.x - w.x) - 1f) + Margin;
+                    if (to.y > seatY + 2f && to.y <= top + 1 && Reach(to.y - top) >= dist)
                     {
-                        yield return new Edge { to = to, kind = MoveKind.Swing, anchor = o };
+                        yield return new Edge { to = to, kind = MoveKind.SwingWind, anchor = o, anchor2 = w };
                     }
                 }
             }
+        }
+
+        /// <summary>World height of a swing's seat when it hangs still.</summary>
+        public float SeatY(LevelMarker swing) => swing.y + 0.5f - RopeLength(swing);
+
+        /// <summary>The graph node standing for "sitting on this swing".</summary>
+        public Cell SeatCell(LevelMarker swing) => new Cell(swing.x, (int)Math.Floor(SeatY(swing)) - 10000);
+
+        /// <summary>Is this node a swing seat (see SeatCell)? Returns the swing.</summary>
+        public bool IsSeat(Cell c, out LevelMarker swing)
+        {
+            swing = default;
+            if (c.y > -5000) return false;
+            foreach (LevelMarker o in layout.All(TileKind.Swing))
+            {
+                if (SeatCell(o).Equals(c))
+                {
+                    swing = o;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>Same height and solid footing all the way: just walk.</summary>
@@ -301,6 +375,18 @@ namespace SteepingSpirits.Platforming.Core
         {
             foreach (Cell s in Reached)
             {
+                if (IsSeat(s, out LevelMarker swing))
+                {
+                    // Things along the swing's arc and its flights.
+                    float rope = RopeLength(swing);
+                    if (Math.Abs(x - swing.x) <= rope + 3f && y <= swing.y + 1 && y >= SeatY(swing) - 3f)
+                    {
+                        return true;
+                    }
+
+                    continue;
+                }
+
                 if (s.x == x && s.y == y)
                 {
                     return true;

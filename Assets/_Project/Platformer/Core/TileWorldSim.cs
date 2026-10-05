@@ -38,6 +38,7 @@ namespace SteepingSpirits.Platforming.Core
         {
             public LevelMarker marker;
             public SwingModel model;
+            public float remountTimer;
             public Vec2 pivot;
             public Vec2 Seat => pivot + model.SeatOffset;
         }
@@ -62,7 +63,6 @@ namespace SteepingSpirits.Platforming.Core
         public int RidingSwing { get; private set; } = -1;
 
         private float dewCooldown;
-        private float remountTimer;
 
         public TileWorldSim(LevelLayout layout, MovementParams move = null, SpiritElementParams elements = null)
         {
@@ -168,7 +168,7 @@ namespace SteepingSpirits.Platforming.Core
         {
             Time += dt;
             dewCooldown -= dt;
-            remountTimer -= dt;
+            foreach (Swing sw in swings) sw.remountTimer -= dt;
             if (Finished)
             {
                 return;
@@ -233,22 +233,17 @@ namespace SteepingSpirits.Platforming.Core
 
         private void Leave(Vec2 velocity)
         {
+            swings[RidingSwing].remountTimer = elements.swing.remountDelay;
             RidingSwing = -1;
-            remountTimer = elements.swing.remountDelay;
             Motor.Launch(velocity, true);
         }
 
         private void TryMount(MotorInput input)
         {
-            if (remountTimer > 0f)
-            {
-                return;
-            }
-
             for (int i = 0; i < swings.Count; i++)
             {
                 Swing s = swings[i];
-                if (Vec2.Distance(Feet, s.Seat) <= elements.swing.mountRadius && (Motor.Velocity.y <= 0.5f || input.moveY > 0.5f))
+                if (s.remountTimer <= 0f && Vec2.Distance(Feet, s.Seat) <= elements.swing.mountRadius)
                 {
                     RidingSwing = i;
                     s.model.Mount(s.model.SeatOffset, Motor.Velocity);
