@@ -88,7 +88,7 @@
 | S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | erledigt (9 Schaukel-Tests grün, Gefühl ungeprüft) |
 | E1 | Debug-Overlay (F1) | erledigt (Kompilat geprüft, Anzeige ungeprüft) |
 | E2 | Telemetrie (jumpnrun_log.jsonl pro Abschnitt) | erledigt (84 Tests grün, Datei ungeprüft) |
-| E3 | Doku Docs/JUMPNRUN.md | offen |
+| E3 | Doku Docs/JUMPNRUN.md | erledigt (Hub und Geist-NPCs folgen in F) |
 | F* | Extras (Wand-Toggle, Parallax/Abendlicht, Geister-NPCs, Laternen-Herausforderung) | offen |
 
 ## Editor-Checklisten pro Commit
@@ -212,3 +212,6 @@
       enthält pro Abschnitt eine Zeile: `section`, `seconds`, `falls`, `ingredients`, `assists`, `end`
       (`lantern`/`goal`/`left`).
 - [ ] Level mitten im Abschnitt verlassen → letzte Zeile mit `"end":"left"`.
+
+### E3 – Doku
+- [ ] `Docs/JUMPNRUN.md` lesen; README verlinkt darauf.

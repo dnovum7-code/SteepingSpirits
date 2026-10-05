@@ -9,7 +9,9 @@ Quest-System (**ohne** KI-Generierung), Inventar, Gold, XP, Kampf, Dialoge,
 Questlog, HUDs, Sounds, Dev-Cheats und Selbsttest. Was genau übernommen,
 angepasst oder weggelassen wurde: [Docs/EVERDAWN_UEBERNAHME.md](Docs/EVERDAWN_UEBERNAHME.md).
 
-**Neu: Jump'n'Run-Szene** (Celeste-artig mit Dash, Wandsprung, Haltepunkten,
+**Neu: Jump'n'Run-Sammelausflüge** (gemütlich, Geister-Elemente, Schaukel) → [Docs/JUMPNRUN.md](Docs/JUMPNRUN.md)
+
+**Jump'n'Run-Szene** (Celeste-artig mit Dash, Wandsprung, Haltepunkten,
 Schwingseilen und Lianen) → [Docs/JUMP_AND_RUN.md](Docs/JUMP_AND_RUN.md)
 
 > Alles läuft mit **Platzhalter-Grafiken aus Code** – zum Ausprobieren musst du
