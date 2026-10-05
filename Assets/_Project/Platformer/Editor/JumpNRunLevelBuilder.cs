@@ -63,12 +63,20 @@ namespace SteepingSpirits.Platformer.EditorTools
             root.AddComponent<JumpNRunSession>();
             root.AddComponent<JumpNRunTime>();
             root.AddComponent<JumpNRunOptions>();
+            root.AddComponent<JumpNRunHud>();
+            root.AddComponent<JumpNRunEndCard>();
             level.levelId = id;
             level.displayName = layout.Name;
             level.movementTuning = AssetDatabase.LoadAssetAtPath<MovementTuning>(JumpNRunBuilder.DataFolder + "/MovementTuning.asset");
             level.cameraTuning = AssetDatabase.LoadAssetAtPath<CameraTuning>(JumpNRunBuilder.DataFolder + "/CameraTuning.asset");
             level.feedbackTuning = AssetDatabase.LoadAssetAtPath<FeedbackTuning>(JumpNRunBuilder.DataFolder + "/FeedbackTuning.asset");
             level.bounds = new Rect(0f, 0f, layout.Width, layout.Height);
+            level.lanternCount = layout.All(TileKind.Lantern).Count;
+            var placed = new IngredientBag();
+            foreach (var pair in IngredientTally.Available(layout)) placed.Add(pair.Key, pair.Value);
+            level.availableIngredients = placed.Serialize();
+            string next = layout.Setting("next");
+            level.nextScenePath = string.IsNullOrEmpty(next) ? "" : JumpNRunBuilder.SceneFolder + "/JumpNRun_" + next + ".unity";
 
             Transform services = Child(root.transform, "Feedback");
             services.gameObject.AddComponent<JumpNRunParticles>();

@@ -17,11 +17,13 @@ namespace SteepingSpirits.Platformer.JumpNRun
         [SerializeField] private Color spiritColor = new Color(0.85f, 0.92f, 1f, 0.7f);
 
         private CheckpointTracker checkpoints;
+        private readonly IngredientBag bag = new IngredientBag();
         private CatchSequence catchSequence;
         private JumpNRunPlayer player;
         private Texture2D tintTexture;
 
         public CheckpointTracker Checkpoints => checkpoints;
+        public IngredientBag Bag => bag;
         public bool IsCatching => catchSequence != null && catchSequence.Active;
         public bool Finished { get; private set; }
         public int Catches { get; private set; }
@@ -86,6 +88,11 @@ namespace SteepingSpirits.Platformer.JumpNRun
             Caught?.Invoke();
         }
 
+        public void Collect(string ingredientId)
+        {
+            bag.Add(ingredientId);
+        }
+
         public void FinishLevel()
         {
             if (Finished)
@@ -94,6 +101,11 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
 
             Finished = true;
+            if (player != null)
+            {
+                player.TakeControl(this);
+            }
+
             JumpNRunSounds.Play(JumpNRunSound.Goal, catchSequence.Params.lanternVolume);
             Finish?.Invoke();
         }

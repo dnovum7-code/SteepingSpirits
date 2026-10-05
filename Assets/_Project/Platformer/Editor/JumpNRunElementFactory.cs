@@ -28,6 +28,12 @@ namespace SteepingSpirits.Platformer.EditorTools
                 case TileKind.Bramble:
                     BuildBramble(parent, m);
                     break;
+                case TileKind.Ingredient:
+                    BuildIngredient(parent, m);
+                    break;
+                case TileKind.Goal:
+                    BuildGoal(parent, m);
+                    break;
                 default:
                     Placeholder(parent, m);
                     break;
@@ -73,6 +79,31 @@ namespace SteepingSpirits.Platformer.EditorTools
             box.isTrigger = true;
             box.size = new Vector2(0.8f, 0.5f);
             go.AddComponent<Bramble>();
+        }
+
+        private static void BuildIngredient(Transform parent, LevelMarker m)
+        {
+            string id = IngredientIds.FromSymbol(m.symbol);
+            bool rare = IngredientIds.IsRare(id);
+            GameObject go = Element(parent, "Ingredient " + id, m, rare ? PlaceholderVisual.Shape.Diamond : PlaceholderVisual.Shape.Circle,
+                Ingredient.ColorOf(id), Vector2.one * (rare ? 0.55f : 0.42f));
+            var circle = go.AddComponent<CircleCollider2D>();
+            circle.isTrigger = true;
+            circle.radius = 0.45f;
+            var ing = go.AddComponent<Ingredient>();
+            ing.ingredientId = id;
+            ing.rare = rare;
+        }
+
+        private static void BuildGoal(Transform parent, LevelMarker m)
+        {
+            GameObject go = Element(parent, "Goal", m, PlaceholderVisual.Shape.Triangle, new Color(0.95f, 0.82f, 0.55f),
+                new Vector2(1.4f, 2f));
+            go.transform.position += Vector3.up * 0.5f;
+            var box = go.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            box.size = new Vector2(1.2f, 2f);
+            go.AddComponent<Goal>();
         }
 
         /// <summary>An element object at a marker's tile centre with a placeholder look.</summary>

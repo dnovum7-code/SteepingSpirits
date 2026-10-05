@@ -1,3 +1,5 @@
+using SteepingSpirits.Platforming.Core;
+
 namespace SteepingSpirits.Platformer.JumpNRun
 {
     /// <summary>All player-facing texts of the Jump'n'Run in one place (German).</summary>
@@ -17,6 +19,35 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string Resume = "Weiter";
         public const string BackToMeadow = "Zurück zur Wiese";
         public const string MenuHint = "Esc: Pause";
+
+        // Ingredients
+        public static string IngredientName(string id)
+        {
+            switch (id)
+            {
+                case IngredientIds.TeaLeaf: return "Teeblatt";
+                case IngredientIds.Herb: return "Wiesenkraut";
+                case IngredientIds.Blossom: return "Blüte";
+                case IngredientIds.MorningDew: return "Morgentau";
+                case IngredientIds.SpringWater: return "Quellwasser";
+                case IngredientIds.GoldenTip: return "Goldspitze";
+                case IngredientIds.MoonHerb: return "Mondkraut";
+                case IngredientIds.SpiritBlossom: return "Geisterblüte";
+                case IngredientIds.StarDew: return "Sternentau";
+                case IngredientIds.SpringCrystal: return "Quellkristall";
+                default: return id;
+            }
+        }
+
+        // End-of-level card
+        public const string EndTitle = "Sammelausflug beendet";
+        public const string EndCollected = "Im Beutel";
+        public const string EndNothing = "Diesmal nur frische Luft geschnappt – auch schön.";
+        public const string EndRare = "selten";
+        public const string NextLevel = "Weiter";
+        public const string Again = "Nochmal";
+        public static string LanternsLit(int lit, int total) => $"Laternen entzündet: {lit} von {total}";
+        public static string Found(int found, int available) => available > 0 ? $"{found} / {available}" : $"{found}";
 
         public static string Percent(float value) => $"{UnityEngine.Mathf.RoundToInt(value * 100f)} %";
 

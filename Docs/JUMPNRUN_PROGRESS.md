@@ -81,7 +81,7 @@
 | B3 | Feedback (Squash/Stretch, Staub/Blätter, Töne) | erledigt (45 Tests grün, Klang/Bild ungeprüft) |
 | C1 | Laternen-Checkpoints + sanftes Auffangen | erledigt (48 Tests grün, Ablauf ungeprüft) |
 | C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | erledigt (54 Tests grün, Menü ungeprüft) |
-| D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | offen |
+| D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | erledigt (58 Tests grün, UI ungeprüft) |
 | D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | offen |
 | D3 | Level 1 (Einstieg ohne Text) | offen |
 | D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | offen |
@@ -153,3 +153,11 @@
       nochmal springen; Absturzschutz an → nach Sturz an der letzten sicheren Stelle weiter.
 - [ ] Play beenden und neu starten → Einstellungen sind gemerkt.
 - [ ] Nach dem Verlassen des Levels läuft die Wiese wieder mit normalem Tempo.
+
+### D1 – Zutaten und Abschlusskarte
+- [ ] Level 1 → Play: Zutaten schweben sanft; einsammeln → kleiner Glitzer, Glockenton,
+      oben links erscheint kurz der Beutel (ungeprüft).
+- [ ] Seltene Zutat (Raute mit Schein) → kurze, weiche Zeitlupe.
+- [ ] Ziel erreichen → Karte „Sammelausflug beendet“ mit „gefunden / vorhanden“ je Zutat,
+      Laternen; Buttons Nochmal / Zurück zur Wiese (bzw. Weiter, falls `@next`). Leertaste = Hauptweg.
+- [ ] Konsole zeigt `[JumpNRun] Bag: …` (IDs:Mengen für spätere Übergabe ans Teehaus).

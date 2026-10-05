@@ -14,6 +14,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public CameraTuning cameraTuning;
         public FeedbackTuning feedbackTuning;
 
+        /// <summary>Ingredients placed in the level ("id:n,…", written by the builder).</summary>
+        public string availableIngredients = "";
+
+        public int lanternCount;
+
+        /// <summary>Scene path of the next level (empty = none).</summary>
+        public string nextScenePath = "";
+
         /// <summary>World bounds of the level (for camera and fall detection).</summary>
         public Rect bounds = new Rect(0f, 0f, 40f, 20f);
 
