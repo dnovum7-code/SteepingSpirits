@@ -48,7 +48,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-1 | Smoke-Test per Menü + PlayMode-Tests | erledigt (Bot schafft alle Level in der Simulation, 97 Tests grün; Unity-Lauf ungeprüft) |
 | R2-2 | Eingabe-Aufzeichnung F5/F6 | erledigt (Format + Wiedergabe getestet, auch Replay in der Simulation; Unity ungeprüft) |
 | R2-3 | Builder-Prüfungen (Prefab-Referenzen, Erreichbarkeit, Laternen-Reihenfolge) | erledigt (LevelLint 4 Tests, ausgelieferte Level warnungsfrei) |
-| R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | offen |
+| R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | erledigt (4 eigene Tests + 106 Jump'n'Run-Tests grün) |
 | R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | offen |
 | R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | offen |
 | R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | offen |
@@ -74,6 +74,12 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-4 – Zutaten-Katalog
+- [ ] Unity: neue Assembly `SteepingSpirits.Ingredients` (Ordner `Assets/_Project/Ingredients`), Konsole ohne Fehler (ungeprüft).
+- [ ] Test Runner EditMode: `IngredientCatalogTests` grün. Ohne Unity: `dotnet test Tests/Ingredients.DotNet`.
+- Zuordnung: Jump'n'Run-IDs sind die Katalog-IDs; `item_teeblatt` (Wiese/Inventar/Quest) ist Alias für `tea_leaf`.
+  Der Brüh-Code ist unverändert und kann den Katalog später referenzieren.
 
 #### R2-3 – Builder-Prüfungen
 - [ ] *Build Levels* mit den ausgelieferten Leveln → keine `[JumpNRun]`-Warnungen (ungeprüft).

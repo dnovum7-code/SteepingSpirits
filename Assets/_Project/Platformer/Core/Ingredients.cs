@@ -1,27 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SteepingSpirits.Ingredients;
 
 namespace SteepingSpirits.Platforming.Core
 {
     /// <summary>
-    /// Ingredient ids of the Jump'n'Run. Plain strings so other systems (tea
-    /// house, inventory) can map them later without depending on this module.
+    /// Jump'n'Run view on the shared catalogue (<see cref="IngredientCatalog"/>):
+    /// the same ids plus the level symbols. Kept so level code reads naturally.
     /// </summary>
     public static class IngredientIds
     {
-        public const string TeaLeaf = "tea_leaf";
-        public const string Herb = "herb";
-        public const string Blossom = "blossom";
-        public const string MorningDew = "morning_dew";
-        public const string SpringWater = "spring_water";
+        public const string TeaLeaf = IngredientCatalog.TeaLeaf;
+        public const string Herb = IngredientCatalog.Herb;
+        public const string Blossom = IngredientCatalog.Blossom;
+        public const string MorningDew = IngredientCatalog.MorningDew;
+        public const string SpringWater = IngredientCatalog.SpringWater;
 
-        // Rare variants at optional spots.
-        public const string GoldenTip = "golden_tip";
-        public const string MoonHerb = "moon_herb";
-        public const string SpiritBlossom = "spirit_blossom";
-        public const string StarDew = "star_dew";
-        public const string SpringCrystal = "spring_crystal";
+        public const string GoldenTip = IngredientCatalog.GoldenTip;
+        public const string MoonHerb = IngredientCatalog.MoonHerb;
+        public const string SpiritBlossom = IngredientCatalog.SpiritBlossom;
+        public const string StarDew = IngredientCatalog.StarDew;
+        public const string SpringCrystal = IngredientCatalog.SpringCrystal;
 
         public static readonly string[] Common = { TeaLeaf, Herb, Blossom, MorningDew, SpringWater };
         public static readonly string[] Rare = { GoldenTip, MoonHerb, SpiritBlossom, StarDew, SpringCrystal };
@@ -35,14 +35,10 @@ namespace SteepingSpirits.Platforming.Core
             return i >= 0 ? Rare[i] : null;
         }
 
-        public static bool IsRare(string id) => Array.IndexOf(Rare, id) >= 0;
+        public static bool IsRare(string id) => IngredientCatalog.IsRare(id);
 
         /// <summary>The common ingredient a rare one belongs to (for sorting on the card).</summary>
-        public static string BaseOf(string id)
-        {
-            int i = Array.IndexOf(Rare, id);
-            return i >= 0 ? Common[i] : id;
-        }
+        public static string BaseOf(string id) => IngredientCatalog.CommonOf(id);
     }
 
     /// <summary>

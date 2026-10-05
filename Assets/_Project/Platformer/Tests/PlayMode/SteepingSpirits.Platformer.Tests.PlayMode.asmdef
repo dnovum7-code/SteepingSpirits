@@ -4,6 +4,7 @@
     "references": [
         "SteepingSpirits.Platformer.Hooks",
         "SteepingSpirits.Platforming.Core",
+        "SteepingSpirits.Ingredients",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -38,3 +38,4 @@ Thumbs.db
 sysinfo.txt
 crashlytics-build.properties
 !Tests/PlatformingCore.DotNet/PlatformingCore.DotNet.csproj
+!Tests/Ingredients.DotNet/Ingredients.DotNet.csproj

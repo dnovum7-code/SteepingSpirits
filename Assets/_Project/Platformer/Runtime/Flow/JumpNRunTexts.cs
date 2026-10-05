@@ -22,23 +22,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string MenuHint = "Esc: Pause";
 
         // Ingredients
-        public static string IngredientName(string id)
-        {
-            switch (id)
-            {
-                case IngredientIds.TeaLeaf: return "Teeblatt";
-                case IngredientIds.Herb: return "Wiesenkraut";
-                case IngredientIds.Blossom: return "Blüte";
-                case IngredientIds.MorningDew: return "Morgentau";
-                case IngredientIds.SpringWater: return "Quellwasser";
-                case IngredientIds.GoldenTip: return "Goldspitze";
-                case IngredientIds.MoonHerb: return "Mondkraut";
-                case IngredientIds.SpiritBlossom: return "Geisterblüte";
-                case IngredientIds.StarDew: return "Sternentau";
-                case IngredientIds.SpringCrystal: return "Quellkristall";
-                default: return id;
-            }
-        }
+        /// <summary>Names come from the shared catalogue texts.</summary>
+        public static string IngredientName(string id) => SteepingSpirits.Ingredients.IngredientTexts.Name(id);
 
         // End-of-level card
         public const string EndTitle = "Sammelausflug beendet";

@@ -3,6 +3,7 @@
     "rootNamespace": "SteepingSpirits.Platforming.Tests",
     "references": [
         "SteepingSpirits.Platforming.Core",
+        "SteepingSpirits.Ingredients",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -2,7 +2,8 @@
     "name": "SteepingSpirits.Platformer.Hooks",
     "rootNamespace": "SteepingSpirits.Platformer.Hooks",
     "references": [
-        "SteepingSpirits.Platforming.Core"
+        "SteepingSpirits.Platforming.Core",
+        "SteepingSpirits.Ingredients"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

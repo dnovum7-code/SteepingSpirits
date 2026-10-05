@@ -14,6 +14,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../Assets/_Project/Ingredients/Core/**/*.cs" />
     <Compile Include="../../Assets/_Project/Platformer/Core/**/*.cs" />
     <Compile Include="../../Assets/_Project/Platformer/Tests/EditMode/**/*.cs" />
   </ItemGroup>

@@ -1,7 +1,9 @@
 {
     "name": "SteepingSpirits.Platforming.Core",
     "rootNamespace": "SteepingSpirits.Platforming.Core",
-    "references": [],
+    "references": [
+        "SteepingSpirits.Ingredients"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
