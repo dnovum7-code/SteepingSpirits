@@ -22,6 +22,12 @@ namespace SteepingSpirits.Platformer.EditorTools
                 case TileKind.Start:
                     BuildStart(parent, m);
                     break;
+                case TileKind.Lantern:
+                    BuildLantern(parent, m);
+                    break;
+                case TileKind.Bramble:
+                    BuildBramble(parent, m);
+                    break;
                 default:
                     Placeholder(parent, m);
                     break;
@@ -46,6 +52,42 @@ namespace SteepingSpirits.Platformer.EditorTools
             camera.backgroundColor = new Color(0.62f, 0.72f, 0.80f);
             cam.AddComponent<AudioListener>();
             JumpNRunCameraSetup.Attach(cam);
+        }
+
+        private static void BuildLantern(Transform parent, LevelMarker m)
+        {
+            GameObject go = Element(parent, "Lantern", m, PlaceholderVisual.Shape.Circle, new Color(0.45f, 0.42f, 0.38f),
+                new Vector2(0.45f, 0.6f));
+            var box = go.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            box.size = new Vector2(1.2f, 2.5f);
+            go.AddComponent<Lantern>().index = m.index;
+        }
+
+        private static void BuildBramble(Transform parent, LevelMarker m)
+        {
+            GameObject go = Element(parent, "Bramble", m, PlaceholderVisual.Shape.Triangle, new Color(0.42f, 0.30f, 0.45f),
+                new Vector2(1f, 0.7f));
+            go.transform.position += Vector3.down * 0.15f;
+            var box = go.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            box.size = new Vector2(0.8f, 0.5f);
+            go.AddComponent<Bramble>();
+        }
+
+        /// <summary>An element object at a marker's tile centre with a placeholder look.</summary>
+        public static GameObject Element(Transform parent, string name, LevelMarker m, PlaceholderVisual.Shape shape,
+            Color color, Vector2 size)
+        {
+            var go = new GameObject($"{name} #{m.index}");
+            go.transform.SetParent(parent, false);
+            go.transform.position = JumpNRunLevelBuilder.TileCenter(m.x, m.y);
+            var v = go.AddComponent<PlaceholderVisual>();
+            v.shape = shape;
+            v.color = color;
+            v.size = size;
+            v.sortingOrder = 2;
+            return go;
         }
 
         /// <summary>Visible stand-in for markers whose element is not built yet.</summary>

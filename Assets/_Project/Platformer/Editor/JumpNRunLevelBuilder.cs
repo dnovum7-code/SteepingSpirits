@@ -60,6 +60,7 @@ namespace SteepingSpirits.Platformer.EditorTools
 
             var root = new GameObject("Level_" + id);
             var level = root.AddComponent<JumpNRunLevel>();
+            root.AddComponent<JumpNRunSession>();
             level.levelId = id;
             level.displayName = layout.Name;
             level.movementTuning = AssetDatabase.LoadAssetAtPath<MovementTuning>(JumpNRunBuilder.DataFolder + "/MovementTuning.asset");

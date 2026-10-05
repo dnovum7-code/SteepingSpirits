@@ -76,7 +76,7 @@
 | B1 | Assist-Techniken (Coyote, Buffer, Cut, Apex, Fallschwerkraft, Max-Fall, Ecken, Luftkontrolle) | erledigt (31 Tests grün, Spielgefühl ungeprüft) |
 | B2 | Kamera (Folgen, Vorausschau, Totzone, vertikal nach Landung) | erledigt (8 Kamera-Tests grün, Bild ungeprüft) |
 | B3 | Feedback (Squash/Stretch, Staub/Blätter, Töne) | erledigt (45 Tests grün, Klang/Bild ungeprüft) |
-| C1 | Laternen-Checkpoints + sanftes Auffangen | offen |
+| C1 | Laternen-Checkpoints + sanftes Auffangen | erledigt (48 Tests grün, Ablauf ungeprüft) |
 | C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | offen |
 | D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | offen |
 | D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | offen |
@@ -136,3 +136,10 @@
 - [ ] Staubwölkchen bei Sprung/Landung, beim Laufen fliegen ab und zu Blätter nach hinten.
 - [ ] Töne leise und weich (kein Klicken): Sprung = sanftes Zupfen, Landung = gedämpftes Pusten.
 - [ ] Werte in `FeedbackTuning.asset` (Lautstärken, Stauchung) wirken nach Neustart von Play.
+
+### C1 – Laternen und Auffangen
+- [ ] Level 1 → Play: an der Laterne vorbeilaufen → sie wird langsam warm-gelb, leiser
+      Glockenton, sanftes Glimmen (kein Blitz) (ungeprüft).
+- [ ] In ein Loch fallen → Bild dunkelt weich ab (~0,35 s), Geist-Wölkchen, Figur steht an
+      der letzten Laterne, Bild hellt auf. Kein Tod-Zähler, keine Wartezeit.
+- [ ] Eine frühere Laterne nochmal berühren → Rücksetzpunkt springt nicht zurück.
