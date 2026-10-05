@@ -35,7 +35,8 @@ namespace SteepingSpirits.Brewing.Presentation
                     break;
                 case BrewPhase.HeatWater:
                     title = TeaName();
-                    prompt = BrewTexts.HeatPrompt + "\n" + (s.Water.HeatOn ? BrewTexts.FireOn : BrewTexts.FireOff)
+                    prompt = (s.Water.HasWaterForPour ? BrewTexts.HeatPrompt : BrewTexts.KettleEmpty) + "\n"
+                             + (s.Water.HeatOn ? BrewTexts.FireOn : BrewTexts.FireOff)
                              + (s.VesselPrewarmed ? "   ·   " + BrewTexts.Prewarmed : "");
                     break;
                 case BrewPhase.PreWarm:
@@ -48,11 +49,12 @@ namespace SteepingSpirits.Brewing.Presentation
                     break;
                 case BrewPhase.Steep:
                     title = TeaName();
-                    prompt = BrewTexts.SteepPrompt;
+                    prompt = BrewTexts.SteepPrompt + SparkLine(s);
                     break;
                 default:
                     title = "";
-                    prompt = BrewTexts.ResultPrompt;
+                    prompt = (s.CanInfuseAgain ? BrewTexts.NextInfusionPrompt : BrewTexts.LeavesSpent)
+                             + "\n" + BrewTexts.ResultPrompt;
                     break;
             }
 
@@ -68,7 +70,18 @@ namespace SteepingSpirits.Brewing.Presentation
         private string TeaName()
         {
             TeaDefinition tea = controller.CurrentTea;
-            return tea != null ? tea.displayName : "";
+            return tea != null ? tea.displayName + "  ·  " + BrewTexts.Infusion(Session.InfusionIndex) : "";
+        }
+
+        private static string SparkLine(BrewSession s)
+        {
+            if (s.Spark == null) return "";
+            switch (s.Spark.State)
+            {
+                case SparkState.Visible: return "\n" + BrewTexts.SparkVisible;
+                case SparkState.Caught: return "\n" + BrewTexts.SparkFollowing;
+                default: return "";
+            }
         }
 
         private string TeaChoices()

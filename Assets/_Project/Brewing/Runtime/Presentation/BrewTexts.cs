@@ -8,8 +8,14 @@ namespace SteepingSpirits.Brewing.Presentation
     /// </summary>
     public static class BrewTexts
     {
-        public const string ChooseTea = "Welchen Tee möchtest du brühen?  [1] [2] [3]";
-        public const string HeatPrompt = "[F] Feuer an/aus   [S] zurückschöpfen   [W] Gefäß vorwärmen   [Leertaste] aufgießen";
+        public const string ChooseTea = "Welchen Tee möchtest du brühen?";
+        public const string HeatPrompt = "[F] Feuer an/aus   [S] zurückschöpfen   [W] Gefäß vorwärmen   [Leertaste] aufgießen   [Q] frisches Wasser";
+        public const string KettleEmpty = "Der Kessel ist fast leer – [Q] frisches Wasser holen.";
+        public const string SparkVisible = "✦ Ein Erinnerungsfunke! [E] fangen";
+        public const string SparkFollowing = "✦ Du folgst der Erinnerung … (sie vertieft sich, solange der Tee zieht)";
+        public const string MemoryCaught = "Eine Erinnerung schwingt im Tee mit.";
+        public const string NextInfusionPrompt = "[Leertaste] dieselben Blätter noch einmal aufgießen";
+        public const string LeavesSpent = "Die Blätter haben alles gegeben.";
         public const string PrewarmPrompt = "Das Gefäß wird vorgewärmt …";
         public const string PourPrompt = "Du gießt auf …";
         public const string SteepPrompt = "[Leertaste] Blätter herausheben";
@@ -20,6 +26,19 @@ namespace SteepingSpirits.Brewing.Presentation
         public const string StaleWater = "Das Wasser hat lange gekocht und schmeckt flach.";
         public const string Tart = "Ein herber Nachklang.";
         public const string ThermometerHint = "[T] Thermometer";
+
+        public static string Infusion(int index) => $"{index + 1}. Aufguss";
+
+        public static string Character(InfusionCharacter character)
+        {
+            switch (character)
+            {
+                case InfusionCharacter.Bright: return "hell und frisch";
+                case InfusionCharacter.Robust: return "kräftig";
+                case InfusionCharacter.Mellow: return "weich und rund";
+                default: return "zart";
+            }
+        }
 
         public static string Tier(QualityTier tier)
         {

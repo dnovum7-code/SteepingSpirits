@@ -13,6 +13,9 @@ namespace SteepingSpirits.Brewing.Presentation
         public float noiseVolume;
         public float noiseCutoffHz;
         public float crackleRate;
+        public float highpassHz;
+        public float swellRate;
+        public float swellDepth;
     }
 
     /// <summary>
@@ -57,7 +60,10 @@ namespace SteepingSpirits.Brewing.Presentation
                 steamRate = Mathf.Lerp(a.steamRate, b.steamRate, w),
                 noiseVolume = Mathf.Lerp(a.noiseVolume, b.noiseVolume, w),
                 noiseCutoffHz = Mathf.Lerp(a.noiseCutoffHz, b.noiseCutoffHz, w),
-                crackleRate = Mathf.Lerp(a.crackleRate, b.crackleRate, w)
+                crackleRate = Mathf.Lerp(a.crackleRate, b.crackleRate, w),
+                highpassHz = Mathf.Lerp(a.noiseHighpassHz, b.noiseHighpassHz, w),
+                swellRate = Mathf.Lerp(a.swellRate, b.swellRate, w),
+                swellDepth = Mathf.Lerp(a.swellDepth, b.swellDepth, w)
             };
         }
     }
