@@ -1,6 +1,5 @@
 using UnityEngine;
 using SteepingSpirits.Core;
-using SteepingSpirits.Core.UI;
 using SteepingSpirits.World;
 
 namespace SteepingSpirits.Platformer.JumpNRun
@@ -19,7 +18,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private bool playerInside;
         private float lastMoveY;
-        private GUIStyle labelStyle, hintStyle;
+        private WorldLabel sign;
+        private int shownState = -1;
 
         private void Awake()
         {
@@ -60,37 +60,33 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
         }
 
-        private void OnGUI()
+        private void Start()
         {
-            Camera cam = Camera.main;
-            if (cam == null)
+            sign = new WorldLabel("DoorSign", 22, new Color(1f, 0.93f, 0.8f), new Color(0.2f, 0.13f, 0.08f, 0.7f), 340f);
+        }
+
+        private void OnDestroy()
+        {
+            sign?.Destroy();
+        }
+
+        private void LateUpdate()
+        {
+            if (sign == null)
             {
                 return;
             }
 
-            if (labelStyle == null)
+            int state = !IsOpen ? 2 : playerInside ? 1 : 0;
+            if (state != shownState)
             {
-                labelStyle = GuiDraw.Rich(14, new Color(1f, 0.93f, 0.8f), FontStyle.Bold, TextAnchor.MiddleCenter);
-                hintStyle = GuiDraw.Rich(12, new Color(1f, 1f, 1f, 0.75f), FontStyle.Normal, TextAnchor.MiddleCenter);
+                shownState = state;
+                string hintLine = state == 2 ? JumpNRunTexts.DoorLocked : state == 1 ? JumpNRunTexts.DoorHint : "";
+                sign.SetText(hintLine.Length > 0 ? label + "\n<size=16>" + hintLine + "</size>" : label, hintLine.Length > 0 ? 2 : 1);
+                sign.SetAlpha(1f);
             }
 
-            Vector3 s = cam.WorldToScreenPoint(transform.position + Vector3.up * 1.9f);
-            if (s.z < 0f)
-            {
-                return;
-            }
-
-            var r = new Rect(s.x - 90f, Screen.height - s.y - 12f, 180f, 24f);
-            bool open = IsOpen;
-            GuiDraw.ShadowLabel(r, label, labelStyle);
-            if (!open)
-            {
-                GuiDraw.ShadowLabel(new Rect(r.x, r.y + 20f, r.width, 20f), JumpNRunTexts.DoorLocked, hintStyle);
-            }
-            else if (playerInside)
-            {
-                GuiDraw.ShadowLabel(new Rect(r.x, r.y + 20f, r.width, 20f), JumpNRunTexts.DoorHint, hintStyle);
-            }
+            sign.Follow(transform.position + Vector3.up * 1.9f);
         }
     }
 }

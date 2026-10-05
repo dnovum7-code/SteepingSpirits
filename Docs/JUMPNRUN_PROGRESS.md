@@ -56,7 +56,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | erledigt (Kompilat geprüft, Wege ungeprüft) |
 | R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | erledigt (5 Speicher-Tests; Unity ungeprüft) |
 | R2-7b | Kletterpfad auf neuen Controller hinter Schalter | erledigt, Schalter **aus** bis zu deiner Bestätigung (Kompilat geprüft, Spiel ungeprüft) |
-| R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | offen |
+| R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | erledigt (Kompilat geprüft, Bild/Navigation ungeprüft) |
 | R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | offen |
 | R2-10 | Schaukel-Kombinationen | offen |
 | R2-11 | Level 3 (Schaukel-Thema) | offen |
@@ -77,6 +77,15 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-8 – Oberflächen auf uGUI
+- [ ] Esc / Pad-B: Pausemenü im Holz-Look wie Dialog und Questlog (ungeprüft). Hoch/runter (Pfeile, Stick,
+      Steuerkreuz) wählt, links/rechts ändert, Enter/Leertaste/Pad-A schaltet, Maus geht auch. Fokus liegt
+      beim Öffnen auf der ersten Zeile.
+- [ ] Abschlusskarte: Buttons „Weiter / Zur Lichtung / Nochmal“ mit Pad und Tastatur erreichbar, Fokus auf dem ersten.
+- [ ] Geister-Sprechblasen, Türschilder, Beutel-Anzeige und Auffang-Blende sind uGUI; OnGUI nur noch im
+      Debug-Overlay (F1) und in der Aufnahme-Anzeige (F5/F6, Werkzeug).
+- [ ] Unten rechts „Esc: Pause“ verschwindet, solange das Menü offen ist.
 
 #### R2-7b – Kletterpfad mit neuem Controller (Schalter)
 - [ ] Menü **SteepingSpirits → JumpNRun → Climbing Path Uses New Controller** (Häkchen) → *Build Levels* (ungeprüft).

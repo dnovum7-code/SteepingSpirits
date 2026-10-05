@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using SteepingSpirits.Core;
 using SteepingSpirits.Core.UI;
 using SteepingSpirits.Platforming.Core;
@@ -7,8 +8,9 @@ using SteepingSpirits.Platforming.Core;
 namespace SteepingSpirits.Platformer.JumpNRun
 {
     /// <summary>
-    /// Minimal HUD: the bag contents fade in at the top left after collecting
-    /// and fade out again after a few seconds. Nothing else on screen.
+    /// Minimal HUD (uGUI): the bag contents fade in at the top left after
+    /// collecting and fade out again after a few seconds. Rows are created
+    /// once per ingredient and only updated when the bag changes.
     /// </summary>
     public class JumpNRunHud : MonoBehaviour
     {
@@ -16,16 +18,32 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private float showTimer;
         private JumpNRunSession session;
-        private GUIStyle style;
-        private readonly List<string> ids = new List<string>();
+        private CanvasGroup group;
+        private RectTransform list;
+        private readonly Dictionary<string, Text> counts = new Dictionary<string, Text>();
 
         private void Start()
         {
             session = JumpNRunSession.Current;
-            if (session != null)
+            if (session == null)
             {
-                session.Bag.Added += OnAdded;
+                return;
             }
+
+            session.Bag.Added += OnAdded;
+            Image panel = UiFactory.Panel("Bag", JumpNRunUi.Root, new Color(0.2f, 0.13f, 0.08f, 0.8f));
+            RectTransform rt = panel.rectTransform;
+            rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0f, 1f);
+            rt.anchoredPosition = new Vector2(24f, -24f);
+            panel.raycastTarget = false;
+            list = rt;
+            UiFactory.VerticalGroup(rt, 4f, new RectOffset(14, 14, 10, 10), true);
+            var fitter = panel.gameObject.AddComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            group = panel.gameObject.AddComponent<CanvasGroup>();
+            group.alpha = 0f;
+            group.blocksRaycasts = false;
         }
 
         private void OnDestroy()
@@ -39,40 +57,39 @@ namespace SteepingSpirits.Platformer.JumpNRun
         private void OnAdded(string id, int amount)
         {
             showTimer = visibleSeconds;
+            if (!counts.TryGetValue(id, out Text count))
+            {
+                RectTransform row = UiFactory.NewRect("Row", list);
+                UiFactory.HorizontalGroup(row, 10f, new RectOffset(0, 0, 0, 0));
+                UiFactory.Sizing(row.gameObject, 30f);
+                Image icon = UiFactory.Panel("Icon", row, Ingredient.ColorOf(id));
+                icon.sprite = IngredientIds.IsRare(id) ? PlaceholderSprites.Diamond : PlaceholderSprites.Circle;
+                icon.raycastTarget = false;
+                UiFactory.Sizing(icon.gameObject, 22f, 22f);
+                Text name = UiFactory.Label("Name", row, JumpNRunTexts.IngredientName(id), 22, UiFactory.TextMain, TextAnchor.MiddleLeft);
+                name.raycastTarget = false;
+                UiFactory.Sizing(name.gameObject, 30f, 200f);
+                count = UiFactory.Label("Count", row, "", 22, UiFactory.Accent, TextAnchor.MiddleRight, FontStyle.Bold);
+                count.raycastTarget = false;
+                UiFactory.Sizing(count.gameObject, 30f, 60f);
+                counts[id] = count;
+            }
+
+            count.text = "×" + session.Bag.Count(id);
         }
 
         private void Update()
         {
-            showTimer -= Time.unscaledDeltaTime;
-        }
-
-        private void OnGUI()
-        {
-            if (session == null || session.Finished || showTimer <= 0f)
+            if (group == null)
             {
                 return;
             }
 
-            float alpha = Mathf.Clamp01(showTimer / 0.6f);
-            if (style == null)
+            showTimer -= Time.unscaledDeltaTime;
+            float target = session != null && !session.Finished && showTimer > 0f ? Mathf.Clamp01(showTimer / 0.6f) : 0f;
+            if (!Mathf.Approximately(group.alpha, target))
             {
-                style = GuiDraw.Rich(14, Color.white);
-            }
-
-            ids.Clear();
-            foreach (string id in session.Bag.Ids) ids.Add(id);
-
-            var r = new Rect(16f, 16f, 220f, 14f + ids.Count * 24f);
-            GuiDraw.Panel(r, 0.75f * alpha);
-            float y = r.y + 8f;
-            foreach (string id in ids)
-            {
-                Color c = Ingredient.ColorOf(id);
-                GuiDraw.Sprite(new Rect(r.x + 10f, y + 3f, 14f, 14f),
-                    IngredientIds.IsRare(id) ? PlaceholderSprites.Diamond : PlaceholderSprites.Circle, new Color(c.r, c.g, c.b, alpha));
-                style.normal.textColor = new Color(1f, 1f, 1f, alpha);
-                GUI.Label(new Rect(r.x + 32f, y, 180f, 22f), $"{JumpNRunTexts.IngredientName(id)}  ×{session.Bag.Count(id)}", style);
-                y += 24f;
+                group.alpha = target;
             }
         }
     }

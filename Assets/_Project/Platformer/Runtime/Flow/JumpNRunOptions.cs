@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using SteepingSpirits.Core;
 using SteepingSpirits.Core.UI;
 using SteepingSpirits.Platforming.Core;
@@ -6,9 +8,10 @@ using SteepingSpirits.Platforming.Core;
 namespace SteepingSpirits.Platformer.JumpNRun
 {
     /// <summary>
-    /// Pause menu with the comfort (assist) options. Esc opens/closes it. The
-    /// choice is remembered per player in PlayerPrefs and applied to the
-    /// player, the session and the game speed.
+    /// Pause menu with the comfort (assist) options, built with uGUI. Esc (or
+    /// B on the pad) opens/closes it. Up/down chooses a row, left/right changes
+    /// the value, confirm toggles. Choices are kept in the Jump'n'Run save and
+    /// applied to the player, the session and the game speed.
     /// </summary>
     public class JumpNRunOptions : MonoBehaviour
     {
@@ -16,10 +19,12 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private AssistOptions options = new AssistOptions();
         private bool open;
-        private int selected;
-        private float lastMoveY;
         private float lastMoveX;
-        private GUIStyle title, label, help;
+
+        private GameObject panel;
+        private readonly List<Selectable> rows = new List<Selectable>();
+        private readonly List<Text> values = new List<Text>();
+        private Text hint;
 
         public AssistOptions Options => options;
         public bool IsOpen => open;
@@ -29,6 +34,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
         private void Awake()
         {
             Instance = this;
+
             // Options live in the Jump'n'Run save; older PlayerPrefs values are taken over once.
             string stored = JumpNRunSaveStore.Current.Assists;
             if (string.IsNullOrEmpty(stored))
@@ -42,6 +48,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         private void Start()
         {
             Apply();
+            hint = JumpNRunUi.Corner("PauseHint", JumpNRunTexts.MenuHint, 18, new Color(1f, 1f, 1f, 0.5f),
+                new Vector2(1f, 0f), new Vector2(-16f, 12f), new Vector2(300f, 30f), TextAnchor.LowerRight);
         }
 
         private void OnDestroy()
@@ -73,6 +81,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 JumpNRunSaveStore.Current.Assists = text;
                 JumpNRunSaveStore.Save();
             }
+
+            RefreshValues();
         }
 
         private void Update()
@@ -88,26 +98,22 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 return;
             }
 
-            Vector2 move = GameInput.Move;
-            if (move.y > 0.5f && lastMoveY <= 0.5f) selected = (selected + 3) % 4;
-            if (move.y < -0.5f && lastMoveY >= -0.5f) selected = (selected + 1) % 4;
+            // Left/right changes the focused row (up/down and confirm come from the EventSystem).
+            float x = GameInput.Move.x;
             int dx = 0;
-            if (move.x > 0.5f && lastMoveX <= 0.5f) dx = 1;
-            if (move.x < -0.5f && lastMoveX >= -0.5f) dx = -1;
-            lastMoveY = move.y;
-            lastMoveX = move.x;
-
+            if (x > 0.5f && lastMoveX <= 0.5f) dx = 1;
+            if (x < -0.5f && lastMoveX >= -0.5f) dx = -1;
+            lastMoveX = x;
             if (dx != 0)
             {
-                Change(selected, dx);
-            }
-
-            if (GameInput.JumpPressed || GameInput.InteractPressed)
-            {
-                if (selected == 3) SetOpen(false);
-                else Change(selected, 1);
+                for (int i = 0; i < rows.Count - 1; i++)
+                {
+                    if (JumpNRunUi.IsFocused(rows[i])) Change(i, dx);
+                }
             }
         }
+
+        private const int RowCount = 3;
 
         private void Change(int row, int dir)
         {
@@ -125,64 +131,79 @@ namespace SteepingSpirits.Platformer.JumpNRun
         {
             open = value;
             GamePause.Set(this, open);
-            selected = 0;
+            if (open)
+            {
+                Build();
+                panel.SetActive(true);
+                RefreshValues();
+                JumpNRunUi.Focus(rows[0]);
+            }
+            else if (panel != null)
+            {
+                panel.SetActive(false);
+            }
+
+            if (hint != null) hint.enabled = !open;
         }
 
-        private void OnGUI()
+        private void Build()
         {
-            if (!open)
+            if (panel != null)
             {
-                GUI.Label(new Rect(Screen.width - 160f, Screen.height - 28f, 150f, 22f), JumpNRunTexts.MenuHint,
-                    GuiDraw.Rich(12, new Color(1f, 1f, 1f, 0.5f), FontStyle.Normal, TextAnchor.MiddleRight));
                 return;
             }
 
-            if (title == null)
-            {
-                title = GuiDraw.Rich(20, new Color(1f, 0.92f, 0.78f), FontStyle.Bold, TextAnchor.MiddleCenter);
-                label = GuiDraw.Rich(15, Color.white);
-                help = GuiDraw.Rich(12, new Color(1f, 1f, 1f, 0.7f));
-            }
+            RectTransform root = JumpNRunUi.Root;
+            panel = UiFactory.NewRect("OptionsMenu", root).gameObject;
+            UiFactory.FullStretch((RectTransform)panel.transform);
+            JumpNRunUi.Dim(panel.transform, 0.45f);
+            RectTransform content = JumpNRunUi.Window(panel.transform, JumpNRunTexts.OptionsTitle,
+                new Vector2(760f, 260f + RowCount * 92f), out _);
 
-            GuiDraw.Solid(new Rect(0f, 0f, Screen.width, Screen.height), new Color(0.05f, 0.06f, 0.1f, 0.45f));
-            var r = new Rect(Screen.width * 0.5f - 230f, Screen.height * 0.5f - 170f, 460f, 340f);
-            GuiDraw.Panel(r, 0.94f);
-            GUI.Label(new Rect(r.x, r.y + 12f, r.width, 30f), JumpNRunTexts.OptionsTitle, title);
+            AddRow(content, JumpNRunTexts.GameSpeed, JumpNRunTexts.GameSpeedHelp, 0);
+            AddRow(content, JumpNRunTexts.ExtraAirJump, JumpNRunTexts.ExtraAirJumpHelp, 1);
+            AddRow(content, JumpNRunTexts.FallProtection, JumpNRunTexts.FallProtectionHelp, 2);
+            Button resume = JumpNRunUi.Button(content, JumpNRunTexts.Resume);
+            resume.onClick.AddListener(() => SetOpen(false));
+            rows.Add(resume);
 
-            float y = r.y + 56f;
-            Row(0, ref y, r, JumpNRunTexts.GameSpeed, JumpNRunTexts.Percent(options.ClampedSpeed), JumpNRunTexts.GameSpeedHelp);
-            Row(1, ref y, r, JumpNRunTexts.ExtraAirJump, JumpNRunTexts.OnOff(options.extraAirJump), JumpNRunTexts.ExtraAirJumpHelp);
-            Row(2, ref y, r, JumpNRunTexts.FallProtection, JumpNRunTexts.OnOff(options.fallProtection), JumpNRunTexts.FallProtectionHelp);
-            Row(3, ref y, r, JumpNRunTexts.Resume, "", "");
-
-            GUI.Label(new Rect(r.x, r.yMax - 28f, r.width, 20f), JumpNRunTexts.OptionsHint,
-                GuiDraw.Rich(11, new Color(1f, 1f, 1f, 0.55f), FontStyle.Normal, TextAnchor.MiddleCenter));
+            JumpNRunUi.Line(content, JumpNRunTexts.OptionsHint, 18, UiFactory.TextDim, TextAnchor.MiddleCenter);
+            JumpNRunUi.Chain(rows, true);
+            panel.SetActive(false);
         }
 
-        private void Row(int index, ref float y, Rect panel, string name, string value, string description)
+        private void AddRow(Transform parent, string name, string help, int index)
         {
-            var row = new Rect(panel.x + 20f, y, panel.width - 40f, 54f);
-            if (selected == index)
+            Button b = JumpNRunUi.Button(parent, "", 54f);
+            Text label = b.GetComponentInChildren<Text>();
+            label.alignment = TextAnchor.MiddleLeft;
+            label.text = "  " + name;
+
+            Text value = UiFactory.Label("Value", b.transform, "", 26, UiFactory.Accent, TextAnchor.MiddleRight, FontStyle.Bold);
+            UiFactory.FullStretch(value.rectTransform, 12f, 2f, 18f, 2f);
+            value.raycastTarget = false;
+            values.Add(value);
+
+            b.onClick.AddListener(() => Change(index, 1));
+            rows.Add(b);
+            JumpNRunUi.Line(parent, help, 18, UiFactory.TextDim, TextAnchor.UpperLeft, 26f);
+        }
+
+        private void RefreshValues()
+        {
+            if (values.Count == 0)
             {
-                GuiDraw.Solid(row, new Color(1f, 0.85f, 0.6f, 0.12f));
+                return;
             }
 
-            if (GUI.Button(new Rect(row.x, row.y, row.width, 26f), GUIContent.none, GUIStyle.none))
-            {
-                selected = index;
-                if (index == 3) SetOpen(false);
-                else Change(index, 1);
-            }
+            SetText(values[0], JumpNRunTexts.Percent(options.ClampedSpeed));
+            SetText(values[1], JumpNRunTexts.OnOff(options.extraAirJump));
+            SetText(values[2], JumpNRunTexts.OnOff(options.fallProtection));
+        }
 
-            GUI.Label(new Rect(row.x + 8f, row.y + 2f, row.width - 100f, 24f), name, label);
-            GUI.Label(new Rect(row.xMax - 100f, row.y + 2f, 92f, 24f), value,
-                GuiDraw.Rich(15, new Color(1f, 0.9f, 0.6f), FontStyle.Bold, TextAnchor.UpperRight));
-            if (!string.IsNullOrEmpty(description))
-            {
-                GUI.Label(new Rect(row.x + 8f, row.y + 26f, row.width - 16f, 26f), description, help);
-            }
-
-            y += 62f;
+        private static void SetText(Text t, string s)
+        {
+            if (t.text != s) t.text = s;
         }
     }
 }

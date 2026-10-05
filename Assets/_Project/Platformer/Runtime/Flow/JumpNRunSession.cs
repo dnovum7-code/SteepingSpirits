@@ -21,7 +21,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
         private LanternChallenge challenge = new LanternChallenge(0);
         private CatchSequence catchSequence;
         private JumpNRunPlayer player;
-        private Texture2D tintTexture;
+        private UnityEngine.UI.Image tint;
 
         public CheckpointTracker Checkpoints => checkpoints;
         public IngredientBag Bag => bag;
@@ -51,7 +51,6 @@ namespace SteepingSpirits.Platformer.JumpNRun
             FeedbackParams fp = level != null && level.feedbackTuning != null ? level.feedbackTuning.feedback : new FeedbackParams();
             catchSequence = new CatchSequence(fp);
             challenge = new LanternChallenge(level != null ? level.pathLanternCount : 0);
-            tintTexture = Texture2D.whiteTexture;
         }
 
         private void Start()
@@ -193,17 +192,22 @@ namespace SteepingSpirits.Platformer.JumpNRun
             return rb == null || rb.bodyType == RigidbodyType2D.Static;
         }
 
-        private void OnGUI()
+        private void LateUpdate()
         {
-            if (catchSequence == null || catchSequence.Darkness <= 0.001f)
+            float darkness = catchSequence != null ? catchSequence.Darkness : 0f;
+            if (tint == null)
             {
-                return;
+                if (darkness <= 0.001f) return;
+                tint = SteepingSpirits.Core.UI.UiFactory.Panel("CatchFade", JumpNRunUi.Overlay, catchTint);
+                SteepingSpirits.Core.UI.UiFactory.FullStretch(tint.rectTransform);
+                tint.raycastTarget = false;
             }
 
-            Color old = GUI.color;
-            GUI.color = new Color(catchTint.r, catchTint.g, catchTint.b, catchSequence.Darkness * 0.92f);
-            GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), tintTexture);
-            GUI.color = old;
+            Color c = catchTint;
+            c.a = darkness * 0.92f;
+            if (tint.color != c) tint.color = c;
+            bool show = darkness > 0.001f;
+            if (tint.enabled != show) tint.enabled = show;
         }
     }
 }
