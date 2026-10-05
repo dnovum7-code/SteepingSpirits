@@ -70,7 +70,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-14 | Pooling, keine Allokationen in Update | erledigt (Audit + PlayMode-Messtest; Messung ungeprüft) |
 | R2-15 | AudioSet-Asset pro Modul | erledigt (Jump'n'Run; das Brüh-Modul hat sein `BrewAudioSet` schon – nicht angefasst) |
 | R2-16 | Barrierefreiheit | erledigt (Belegung 4 Tests; Menü/Tasten ungeprüft) |
-| R2-17 | Probe-Merge `integration/probe` | offen |
+| R2-17 | Probe-Merge `integration/probe` | erledigt (2 additive Konflikte, nur im Probe-Branch gelöst; Gesamtpaket kompiliert, alle Tests grün) |
 | R2-18 | Eigene Verbesserungen | offen |
 
 ### Editor-Checklisten Runde 2
@@ -82,6 +82,18 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-17 – Probe-Merge (Ergebnis)
+Branch `integration/probe` = `feature/jumpnrun` (8db3f85) + `feature/brewing-prototype` + `feature/brewing-phase2`
+(gepusht, Wegwerf-Branch – Feature-Branches unverändert).
+- Konflikte: **`.gitignore`** (beide Seiten ergänzen Regeln für `Tests/**` und je eine csproj-Ausnahme) und
+  **`README.md`** (beide Seiten fügen eine „Neu:“-Zeile an derselben Stelle ein). Beides rein additiv; im
+  Probe-Branch als Vereinigung gelöst. `brewing-phase2` ließ sich danach ohne Konflikt mergen.
+- Gesamtpaket: kompiliert gegen Unity-Referenzen (neues Input System und alter Input Manager, mit Editor-
+  und Testcode) ohne Fehler/Warnungen; dotnet-Tests: Brühen 77, Jump'n'Run 136, Zutaten 8 – alle grün;
+  `logic_test.py` 55/55.
+- Für den echten Merge später: dieselben zwei Stellen von Hand zusammenführen, sonst nichts.
+- In Unity ungeprüft: beide Builder registrieren Szenen in den Build-Einstellungen (nur Hinzufügen, keine Überschneidung).
 
 #### R2-16 – Barrierefreiheit
 - [ ] Esc → „Hoher Kontrast“ an → Geisterplattformen gelb und auch unbeleuchtet gut sichtbar (ungeprüft).
