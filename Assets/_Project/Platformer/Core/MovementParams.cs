@@ -60,8 +60,23 @@ namespace SteepingSpirits.Platforming.Core
         public float dashSpeed = 19f;
         public float dashDuration = 0.15f;
 
+        /// <summary>Speed above run speed (swing, bounce, dash) fades by this many units/s² in the air.</summary>
+        public float momentumFade = 8f;
+
+        /// <summary>After a dash the velocity is multiplied by this.</summary>
+        public float dashEndFactor = 0.5f;
+
         /// <summary>Extra jumps in the air (assist option "extra air jump").</summary>
         public int airJumps = 0;
+
+        /// <summary>Air jump velocity = jump velocity × this.</summary>
+        public float airJumpFactor = 0.85f;
+
+        /// <summary>Wall jump vertical velocity = jump velocity × this.</summary>
+        public float wallJumpUpFactor = 0.9f;
+
+        /// <summary>Holding down falls faster: max fall × this.</summary>
+        public float fastFallFactor = 1.25f;
 
         public float Gravity => JumpMath.Gravity(jumpHeight, timeToApex);
         public float JumpVelocity => JumpMath.LaunchVelocity(jumpHeight, timeToApex);

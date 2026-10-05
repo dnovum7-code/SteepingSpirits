@@ -30,6 +30,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             }
 
             EnsureTuningAssets();
+            JumpNRunPrefabs.BuildAll();
 
             var built = new List<string>();
             built.Add(BuildSingleComponentScene<TestMeadow>(MeadowScene, "TestMeadow"));

@@ -19,10 +19,33 @@ namespace SteepingSpirits.Platformer.EditorTools
         {
             switch (m.kind)
             {
+                case TileKind.Start:
+                    BuildStart(parent, m);
+                    break;
                 default:
                     Placeholder(parent, m);
                     break;
             }
+        }
+
+        /// <summary>Feet of the player rest on the bottom edge of the start tile.</summary>
+        private static void BuildStart(Transform parent, LevelMarker m)
+        {
+            Vector3 feet = new Vector3(m.x + 0.5f, m.y, 0f);
+            Vector3 pos = feet + Vector3.up * (JumpNRunPrefabs.PlayerSize.y * 0.5f + 0.02f);
+            GameObject player = JumpNRunPrefabs.Place(JumpNRunPrefabs.Player, parent.parent, pos);
+            player.name = "Player";
+
+            var cam = new GameObject("Main Camera");
+            cam.tag = "MainCamera";
+            cam.transform.position = new Vector3(pos.x, pos.y, -10f);
+            var camera = cam.AddComponent<Camera>();
+            camera.orthographic = true;
+            camera.orthographicSize = 7f;
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(0.62f, 0.72f, 0.80f);
+            cam.AddComponent<AudioListener>();
+            JumpNRunCameraSetup.Attach(cam);
         }
 
         /// <summary>Visible stand-in for markers whose element is not built yet.</summary>
@@ -36,6 +59,18 @@ namespace SteepingSpirits.Platformer.EditorTools
             v.color = new Color(1f, 0.4f, 0.8f, 0.8f);
             v.size = Vector2.one * 0.5f;
             return go;
+        }
+    }
+}
+
+namespace SteepingSpirits.Platformer.EditorTools
+{
+    /// <summary>Which follow component the level camera gets (own camera from B2 on).</summary>
+    public static class JumpNRunCameraSetup
+    {
+        public static void Attach(GameObject cameraObject)
+        {
+            cameraObject.AddComponent<SteepingSpirits.Player.CameraFollow2D>();
         }
     }
 }
