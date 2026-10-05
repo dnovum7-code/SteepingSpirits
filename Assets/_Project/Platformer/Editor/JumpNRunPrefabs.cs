@@ -30,6 +30,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             Save(JumpNRunElementFactory.CreateLanternSpirit(), ElementPath("LanternSpirit"));
             Save(JumpNRunElementFactory.CreateDewLeaf(), ElementPath("DewLeaf"));
             Save(JumpNRunElementFactory.CreateSwing(), ElementPath("PlaygroundSwing"));
+            Save(JumpNRunElementFactory.CreateSpiritNpc(), ElementPath("SpiritNpc"));
         }
 
         public static string ElementPath(string name) => ElementFolder + "/" + name + ".prefab";

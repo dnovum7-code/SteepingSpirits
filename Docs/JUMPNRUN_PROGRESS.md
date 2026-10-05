@@ -89,7 +89,11 @@
 | E1 | Debug-Overlay (F1) | erledigt (Kompilat geprüft, Anzeige ungeprüft) |
 | E2 | Telemetrie (jumpnrun_log.jsonl pro Abschnitt) | erledigt (84 Tests grün, Datei ungeprüft) |
 | E3 | Doku Docs/JUMPNRUN.md | erledigt (Hub und Geist-NPCs folgen in F) |
-| F* | Extras (Wand-Toggle, Parallax/Abendlicht, Geister-NPCs, Laternen-Herausforderung) | offen |
+| F1 | Geister-NPCs mit Einzeilern (Texte zentral) | erledigt (Kompilat + Daten-Test, Anzeige ungeprüft) |
+| F2 | Wandrutschen/-sprung abschaltbar | erledigt mit B1 (`MovementParams.wallSlideEnabled/wallJumpEnabled`) |
+| F3 | Parallax-Hintergrund + Abendlicht | offen |
+| F4 | Laternen-Herausforderung | offen |
+| F5 | Eigene Verbesserung: Hub-Lichtung mit Türen zu allen Leveln | offen |
 
 ## Editor-Checklisten pro Commit
 
@@ -215,3 +219,7 @@
 
 ### E3 – Doku
 - [ ] `Docs/JUMPNRUN.md` lesen; README verlinkt darauf.
+
+### F1 – Geister-NPCs
+- [ ] Level 1/2 → an einem blassen Geist vorbeilaufen → Sprechblase mit einem Satz blendet
+      weich ein und wieder aus (ungeprüft). Sätze stehen in `JumpNRunTexts.NpcLine`.

@@ -89,6 +89,14 @@ namespace SteepingSpirits.Platformer.EditorTools
             return go;
         }
 
+        public static GameObject CreateSpiritNpc()
+        {
+            GameObject go = Template("SpiritNpc", PlaceholderVisual.Shape.Circle, new Color(0.88f, 0.93f, 1f, 0.75f), new Vector2(0.8f, 1f));
+            go.GetComponent<PlaceholderVisual>().sortingOrder = 3;
+            go.AddComponent<SpiritNpc>();
+            return go;
+        }
+
         public static GameObject CreateSwing()
         {
             var go = new GameObject("PlaygroundSwing");
@@ -177,6 +185,10 @@ namespace SteepingSpirits.Platformer.EditorTools
                     break;
                 case TileKind.LanternSpirit:
                     Place("LanternSpirit", parent, center, m);
+                    break;
+                case TileKind.Npc:
+                    go = Place("SpiritNpc", parent, center + Vector3.up * 0.3f, m);
+                    go.GetComponent<SpiritNpc>().lineKey = layout.Setting("npc" + m.index);
                     break;
                 case TileKind.Swing:
                     Place("PlaygroundSwing", parent, new Vector3(m.x + 0.5f, m.y + 0.5f, 0f), m);

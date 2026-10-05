@@ -125,3 +125,22 @@ namespace SteepingSpirits.Platforming.Tests
         }
     }
 }
+
+namespace SteepingSpirits.Platforming.Tests
+{
+    public class NpcLevelTests
+    {
+        [Test]
+        public void EverySpiritNpc_HasALineKey()
+        {
+            foreach (string f in LevelFiles.All())
+            {
+                LevelLayout l = LevelLayout.Parse(System.IO.File.ReadAllText(f));
+                foreach (LevelMarker m in l.All(TileKind.Npc))
+                {
+                    Assert.IsNotEmpty(l.Setting("npc" + m.index), $"{System.IO.Path.GetFileName(f)}: N #{m.index} needs @npc{m.index}");
+                }
+            }
+        }
+    }
+}

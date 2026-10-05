@@ -49,6 +49,24 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public static string LanternsLit(int lit, int total) => $"Laternen entzündet: {lit} von {total}";
         public static string Found(int found, int available) => available > 0 ? $"{found} / {available}" : $"{found}";
 
+        // Spirit NPCs: one line each, chosen in the level file with "@npc<index> <key>".
+        public static string NpcLine(string key)
+        {
+            switch (key)
+            {
+                case "meadow_hello": return "Na, auch auf Sammeltour? Die Blätter hier riechen nach Morgen.";
+                case "meadow_spring": return "Das Quellwasser da vorn ist kühl wie eine alte Geschichte.";
+                case "grove_wind": return "Der Wind hier hat Launen. Lass dich einfach tragen.";
+                case "grove_swing": return "Auf der Schaukel nicht drängeln – mitschwingen!";
+                case "grove_light": return "Ohne Licht sind die Stufen nur eine Erinnerung.";
+                case "hub_welcome": return "Willkommen auf der Lichtung. Jede Tür führt zu einem Sammelplatz.";
+                default: return "…";
+            }
+        }
+
+        public static string DoorLabel(string levelName) => string.IsNullOrEmpty(levelName) ? "Tür" : levelName;
+        public const string DoorHint = "W: hinein";
+
         public static string Percent(float value) => $"{UnityEngine.Mathf.RoundToInt(value * 100f)} %";
 
         public static string OnOff(bool value) => value ? On : Off;
