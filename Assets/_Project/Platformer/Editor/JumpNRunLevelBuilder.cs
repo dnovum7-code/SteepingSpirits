@@ -96,6 +96,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             root.AddComponent<JumpNRunHud>();
             root.AddComponent<JumpNRunDebugOverlay>();
             root.AddComponent<JumpNRunProbe>();
+            root.AddComponent<JumpNRunInputRecorder>();
             if (!layout.IsHub)
             {
                 root.AddComponent<JumpNRunEndCard>();

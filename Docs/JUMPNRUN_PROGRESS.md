@@ -46,7 +46,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | # | Punkt | Status |
 |---|---|---|
 | R2-1 | Smoke-Test per Menü + PlayMode-Tests | erledigt (Bot schafft alle Level in der Simulation, 97 Tests grün; Unity-Lauf ungeprüft) |
-| R2-2 | Eingabe-Aufzeichnung F5/F6 | offen |
+| R2-2 | Eingabe-Aufzeichnung F5/F6 | erledigt (Format + Wiedergabe getestet, auch Replay in der Simulation; Unity ungeprüft) |
 | R2-3 | Builder-Prüfungen (Prefab-Referenzen, Erreichbarkeit, Laternen-Reihenfolge) | offen |
 | R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | offen |
 | R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | offen |
@@ -74,6 +74,13 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-2 – Eingabe-Aufzeichnung
+- [ ] Level → Play → **F5**: oben rechts „● REC“; spielen; **F5** stoppt → „Aufnahme gespeichert“ (ungeprüft).
+- [ ] **F6**: Figur springt an den Aufnahme-Start und spielt die Eingaben nach; F6 bricht ab.
+- [ ] Dateien: `persistentDataPath/jumpnrun_recordings/<Level>_<Zeit>.jnrrec` (+ `latest_<Level>.jnrrec`),
+      reiner Text, für Fehlermeldungen anhängen. Wiedergabe ist nicht bitgenau (Unity-Physik),
+      aber zeigt denselben Ablauf.
 
 ## Erkundung (Stand `main` 5629997)
 

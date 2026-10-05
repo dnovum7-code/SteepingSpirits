@@ -34,6 +34,7 @@ Level-Textdateien, den Builder-Code oder die Tuning-Assets.
 | Schaukel: abspringen / absteigen | Springen / S | A / runter |
 | Pause + Komfort-Optionen | Esc | B |
 | Debug-Overlay | F1 (oder ^) | – |
+| Eingaben aufnehmen / abspielen | F5 / F6 | – |
 
 ## Elemente (Level-Zeichen)
 
