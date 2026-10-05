@@ -89,6 +89,18 @@ namespace SteepingSpirits.Platformer.EditorTools
             return go;
         }
 
+        public static GameObject CreateSwing()
+        {
+            var go = new GameObject("PlaygroundSwing");
+            var branch = go.AddComponent<PlaceholderVisual>();
+            branch.shape = PlaceholderVisual.Shape.Square;
+            branch.color = new Color(0.45f, 0.34f, 0.25f);
+            branch.size = new Vector2(2.2f, 0.25f);
+            branch.sortingOrder = 1;
+            go.AddComponent<PlaygroundSwing>();
+            return go;
+        }
+
         private static GameObject Template(string name, PlaceholderVisual.Shape shape, Color color, Vector2 size)
         {
             var go = new GameObject(name);
@@ -165,6 +177,9 @@ namespace SteepingSpirits.Platformer.EditorTools
                     break;
                 case TileKind.LanternSpirit:
                     Place("LanternSpirit", parent, center, m);
+                    break;
+                case TileKind.Swing:
+                    Place("PlaygroundSwing", parent, new Vector3(m.x + 0.5f, m.y + 0.5f, 0f), m);
                     break;
                 case TileKind.DewLeaf:
                     Place("DewLeaf", parent, new Vector3(m.x + 0.5f, m.y + 0.175f, 0f), m);

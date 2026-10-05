@@ -72,6 +72,7 @@ namespace SteepingSpirits.Platforming.Core
         public LanternSpiritParams lanternSpirit = new LanternSpiritParams();
         public LeafParams leaf = new LeafParams();
         public DewParams dew = new DewParams();
+        public SwingParams swing = new SwingParams();
     }
 
     public static class SpiritMath

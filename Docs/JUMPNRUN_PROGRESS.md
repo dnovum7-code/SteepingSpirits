@@ -85,7 +85,7 @@
 | D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | erledigt (63 Tests grün, Verhalten ungeprüft) |
 | D3 | Level 1 (Einstieg ohne Text) | offen |
 | D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | offen |
-| S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | offen |
+| S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | erledigt (9 Schaukel-Tests grün, Gefühl ungeprüft) |
 | E1 | Debug-Overlay (F1) | offen |
 | E2 | Telemetrie (jumpnrun_log.jsonl pro Abschnitt) | offen |
 | E3 | Doku Docs/JUMPNRUN.md | offen |
@@ -171,3 +171,12 @@
       werden fest und deutlich; außerhalb wieder durchlässig.
 - [ ] Blattplattform: sinkt langsam unter der Figur, trägt sie mit, steigt danach wieder.
 - [ ] Tautropfen-Blatt: Landung federt hoch (mit gehaltener Sprungtaste höher).
+
+### S1 – Schaukel
+- [ ] *Build Levels* → Prefab `Elements/PlaygroundSwing.prefab`; sichtbar in Level 2 (Zeichen `O`) (ungeprüft).
+- [ ] Auf den Sitz springen oder hineinlaufen → Figur sitzt.
+- [ ] D drücken, während die Schaukel nach rechts schwingt, A, während sie nach links schwingt →
+      Ausschlag wächst (bis ~80°), beim Durchschwingen leises Rauschen und Blättchen.
+- [ ] Eine Taste dauerhaft halten oder gegen die Bewegung drücken → Schaukel wird langsamer.
+- [ ] Leertaste → Absprung mit dem Schwung der Schaukel, Flug im Bogen; S → einfach absteigen.
+- [ ] Werte unter `SpiritElementsTuning.asset → swing` (Seillänge, Pump/Bremse, Absprung).
