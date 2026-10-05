@@ -20,6 +20,10 @@ namespace SteepingSpirits.Platformer.EditorTools
         public const string MeadowScene = SceneFolder + "/TestMeadow.unity";
         public const string ClimbScene = SceneFolder + "/JumpAndRun.unity";
         public const string DataFolder = "Assets/_Project/Platformer/Data";
+        public const string HubScene = SceneFolder + "/JumpNRun_Hub.unity";
+
+        /// <summary>Where the portal to the clearing stands on the meadow (next to the climbing portal).</summary>
+        public static readonly Vector2 MeadowHubPortalPosition = new Vector2(-17f, 3f);
 
         [MenuItem("SteepingSpirits/JumpNRun/Build Levels")]
         public static void BuildAll()
@@ -35,7 +39,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             JumpNRunPrefabs.CheckAll();
 
             var built = new List<string>();
-            built.Add(BuildSingleComponentScene<TestMeadow>(MeadowScene, "TestMeadow"));
+            built.Add(BuildMeadowScene());
             built.Add(BuildSingleComponentScene<PlatformerCourse>(ClimbScene, "PlatformerCourse"));
             built.AddRange(JumpNRunLevelBuilder.BuildAllLevels());
 
@@ -79,6 +83,28 @@ namespace SteepingSpirits.Platformer.EditorTools
             string parent = System.IO.Path.GetDirectoryName(folder).Replace('\\', '/');
             EnsureFolder(parent);
             AssetDatabase.CreateFolder(parent, System.IO.Path.GetFileName(folder));
+        }
+
+        /// <summary>
+        /// The meadow builds itself at runtime (TestMeadow). The builder only adds
+        /// one extra object next to it: the portal to the Jump'n'Run clearing.
+        /// </summary>
+        private static string BuildMeadowScene()
+        {
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            new GameObject("TestMeadow").AddComponent<TestMeadow>();
+
+            var portal = new GameObject("HubPortal");
+            portal.transform.position = MeadowHubPortalPosition;
+            var visual = portal.AddComponent<PlaceholderVisual>();
+            visual.shape = PlaceholderVisual.Shape.Diamond;
+            visual.color = new Color(0.55f, 0.85f, 0.8f);
+            visual.size = new Vector2(1.2f, 1.6f);
+            portal.AddComponent<BoxCollider2D>().size = new Vector2(1.2f, 1.6f);
+            portal.AddComponent<SteepingSpirits.World.ScenePortal>().Configure(HubScene, JumpNRunTexts.MeadowPortalLabel);
+
+            EditorSceneManager.SaveScene(scene, MeadowScene);
+            return MeadowScene;
         }
 
         /// <summary>Scenes whose content is created at runtime by one builder component.</summary>

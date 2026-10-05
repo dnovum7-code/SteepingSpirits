@@ -19,6 +19,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string Resume = "Weiter";
         public const string BackToMeadow = "Zurück zur Wiese";
         public const string Back = "Zurück";
+        public const string BackToClearing = "Zur Lichtung";
+        public const string MeadowPortalLabel = "Zur Lichtung der Geister";
         public const string MenuHint = "Esc: Pause";
 
         // Ingredients
