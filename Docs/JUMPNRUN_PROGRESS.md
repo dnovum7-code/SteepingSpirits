@@ -7,7 +7,9 @@
 
 ## Nächster konkreter Schritt
 
-**Runde 2 läuft – siehe Abschnitt „Runde 2“: erster Punkt mit Status „offen“.**
+**Runde 2: alle Punkte R2-1 … R2-18 umgesetzt und gepusht. Nächster Schritt: in Unity
+*Build Levels*, dann *Run Smoke Test*, dann die Editor-Checklisten Runde 2 abhaken; Befunde in
+`Docs/PLAYTEST_NOTES.md` schreiben (wird in der nächsten Sitzung zuerst abgearbeitet).**
 
 Runde 1: Alle Backlog-Punkte A–F sind umgesetzt und gepusht (91 dotnet-Tests grün, Kompilat gegen
 Unity-Referenzen ohne neue Warnungen). **Nächster Schritt: in Unity prüfen** – Projekt öffnen,
@@ -20,7 +22,7 @@ Offene Ideen für danach:
 - Sammelbeutel ans Inventar/Teehaus übergeben (IDs sind schon neutral).
 - Echte Sprites statt `PlaceholderVisual`, Schaukel-Animation (Beine ausstrecken/anziehen im Takt).
 
-## Runde 2 (Stand: in Arbeit)
+## Runde 2 (Stand: alle Punkte umgesetzt, in Unity ungeprüft)
 
 **Playtest-Notizen:** `Docs/PLAYTEST_NOTES.md` existiert noch nicht. Sobald sie existiert,
 hat sie Vorrang (Fehler → Gefühl → Wünsche, Status und Commit je Notiz).
@@ -71,7 +73,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-15 | AudioSet-Asset pro Modul | erledigt (Jump'n'Run; das Brüh-Modul hat sein `BrewAudioSet` schon – nicht angefasst) |
 | R2-16 | Barrierefreiheit | erledigt (Belegung 4 Tests; Menü/Tasten ungeprüft) |
 | R2-17 | Probe-Merge `integration/probe` | erledigt (2 additive Konflikte, nur im Probe-Branch gelöst; Gesamtpaket kompiliert, alle Tests grün) |
-| R2-18 | Eigene Verbesserungen | offen |
+| R2-18 | Eigene Verbesserungen | erledigt (siehe unten) |
 
 ### Editor-Checklisten Runde 2
 
@@ -82,6 +84,18 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-18 – Eigene Verbesserungen (mit Begründung)
+- **Routenplaner, Bot und Kachel-Simulation im Core** (aus R2-1 entstanden): Jedes Level wird schon ohne
+  Unity vom Bot durchgespielt – fängt Designfehler (zu weite Sprünge, zu hohe Funde) vor dem Editor ab.
+- **Großzügiges Schaukel-Aufsitzen** (Nähe genügt): weniger frustrierende Fehlversuche, nötig für Kombinationen.
+- **Lint-Warnungen**: Windgeist über einer Lücke fängt keine Stürze; Geisterplattformen ohne Laternengeist
+  werden nie fest; Seil durch festen Boden – drei typische, schwer sichtbare Bauspiel-Fehler.
+- **Gefundene Seltenheiten wachsen als normale Variante nach**: Wiederholen lohnt sich, ohne Seltenheiten
+  zu vervielfältigen.
+- **Build-Ausgaben aus git genommen** (`Tests/*/bin` war seit Runde 1 versehentlich versioniert).
+- **Doku** `JUMPNRUN.md` und `SMOKE_REPORT.md` auf Stand Runde 2.
+- [ ] Prüfen: Lint-Warnungen erscheinen bei *Build Levels*, wenn man z. B. alle `S` aus Level 2 entfernt (ungeprüft).
 
 #### R2-17 – Probe-Merge (Ergebnis)
 Branch `integration/probe` = `feature/jumpnrun` (8db3f85) + `feature/brewing-prototype` + `feature/brewing-phase2`

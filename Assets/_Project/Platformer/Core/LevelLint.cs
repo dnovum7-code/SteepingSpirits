@@ -29,6 +29,12 @@ namespace SteepingSpirits.Platforming.Core
                 }
             }
 
+            // Ghost platforms are only solid in a lantern spirit's light – the reachability check assumes light.
+            if (layout.GhostPlatforms.Count > 0 && layout.All(TileKind.LanternSpirit).Count == 0)
+            {
+                warnings.Add("ghost platforms without a lantern spirit ('S') – they can never become solid");
+            }
+
             // A wind spirit hanging above a pit cannot catch falls below it.
             foreach (LevelMarker w in layout.All(TileKind.WindSpirit))
             {

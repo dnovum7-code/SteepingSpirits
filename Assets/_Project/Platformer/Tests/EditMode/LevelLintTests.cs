@@ -53,5 +53,15 @@ namespace SteepingSpirits.Platforming.Tests
                 "#########\n";
             Assert.IsTrue(LevelLint.Check(LevelLayout.Parse(text)).Exists(w => w.Contains("rope")));
         }
+
+        [Test]
+        public void ReportsGhostPlatformsWithoutLanternSpirit()
+        {
+            const string text =
+                "P....E\n" +
+                "##GG##\n";
+            Assert.IsTrue(LevelLint.Check(LevelLayout.Parse(text)).Exists(w => w.Contains("lantern spirit")));
+            Assert.IsFalse(LevelLint.Check(LevelLayout.Parse("P.S..E\n##GG##\n")).Exists(w => w.Contains("lantern spirit")));
+        }
     }
 }
