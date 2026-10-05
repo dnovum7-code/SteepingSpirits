@@ -53,6 +53,14 @@
    bekommt er eigene Klassen im Platformer-Modul.
 6. **F1** gehört in den neuen Level-Szenen dem Jump'n'Run-Debug-Overlay. In der
    Kletterpfad-Szene liegt zusätzlich das globale Cheat-Fenster auf F1 (beides erscheint).
+8. **Level-Format:** Textdateien `Assets/_Project/Platformer/Levels/*.txt` (Legende in
+   `Core/LevelLayout.cs`). Kein `.asset` – Textdateien sind Daten, keine Unity-Assets im Sinne
+   der Regel. Der Builder erzeugt daraus `Assets/Scenes/JumpNRun_<id>.unity`.
+9. **Platzhalter-Grafik** entsteht zur Laufzeit (`PlaceholderVisual`), damit keine
+   Laufzeit-Texturen in Szenen gespeichert werden; im Editor zeigen Gizmos die Objekte.
+10. **Neuer Spieler statt Umbau:** Die neuen Level bekommen einen eigenen Controller auf
+    Basis des Cores. Der Kletterpfad (`JumpAndRun.unity`) behält den alten
+    `PlatformerController2D` unverändert (ersetzt Annahme 3/4 für diese eine Szene).
 7. **Schaukel (Nebenaufgabe):** eigenes Element „Schaukel“ – A/D im Takt pumpen baut
    Schwung auf, falscher Takt bremst, abspringen fliegt im Bogen. Wird als
    Geister-Element in Level 2 eingebaut.
@@ -64,7 +72,7 @@
 | A1 | Szenen per Editor-Builder (Menü SteepingSpirits → JumpNRun → Build Levels) | erledigt (Kompilat geprüft, Unity ungeprüft) |
 | A2 | Core-Assembly `SteepingSpirits.Platforming.Core` + dotnet-Tests | erledigt (5 Tests grün) |
 | A3 | Tuning-ScriptableObjects (Movement, Camera, Feedback) | erledigt (Kompilat geprüft) |
-| A4 | Level als Daten (Tile-Strings) + Builder baut daraus | offen |
+| A4 | Level als Daten (Tile-Strings) + Builder baut daraus | erledigt (14 Tests grün, Szene ungeprüft) |
 | B1 | Assist-Techniken (Coyote, Buffer, Cut, Apex, Fallschwerkraft, Max-Fall, Ecken, Luftkontrolle) | offen |
 | B2 | Kamera (Folgen, Vorausschau, Totzone, vertikal nach Landung) | offen |
 | B3 | Feedback (Squash/Stretch, Staub/Blätter, Töne) | offen |
@@ -99,3 +107,9 @@
 - [ ] *Build Levels* legt `Assets/_Project/Platformer/Data/MovementTuning.asset`,
       `CameraTuning.asset`, `FeedbackTuning.asset` an (ungeprüft).
 - [ ] Wert in einem Asset ändern → *Build Levels* erneut → Wert bleibt erhalten.
+
+### A4 – Level als Daten
+- [ ] *Build Levels* erzeugt `Assets/Scenes/JumpNRun_Level1.unity` (ungeprüft).
+- [ ] Szene öffnen: Hierarchie `Level_Level1/Geometry` (Boden-Blöcke, dünne Plattformen mit
+      PlatformEffector2D) und `Objects` (pinke Rauten als Platzhalter); Gizmos zeigen die Blöcke.
+- [ ] Tippfehler in der Level-Datei (z. B. `x`) → *Build Levels* meldet Zeile/Spalte in der Konsole.

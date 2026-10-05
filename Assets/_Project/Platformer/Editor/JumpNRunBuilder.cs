@@ -34,6 +34,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             var built = new List<string>();
             built.Add(BuildSingleComponentScene<TestMeadow>(MeadowScene, "TestMeadow"));
             built.Add(BuildSingleComponentScene<PlatformerCourse>(ClimbScene, "PlatformerCourse"));
+            built.AddRange(JumpNRunLevelBuilder.BuildAllLevels());
 
             RegisterInBuildSettings(built);
             AssetDatabase.SaveAssets();
