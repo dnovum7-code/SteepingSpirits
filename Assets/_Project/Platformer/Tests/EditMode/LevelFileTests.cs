@@ -178,3 +178,76 @@ namespace SteepingSpirits.Platforming.Tests
         }
     }
 }
+
+namespace SteepingSpirits.Platforming.Tests
+{
+    public class Level3DesignTests
+    {
+        private static string Without(string text, string symbols)
+        {
+            var lines = text.Replace("\r\n", "\n").Split('\n');
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].StartsWith("@") || lines[i].StartsWith("//")) continue;
+                foreach (char c in symbols) lines[i] = lines[i].Replace(c, '.');
+            }
+
+            return string.Join("\n", lines);
+        }
+
+        private static bool Finishable(string text)
+        {
+            LevelLayout l = LevelLayout.Parse(text);
+            var r = new LevelReachability(l);
+            r.Run();
+            return r.CanTouch(l.All(TileKind.Goal)[0]);
+        }
+
+        [Test]
+        public void Level3_IsAboutSwings()
+        {
+            LevelLayout l = LevelLayout.Parse(LevelFiles.Read("Level3"));
+            Assert.GreaterOrEqual(l.All(TileKind.Swing).Count, 5);
+            Assert.AreEqual("evening", l.Setting("mood"));
+            Assert.IsNotEmpty(l.All(TileKind.LanternSpirit));
+            Assert.AreEqual(1, l.All(TileKind.Ingredient).FindAll(m => IngredientIds.IsRare(IngredientIds.FromSymbol(m.symbol))).Count);
+        }
+
+        [Test]
+        public void Level3_GorgeHasTwoWays()
+        {
+            string text = LevelFiles.Read("Level3");
+            Assert.IsTrue(Finishable(Without(text, "G")), "the swing chain alone must work");
+
+            // Remove the three chain swings (x 50, 57, 63) but keep the others.
+            var lines = text.Replace("\r\n", "\n").Split('\n');
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].StartsWith("@") || lines[i].StartsWith("//")) continue;
+                char[] row = lines[i].ToCharArray();
+                foreach (int x in new[] { 50, 57, 63 })
+                {
+                    if (x < row.Length && row[x] == 'O') row[x] = '.';
+                }
+
+                lines[i] = new string(row);
+            }
+
+            Assert.IsTrue(Finishable(string.Join("\n", lines)), "the ghost stones alone must work");
+        }
+
+        [Test]
+        public void Level3_TwistNeedsSwingAndWind()
+        {
+            string text = LevelFiles.Read("Level3");
+            Assert.IsFalse(Finishable(Without(text, "W")), "the pillar needs the wind spirit");
+        }
+
+        [Test]
+        public void Bot_FinishesLevel3ViaTheSwings()
+        {
+            var r = RouteBotTests.Play(LevelLayout.Parse(LevelFiles.Read("Level3")));
+            Assert.IsTrue(r.finished, r.log);
+        }
+    }
+}

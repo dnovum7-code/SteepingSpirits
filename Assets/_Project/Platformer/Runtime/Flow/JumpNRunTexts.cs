@@ -53,6 +53,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 case "grove_wind": return "Der Wind hier hat Launen. Lass dich einfach tragen.";
                 case "grove_swing": return "Auf der Schaukel nicht drängeln – mitschwingen!";
                 case "grove_light": return "Ohne Licht sind die Stufen nur eine Erinnerung.";
+                case "evening_hello": return "Abends schaukeln die Geister am liebsten. Mitschwingen, nicht drängeln!";
+                case "evening_chain": return "Von Schaukel zu Schaukel – einfach in die Nähe fliegen, sie fangen dich.";
                 case "hub_welcome": return "Willkommen auf der Lichtung. Jede Tür führt zu einem Sammelplatz.";
                 default: return "…";
             }

@@ -1,6 +1,7 @@
 @id Level2
 @name Geisterhain
 @mood evening
+@next Level3
 @npc0 grove_wind
 @npc1 grove_swing
 @npc2 grove_light

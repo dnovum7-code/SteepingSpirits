@@ -61,7 +61,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | erledigt (Kompilat geprüft, Bild/Navigation ungeprüft) |
 | R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | erledigt (6 neue Tests, 117 grün; Klang/Bild ungeprüft) |
 | R2-10 | Schaukel-Kombinationen | erledigt (Bot schafft Schaukel→Schaukel und Schaukel→Wind in der Simulation; Unity ungeprüft) |
-| R2-11 | Level 3 (Schaukel-Thema) | offen |
+| R2-11 | Level 3 (Schaukel-Thema) | erledigt (Erreichbarkeit, 2 Wege, Bot-Durchlauf in der Simulation; Unity ungeprüft) |
 | R2-12 | Hub-Lichtung lebendig | offen |
 | R2-13 | Level 4 | offen |
 | R2-14 | Pooling, keine Allokationen in Update | offen |
@@ -79,6 +79,16 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-11 – Level 3 „Abendschaukel“
+- [ ] *Build Levels* → `JumpNRun_Level3.unity`; Lichtung hat Tür „Abendschaukel“, Level 2 → „Weiter“ führt hierher (ungeprüft).
+- [ ] **Lehren:** Schaukel über eine kleine Lücke (springen ginge auch), dann eine Lücke nur mit Schaukel,
+      Blüte im Bogen.
+- [ ] **Prüfen:** Schlucht mit zwei Wegen – Kette aus drei Schaukeln (Pfadlaterne im Flug) oder unten die
+      Geister-Trittsteine im Licht des Laternengeists.
+- [ ] **Wendung:** Von der Schaukel in die Windsäule des Windgeists am Schluchtgrund, hoch auf die Säule;
+      das seltene Mondkraut hängt im Schaukelbogen. Abendstimmung, zwei Geister mit Sätzen.
+- [x] Ohne Unity: beide Wege allein führen zum Ziel, ohne Windgeist nicht; Bot schafft das Level in der Simulation.
 
 #### R2-10 – Schaukel-Kombinationen
 - [ ] Von Schaukel zu Schaukel: im Flug nahe an den nächsten Sitz kommen → man sitzt sofort (Schaukeln

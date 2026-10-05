@@ -39,6 +39,7 @@ namespace SteepingSpirits.Platforming.Core
         private bool jumpLatch;
         private float blockedTime;
         private bool holdJump;
+        private bool liftedHighEnough;
         private int holdFrames;
 
         /// <summary>Seconds a single step may take before the bot gives up.</summary>
@@ -61,8 +62,11 @@ namespace SteepingSpirits.Platforming.Core
             this.move = move ?? new MovementParams();
         }
 
+        private RouteObservation lastObservation;
+
         public MotorInput Tick(float dt, RouteObservation o)
         {
+            lastObservation = o;
             jumpCooldown -= dt;
             var input = new MotorInput();
             if (Done || Failed)
@@ -78,6 +82,7 @@ namespace SteepingSpirits.Platforming.Core
                     index = look + 1;
                     stepTime = 0f;
                     released = false;
+                    liftedHighEnough = false;
                     if (Done) return input;
                 }
             }
@@ -94,6 +99,15 @@ namespace SteepingSpirits.Platforming.Core
             Vec2 target = s.Target;
             float dx = target.x - o.feet.x;
             int dir = dx >= 0f ? 1 : -1;
+
+            bool swingKind = s.kind == LevelReachability.MoveKind.Swing || s.kind == LevelReachability.MoveKind.SwingMount
+                             || s.kind == LevelReachability.MoveKind.SwingWind;
+            if (o.riding && !swingKind)
+            {
+                // Sat down on a swing on the way (they are friendly): swing towards the target and let go.
+                PumpAndRelease(o, target, s.rope > 0f ? s.rope : 3f, ref input);
+                return Hold(input);
+            }
 
             switch (s.kind)
             {
@@ -113,8 +127,16 @@ namespace SteepingSpirits.Platforming.Core
                     break;
             }
 
-            // A jump we pressed is held until the rise is over (the ground flag can lag a frame
-            // behind the take-off, and releasing early would cut the jump).
+            return Hold(input);
+        }
+
+        /// <summary>
+        /// A jump we pressed is held until the rise is over (the ground flag can lag a frame
+        /// behind the take-off, and releasing early would cut the jump).
+        /// </summary>
+        private MotorInput Hold(MotorInput input)
+        {
+            RouteObservation o = lastObservation;
             if (input.jumpPressed)
             {
                 holdJump = true;
@@ -196,8 +218,8 @@ namespace SteepingSpirits.Platforming.Core
         private void WindStep(RouteObservation o, RouteStep s, ref MotorInput input)
         {
             Vec2 target = s.Target;
-            bool highEnough = o.feet.y >= target.y + 0.3f;
-            if (!highEnough)
+            if (o.feet.y >= target.y + 0.3f) liftedHighEnough = true;
+            if (!liftedHighEnough)
             {
                 float toColumn = s.anchor.x - o.feet.x;
                 input.moveX = Math.Abs(toColumn) < 0.2f ? 0f : Math.Sign(toColumn) * Math.Min(1f, Math.Abs(toColumn));
@@ -217,32 +239,15 @@ namespace SteepingSpirits.Platforming.Core
             if (o.riding)
             {
                 // Riding the swing we have to leave (for SwingMount: the previous one).
-                released = false;
-                Vec2 aim = viaWind ? s.anchor2 : goal;
-                int dir = aim.x >= o.swingPivot.x ? 1 : -1;
-                float distBeyond = Math.Max(0f, Math.Abs(aim.x - o.swingPivot.x) - s.rope * 0.5f);
-                float need = Math.Min(o.swingMaxAngle - 0.09f, 0.45f + 0.09f * distBeyond);
-                bool ready = o.swingAmplitude >= need;
-                bool goingOut = o.swingAngularVelocity * dir > 0f;
-                bool upSide = o.swingAngle * dir >= Math.Min(0.4f, need * 0.6f);
-                if (ready && goingOut && upSide)
-                {
-                    input.jumpPressed = true;
-                    input.jumpHeld = true;
-                    released = true;
-                    return;
-                }
-
-                // Pump in rhythm: press the way the swing is moving.
-                float w = o.swingAngularVelocity;
-                input.moveX = Math.Abs(w) < 0.15f ? dir : Math.Sign(w);
+                PumpAndRelease(o, viaWind ? s.anchor2 : goal, s.rope, ref input);
                 return;
             }
 
             bool flying = released || (!o.grounded && stepTime > 0.2f && o.velocity.y < -0.1f && Vec2.Distance(seat, o.feet) > 1.5f);
             if (flying && !s.ToSeat)
             {
-                if (viaWind && o.feet.y < goal.y + 0.3f)
+                if (viaWind && o.feet.y >= goal.y + 0.3f) liftedHighEnough = true;
+                if (viaWind && !liftedHighEnough)
                 {
                     // Into the updraft first, then over to the ledge.
                     input.moveX = Steer(s.anchor2.x - o.feet.x, o.velocity.x, false);
@@ -278,6 +283,28 @@ namespace SteepingSpirits.Platforming.Core
 
             input.jumpHeld = o.velocity.y > 0f && seat.y > o.feet.y;
             input.moveX = Steer(sx, o.velocity.x, false);
+        }
+
+        /// <summary>Pumps in rhythm until the swing is high enough, then lets go towards aim.</summary>
+        private void PumpAndRelease(RouteObservation o, Vec2 aim, float rope, ref MotorInput input)
+        {
+            released = false;
+            int dir = aim.x >= o.swingPivot.x ? 1 : -1;
+            float distBeyond = Math.Max(0f, Math.Abs(aim.x - o.swingPivot.x) - rope * 0.5f);
+            float need = Math.Min(o.swingMaxAngle - 0.09f, 0.45f + 0.09f * distBeyond);
+            bool ready = o.swingAmplitude >= need;
+            bool goingOut = o.swingAngularVelocity * dir > 0f;
+            bool upSide = o.swingAngle * dir >= Math.Min(0.4f, need * 0.6f);
+            if (ready && goingOut && upSide)
+            {
+                input.jumpPressed = true;
+                input.jumpHeld = true;
+                released = true;
+                return;
+            }
+
+            float w = o.swingAngularVelocity;
+            input.moveX = Math.Abs(w) < 0.15f ? dir : Math.Sign(w);
         }
 
         private float SeatDistance(RouteObservation o, RouteStep s)
