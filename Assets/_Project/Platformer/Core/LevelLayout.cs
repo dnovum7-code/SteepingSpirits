@@ -21,7 +21,8 @@ namespace SteepingSpirits.Platforming.Core
         Swing,
         Npc,
         Bramble,
-        PathLantern
+        PathLantern,
+        Door
     }
 
     /// <summary>An axis-aligned block of tiles in world units (x right, y up, 1 tile = 1 unit).</summary>
@@ -74,13 +75,14 @@ namespace SteepingSpirits.Platforming.Core
     ///   F  leaf platform (sinks)  D  dew leaf (bounces)
     ///   O  swing anchor           N  spirit NPC   ^  bramble (gentle catch)
     ///   l  small path lantern (lantern challenge, not a checkpoint)
+    ///   0-9 door; target from "@door&lt;digit&gt; &lt;level id | meadow | climb&gt;"
     ///   .  or space: empty
     ///
     /// Runs of '#', '=', 'G', 'F' are merged into rectangles.
     /// </summary>
     public sealed class LevelLayout
     {
-        public const string Legend = "#=PLEtkbmqTKBMQWSGFDON^l";
+        public const string Legend = "#=PLEtkbmqTKBMQWSGFDON^l0123456789";
 
         public string Name = "";
         public int Width;
@@ -113,6 +115,12 @@ namespace SteepingSpirits.Platforming.Core
 
         public LevelMarker Start => Markers.Find(m => m.kind == TileKind.Start);
 
+        /// <summary>A hub ("@hub 1") has doors instead of a goal.</summary>
+        public bool IsHub => Setting("hub") == "1";
+
+        /// <summary>Target of a door marker ("@door1 Level1").</summary>
+        public string DoorTarget(LevelMarker door) => Setting("door" + door.symbol);
+
         public List<LevelMarker> All(TileKind kind) => Markers.FindAll(m => m.kind == kind);
 
         public string Setting(string key, string fallback = "")
@@ -141,6 +149,9 @@ namespace SteepingSpirits.Platforming.Core
                 case 'N': return TileKind.Npc;
                 case '^': return TileKind.Bramble;
                 case 'l': return TileKind.PathLantern;
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                    return TileKind.Door;
                 default: return TileKind.Empty;
             }
         }
@@ -331,6 +342,19 @@ namespace SteepingSpirits.Platforming.Core
             if (starts != 1)
             {
                 throw new FormatException($"Level '{layout.Name}' needs exactly one start 'P' (found {starts}).");
+            }
+
+            if (layout.IsHub)
+            {
+                foreach (LevelMarker d in layout.All(TileKind.Door))
+                {
+                    if (string.IsNullOrEmpty(layout.DoorTarget(d)))
+                    {
+                        throw new FormatException($"Door '{d.symbol}' in '{layout.Name}' needs '@door{d.symbol} <target>'.");
+                    }
+                }
+
+                return;
             }
 
             if (layout.All(TileKind.Goal).Count == 0)

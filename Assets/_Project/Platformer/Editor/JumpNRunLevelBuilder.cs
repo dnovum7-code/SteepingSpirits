@@ -21,6 +21,29 @@ namespace SteepingSpirits.Platformer.EditorTools
         public static readonly Color GroundColor = new Color(0.36f, 0.30f, 0.26f);
         public static readonly Color OneWayColor = new Color(0.55f, 0.42f, 0.30f);
 
+        /// <summary>Level id → display name, filled before building so doors can show names.</summary>
+        private static readonly Dictionary<string, string> levelNames = new Dictionary<string, string>();
+
+        public static string ScenePathFor(string target)
+        {
+            switch (target)
+            {
+                case "meadow": return JumpNRunBuilder.MeadowScene;
+                case "climb": return JumpNRunBuilder.ClimbScene;
+                default: return JumpNRunBuilder.SceneFolder + "/JumpNRun_" + target + ".unity";
+            }
+        }
+
+        public static string DisplayNameFor(string target)
+        {
+            switch (target)
+            {
+                case "meadow": return JumpNRunTexts.DoorMeadow;
+                case "climb": return JumpNRunTexts.DoorClimb;
+                default: return JumpNRunTexts.DoorLabel(levelNames.TryGetValue(target, out string n) ? n : target);
+            }
+        }
+
         public static List<string> BuildAllLevels()
         {
             var built = new List<string>();
@@ -31,20 +54,27 @@ namespace SteepingSpirits.Platformer.EditorTools
 
             string[] files = Directory.GetFiles(LevelFolder, "*.txt");
             System.Array.Sort(files);
+            var layouts = new List<KeyValuePair<string, LevelLayout>>();
+            levelNames.Clear();
             foreach (string file in files)
             {
                 string path = file.Replace('\\', '/');
-                LevelLayout layout;
                 try
                 {
-                    layout = LevelLayout.Parse(File.ReadAllText(path));
+                    LevelLayout parsed = LevelLayout.Parse(File.ReadAllText(path));
+                    levelNames[parsed.Setting("id", Path.GetFileNameWithoutExtension(path))] = parsed.Name;
+                    layouts.Add(new KeyValuePair<string, LevelLayout>(path, parsed));
                 }
                 catch (System.FormatException e)
                 {
                     Debug.LogError($"[JumpNRun] {path}: {e.Message}");
-                    continue;
                 }
+            }
 
+            foreach (var entry in layouts)
+            {
+                string path = entry.Key;
+                LevelLayout layout = entry.Value;
                 string id = layout.Setting("id", Path.GetFileNameWithoutExtension(path));
                 string scenePath = JumpNRunBuilder.SceneFolder + "/JumpNRun_" + id + ".unity";
                 BuildLevelScene(layout, id, scenePath);
@@ -64,9 +94,12 @@ namespace SteepingSpirits.Platformer.EditorTools
             root.AddComponent<JumpNRunTime>();
             root.AddComponent<JumpNRunOptions>();
             root.AddComponent<JumpNRunHud>();
-            root.AddComponent<JumpNRunEndCard>();
             root.AddComponent<JumpNRunDebugOverlay>();
-            root.AddComponent<JumpNRunTelemetry>();
+            if (!layout.IsHub)
+            {
+                root.AddComponent<JumpNRunEndCard>();
+                root.AddComponent<JumpNRunTelemetry>();
+            }
             level.levelId = id;
             level.displayName = layout.Name;
             level.movementTuning = AssetDatabase.LoadAssetAtPath<MovementTuning>(JumpNRunBuilder.DataFolder + "/MovementTuning.asset");

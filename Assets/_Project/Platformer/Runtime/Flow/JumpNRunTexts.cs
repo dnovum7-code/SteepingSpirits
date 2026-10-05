@@ -18,6 +18,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string Off = "aus";
         public const string Resume = "Weiter";
         public const string BackToMeadow = "Zurück zur Wiese";
+        public const string Back = "Zurück";
         public const string MenuHint = "Esc: Pause";
 
         // Ingredients
@@ -67,6 +68,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         }
 
         public static string DoorLabel(string levelName) => string.IsNullOrEmpty(levelName) ? "Tür" : levelName;
+        public const string DoorMeadow = "Zur Wiese";
+        public const string DoorClimb = "Kletterpfad";
         public const string DoorHint = "W: hinein";
 
         public static string Percent(float value) => $"{UnityEngine.Mathf.RoundToInt(value * 100f)} %";

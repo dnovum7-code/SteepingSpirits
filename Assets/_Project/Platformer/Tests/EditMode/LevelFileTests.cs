@@ -144,3 +144,37 @@ namespace SteepingSpirits.Platforming.Tests
         }
     }
 }
+
+namespace SteepingSpirits.Platforming.Tests
+{
+    public class HubTests
+    {
+        [Test]
+        public void Hub_HasReachableDoorsToEveryLevel()
+        {
+            LevelLayout hub = LevelLayout.Parse(LevelFiles.Read("Hub"));
+            Assert.IsTrue(hub.IsHub);
+            CollectionAssert.IsEmpty(new LevelReachability(hub).Problems());
+
+            var targets = new System.Collections.Generic.HashSet<string>();
+            foreach (LevelMarker d in hub.All(TileKind.Door)) targets.Add(hub.DoorTarget(d));
+
+            foreach (string f in LevelFiles.All())
+            {
+                LevelLayout l = LevelLayout.Parse(System.IO.File.ReadAllText(f));
+                if (!l.IsHub)
+                {
+                    Assert.IsTrue(targets.Contains(l.Setting("id")), "hub has no door to " + l.Setting("id"));
+                }
+            }
+
+            Assert.IsTrue(targets.Contains("meadow"));
+        }
+
+        [Test]
+        public void DoorWithoutTarget_IsAnError()
+        {
+            Assert.Throws<System.FormatException>(() => LevelLayout.Parse("@hub 1\nP.1.\n####"));
+        }
+    }
+}

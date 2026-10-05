@@ -266,7 +266,7 @@ namespace SteepingSpirits.Platforming.Core
             foreach (LevelMarker m in layout.Markers)
             {
                 bool required = m.kind == TileKind.Goal || m.kind == TileKind.Lantern || m.kind == TileKind.Ingredient
-                                || m.kind == TileKind.PathLantern;
+                                || m.kind == TileKind.PathLantern || m.kind == TileKind.Door;
                 if (required && !CanTouch(m))
                 {
                     problems.Add($"{m.kind} '{m.symbol}' at ({m.x},{m.y}) is not reachable");

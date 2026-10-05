@@ -53,6 +53,7 @@ namespace SteepingSpirits.Platforming.Tests
             foreach (string f in LevelFiles.All())
             {
                 LevelLayout l = LevelLayout.Parse(System.IO.File.ReadAllText(f));
+                if (l.IsHub) continue;
                 Assert.GreaterOrEqual(l.All(TileKind.PathLantern).Count, 3, System.IO.Path.GetFileName(f));
             }
         }

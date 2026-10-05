@@ -55,7 +55,9 @@ Level-Textdateien, den Builder-Code oder die Tuning-Assets.
 | `^` | Dornenranke | kein Schaden – ein Geist trägt die Figur zurück |
 | `l` | Pfadlaterne | Laternen-Herausforderung: alle entzünden (beliebige Reihenfolge, ohne Zeit) → Quellkristall als Dank |
 
-Zeilen mit `@schlüssel wert` sind Einstellungen (`@id`, `@name`, `@next`, `@npc0 …`),
+| `0`–`9` | Tür (nur Hub) | Ziel über `@door<Ziffer> <Level-id | meadow | climb>` |
+
+Zeilen mit `@schlüssel wert` sind Einstellungen (`@id`, `@name`, `@next`, `@mood`, `@npc0 …`, `@hub 1`),
 Zeilen mit `//` Kommentare. Die oberste Rasterzeile ist die höchste, ein Zeichen = 1 Einheit.
 
 ## Bewegung und Assists

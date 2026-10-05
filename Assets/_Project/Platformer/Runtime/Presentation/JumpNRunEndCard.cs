@@ -153,7 +153,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
 
             bx += bw + 10f;
-            if (GUI.Button(new Rect(bx, by, bw, 32f), JumpNRunTexts.BackToMeadow, button))
+            if (GUI.Button(new Rect(bx, by, bw, 32f), JumpNRunTexts.Back, button))
             {
                 GoBack();
             }

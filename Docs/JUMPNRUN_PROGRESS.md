@@ -93,7 +93,7 @@
 | F2 | Wandrutschen/-sprung abschaltbar | erledigt mit B1 (`MovementParams.wallSlideEnabled/wallJumpEnabled`) |
 | F3 | Parallax-Hintergrund + Abendlicht | erledigt (Kompilat geprüft, Bild ungeprüft) |
 | F4 | Laternen-Herausforderung | erledigt (89 Tests grün, Ablauf ungeprüft) |
-| F5 | Eigene Verbesserung: Hub-Lichtung mit Türen zu allen Leveln | offen |
+| F5 | Eigene Verbesserung: Hub-Lichtung mit Türen zu allen Leveln | erledigt (91 Tests grün, Szene ungeprüft) |
 
 ## Editor-Checklisten pro Commit
 
@@ -233,3 +233,9 @@
 - [ ] Level 1/2: kleine Rauten-Laternen (`l`) leuchten beim Berühren bläulich auf (ungeprüft).
 - [ ] Alle entzünden → hellerer Glockenakkord, Quellkristall landet im Beutel; Abschlusskarte zeigt
       „Alle Pfadlaternen leuchten …“, sonst „Laternenpfad: x von y“. Kein Zeitlimit, kein Nachteil.
+
+### F5 – Hub-Lichtung
+- [ ] *Build Levels* → `Assets/Scenes/JumpNRun_Hub.unity` → Play (ungeprüft).
+- [ ] Vor einer Tür steht ihr Name (Zur Wiese, Morgenwiese, Geisterhain, Kletterpfad); W oder E → Szene wechselt.
+- [ ] Level beenden → „Zurück“ führt zur Lichtung zurück (bzw. zur Wiese, wenn das Level direkt gestartet wurde).
+- [ ] Hinweis: Die Wiese selbst hat (noch) kein Portal zur Lichtung – `TestMeadow` wurde bewusst nicht geändert.

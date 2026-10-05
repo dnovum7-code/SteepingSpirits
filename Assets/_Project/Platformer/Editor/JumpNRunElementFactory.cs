@@ -99,6 +99,19 @@ namespace SteepingSpirits.Platformer.EditorTools
             return go;
         }
 
+        public static GameObject CreateDoor()
+        {
+            GameObject go = Template("LevelDoor", PlaceholderVisual.Shape.Square, new Color(0.42f, 0.30f, 0.22f), new Vector2(1.2f, 2f));
+            go.GetComponent<PlaceholderVisual>().offset = new Vector2(0f, 0.5f);
+            go.GetComponent<PlaceholderVisual>().sortingOrder = 0;
+            var box = go.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            box.size = new Vector2(1.2f, 2f);
+            box.offset = new Vector2(0f, 0.5f);
+            go.AddComponent<LevelDoor>();
+            return go;
+        }
+
         public static GameObject CreateSpiritNpc()
         {
             GameObject go = Template("SpiritNpc", PlaceholderVisual.Shape.Circle, new Color(0.88f, 0.93f, 1f, 0.75f), new Vector2(0.8f, 1f));
@@ -199,6 +212,14 @@ namespace SteepingSpirits.Platformer.EditorTools
                 case TileKind.PathLantern:
                     go = Place("PathLantern", parent, center, m);
                     go.GetComponent<PathLantern>().index = m.index;
+                    break;
+                case TileKind.Door:
+                    go = Place("LevelDoor", parent, center, m);
+                    var door = go.GetComponent<LevelDoor>();
+                    string target = layout.DoorTarget(m);
+                    door.targetScenePath = JumpNRunLevelBuilder.ScenePathFor(target);
+                    door.label = JumpNRunLevelBuilder.DisplayNameFor(target);
+                    go.name = "Door " + target;
                     break;
                 case TileKind.Npc:
                     go = Place("SpiritNpc", parent, center + Vector3.up * 0.3f, m);
