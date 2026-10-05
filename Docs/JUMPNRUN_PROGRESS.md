@@ -86,7 +86,7 @@
 | D3 | Level 1 (Einstieg ohne Text) | erledigt (Erreichbarkeit per Test, Spielgefühl ungeprüft) |
 | D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | erledigt (Wege per Test, Spielgefühl ungeprüft) |
 | S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | erledigt (9 Schaukel-Tests grün, Gefühl ungeprüft) |
-| E1 | Debug-Overlay (F1) | offen |
+| E1 | Debug-Overlay (F1) | erledigt (Kompilat geprüft, Anzeige ungeprüft) |
 | E2 | Telemetrie (jumpnrun_log.jsonl pro Abschnitt) | offen |
 | E3 | Doku Docs/JUMPNRUN.md | offen |
 | F* | Extras (Wand-Toggle, Parallax/Abendlicht, Geister-NPCs, Laternen-Herausforderung) | offen |
@@ -199,3 +199,9 @@
 - [ ] Beide Wege treffen sich an der zweiten Laterne; der **Laternengeist** folgt und macht die
       Geistertreppe über die Klamm fest; optional höher hinauf zur Geisterblüte.
 - [ ] Ohne Unity: Test prüft, dass jeder Weg allein zum Ziel führt und ohne beide nicht.
+
+### E1 – Debug-Overlay
+- [ ] Level → Play → F1 (oder ^): Kasten unten links mit Tempo, grounded, Coyote-/Puffer-Balken,
+      Schwerkraft-Phase (rise/apex/fall/wall), Luftsprüngen, Zone (ground/one-way/leaf/ghost/dew/
+      wind/swing/catch), Abschnitt, letzter Laterne, sicherem Punkt, Assists und timeScale (ungeprüft).
+- [ ] Springen: Coyote-Balken leert sich nach Verlassen der Kante, Puffer füllt sich beim Drücken.

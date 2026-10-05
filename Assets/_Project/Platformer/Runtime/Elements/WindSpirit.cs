@@ -12,6 +12,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
     public class WindSpirit : MonoBehaviour
     {
         public float columnHeight = 6f;
+
+        /// <summary>Time of the last push (for the debug overlay).</summary>
+        public static float LastPushTime { get; private set; } = -1f;
         [SerializeField] private Color wispColor = new Color(0.85f, 0.95f, 1f, 0.35f);
 
         private BoxCollider2D column;
@@ -47,6 +50,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             WindParams p = SpiritElementsTuning.Current.wind;
             float a = SpiritMath.Updraft(p, columnHeight, player.Feet.y - Bottom, player.Velocity.y);
             player.AddAcceleration(new Vector2(0f, a));
+            LastPushTime = Time.time;
 
             if (!playerInside)
             {
