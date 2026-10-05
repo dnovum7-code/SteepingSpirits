@@ -65,7 +65,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-12 | Hub-Lichtung lebendig | erledigt (Satzwahl 3 Tests; Anzeige ungeprüft) |
 | R2-13 | Level 4 | erledigt („Taunacht“: Erreichbarkeit, 2 Wege, Bot-Durchlauf; Unity ungeprüft) |
 | R2-14 | Pooling, keine Allokationen in Update | erledigt (Audit + PlayMode-Messtest; Messung ungeprüft) |
-| R2-15 | AudioSet-Asset pro Modul | offen |
+| R2-15 | AudioSet-Asset pro Modul | erledigt (Jump'n'Run; das Brüh-Modul hat sein `BrewAudioSet` schon – nicht angefasst) |
 | R2-16 | Barrierefreiheit | offen |
 | R2-17 | Probe-Merge `integration/probe` | offen |
 | R2-18 | Eigene Verbesserungen | offen |
@@ -79,6 +79,11 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-15 – Audio-Set
+- [ ] *Build Levels* legt `Assets/_Project/Platformer/Data/JumpNRunAudioSet.asset` an (bleibt danach erhalten) (ungeprüft).
+- [ ] Inspector: Plätze Jump, Land, Collect, Collect Rare, Lantern, Spirit Catch, Dew Bounce, Wind, Swing Creak,
+      Goal – leer = prozeduraler Platzhalter. Einen echten Clip hineinziehen → nach Play-Neustart zu hören.
 
 #### R2-14 – Keine Allokationen pro Frame
 - [ ] Test Runner PlayMode: `Running_AllocatesAlmostNothingPerFrame` grün; Konsole zeigt „Allocated about … bytes

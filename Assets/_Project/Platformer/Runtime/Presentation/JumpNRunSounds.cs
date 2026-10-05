@@ -20,13 +20,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
     /// <summary>
     /// Quiet procedural placeholder sounds (see <see cref="SoftSynth"/>). Clips are
     /// generated once in Awake; playing uses a small pool of AudioSources with
-    /// slight pitch variation. Replace a clip by assigning one in the Inspector.
+    /// slight pitch variation. Real clips go into the JumpNRunAudioSet asset.
     /// </summary>
     public class JumpNRunSounds : MonoBehaviour
     {
         private const int Rate = 22050;
 
-        [SerializeField] private AudioClip[] overrides = new AudioClip[10];
+        [Tooltip("Real clips per slot (empty slots use the procedural placeholder)")]
+        [SerializeField] private JumpNRunAudioSet audioSet;
         [SerializeField] private float masterVolume = 1f;
         [SerializeField] private float pitchVariation = 0.04f;
 
@@ -36,9 +37,19 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         public static JumpNRunSounds Instance { get; private set; }
 
+        public void Configure(JumpNRunAudioSet set)
+        {
+            audioSet = set;
+        }
+
         private void Awake()
         {
             Instance = this;
+            if (audioSet == null && JumpNRunLevel.Current != null)
+            {
+                audioSet = JumpNRunLevel.Current.audioSet;
+            }
+
             sources = new AudioSource[4];
             for (int i = 0; i < sources.Length; i++)
             {
@@ -51,9 +62,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
             clips = new AudioClip[count];
             for (int i = 0; i < count; i++)
             {
-                clips[i] = overrides != null && i < overrides.Length && overrides[i] != null
-                    ? overrides[i]
-                    : Generate((JumpNRunSound)i);
+                AudioClip real = audioSet != null ? audioSet.ClipFor((JumpNRunSound)i) : null;
+                clips[i] = real != null ? real : Generate((JumpNRunSound)i);
             }
         }
 

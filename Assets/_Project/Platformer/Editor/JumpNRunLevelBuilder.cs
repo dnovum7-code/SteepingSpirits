@@ -116,6 +116,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             level.cameraTuning = AssetDatabase.LoadAssetAtPath<CameraTuning>(JumpNRunBuilder.DataFolder + "/CameraTuning.asset");
             level.feedbackTuning = AssetDatabase.LoadAssetAtPath<FeedbackTuning>(JumpNRunBuilder.DataFolder + "/FeedbackTuning.asset");
             level.elementsTuning = AssetDatabase.LoadAssetAtPath<SpiritElementsTuning>(JumpNRunBuilder.DataFolder + "/SpiritElementsTuning.asset");
+            level.audioSet = AssetDatabase.LoadAssetAtPath<JumpNRunAudioSet>(JumpNRunBuilder.DataFolder + "/JumpNRunAudioSet.asset");
             level.bounds = new Rect(0f, 0f, layout.Width, layout.Height);
             level.lanternCount = layout.All(TileKind.Lantern).Count;
             level.layoutText = layout.SourceText;

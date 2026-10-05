@@ -41,6 +41,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             if (level.cameraTuning == null) problems.Add("JumpNRunLevel: CameraTuning missing");
             if (level.feedbackTuning == null) problems.Add("JumpNRunLevel: FeedbackTuning missing");
             if (level.elementsTuning == null) problems.Add("JumpNRunLevel: SpiritElementsTuning missing");
+            if (level.audioSet == null) problems.Add("JumpNRunLevel: JumpNRunAudioSet missing (placeholders will play)");
             if (string.IsNullOrEmpty(level.layoutText)) problems.Add("JumpNRunLevel: level text missing (rebuild)");
             if (Object.FindAnyObjectByType<JumpNRunPlayer>() == null) problems.Add("no player in the scene");
             if (Object.FindAnyObjectByType<JumpNRunCamera>() == null) problems.Add("no JumpNRunCamera in the scene");

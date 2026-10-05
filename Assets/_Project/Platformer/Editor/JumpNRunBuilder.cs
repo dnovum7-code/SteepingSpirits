@@ -56,6 +56,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             EnsureAsset<CameraTuning>(DataFolder + "/CameraTuning.asset");
             EnsureAsset<FeedbackTuning>(DataFolder + "/FeedbackTuning.asset");
             EnsureAsset<SpiritElementsTuning>(DataFolder + "/SpiritElementsTuning.asset");
+            EnsureAsset<JumpNRunAudioSet>(DataFolder + "/JumpNRunAudioSet.asset");
         }
 
         /// <summary>Loads an asset or creates it with defaults. Existing assets are never overwritten.</summary>

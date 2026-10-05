@@ -14,6 +14,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public CameraTuning cameraTuning;
         public FeedbackTuning feedbackTuning;
         public SpiritElementsTuning elementsTuning;
+        public JumpNRunAudioSet audioSet;
 
         /// <summary>Ingredients placed in the level ("id:n,…", written by the builder).</summary>
         public string availableIngredients = "";
