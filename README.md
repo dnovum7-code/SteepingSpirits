@@ -12,6 +12,9 @@ angepasst oder weggelassen wurde: [Docs/EVERDAWN_UEBERNAHME.md](Docs/EVERDAWN_UE
 **Neu: Jump'n'Run-Sammelausflüge** (gemütlich, Geister-Elemente, Schaukel) → [Docs/JUMPNRUN.md](Docs/JUMPNRUN.md)
 
 **Jump'n'Run-Szene** (Celeste-artig mit Dash, Wandsprung, Haltepunkten,
+**Neu: Brüh-Prototyp** (Alltagsaufguss: Wasser lesen, aufgießen, ziehen lassen) → [Docs/BREWING.md](Docs/BREWING.md)
+
+**Neu: Jump'n'Run-Szene** (Celeste-artig mit Dash, Wandsprung, Haltepunkten,
 Schwingseilen und Lianen) → [Docs/JUMP_AND_RUN.md](Docs/JUMP_AND_RUN.md)
 
 > Alles läuft mit **Platzhalter-Grafiken aus Code** – zum Ausprobieren musst du

@@ -42,3 +42,7 @@ crashlytics-build.properties
 
 # dotnet test projects outside Assets/
 Tests/**/bin/
+
+# dotnet test harness for Brewing Core (outside Assets/)
+Tests/**/obj/
+!Tests/BrewingCore.DotNet/BrewingCore.DotNet.csproj
