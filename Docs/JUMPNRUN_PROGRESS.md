@@ -61,7 +61,7 @@
 
 | # | Punkt | Status |
 |---|---|---|
-| A1 | Szenen per Editor-Builder (Menü SteepingSpirits → JumpNRun → Build Levels) | offen |
+| A1 | Szenen per Editor-Builder (Menü SteepingSpirits → JumpNRun → Build Levels) | erledigt (Kompilat geprüft, Unity ungeprüft) |
 | A2 | Core-Assembly `SteepingSpirits.Platforming.Core` + dotnet-Tests | offen |
 | A3 | Tuning-ScriptableObjects (Movement, Camera, Feedback) | offen |
 | A4 | Level als Daten (Tile-Strings) + Builder baut daraus | offen |
@@ -82,4 +82,9 @@
 
 ## Editor-Checklisten pro Commit
 
-_(wird pro Commit ergänzt)_
+### A1 – Szenen-Builder
+- [ ] Unity öffnen, Konsole ohne Fehler (ungeprüft).
+- [ ] Menü **SteepingSpirits → JumpNRun → Build Levels** → Konsole meldet die gebauten Szenen.
+- [ ] `Assets/Scenes/TestMeadow.unity` öffnen → Play → Wiese baut sich wie bisher auf.
+- [ ] `Assets/Scenes/JumpAndRun.unity` öffnen → Play → Kletterpfad wie bisher.
+- [ ] *File → Build Profiles*: beide Szenen stehen in der Liste.
