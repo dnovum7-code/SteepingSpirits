@@ -32,6 +32,12 @@ namespace SteepingSpirits.Brewing.Telemetry
             public bool tart;
             public float totalSeconds;
             public bool thermometerUsed;
+            public float baseHarmony;
+            public bool sparkAppeared;
+            public bool memoryCaught;
+            public float memoryDepth;
+            public string character;
+            public float residualAfter;
         }
 
         public static string FilePath => Path.Combine(Application.persistentDataPath, FileName);
@@ -54,7 +60,13 @@ namespace SteepingSpirits.Brewing.Telemetry
                 tier = r.Tier.ToString(),
                 tart = r.IsTart,
                 totalSeconds = Round(r.TotalSeconds),
-                thermometerUsed = r.ThermometerUsed
+                thermometerUsed = r.ThermometerUsed,
+                baseHarmony = Round(r.BaseHarmony),
+                sparkAppeared = r.SparkAppeared,
+                memoryCaught = r.MemoryCaught,
+                memoryDepth = Round(r.MemoryDepth),
+                character = r.Character.ToString(),
+                residualAfter = Round(r.ResidualAfter)
             };
 
             return JsonUtility.ToJson(record);

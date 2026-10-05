@@ -118,6 +118,8 @@ namespace SteepingSpirits.Brewing.Flow
                 Session.SelectTea(slot);
             }
 
+            if (BrewInput.RefillPressed) Session.RefillWater();
+            if (BrewInput.CatchSparkPressed) Session.CatchSpark();
             if (BrewInput.FirePressed) Session.ToggleHeat();
             if (BrewInput.LadlePressed) Session.LadleBack();
             if (BrewInput.PrewarmPressed) Session.StartPrewarm();
@@ -126,6 +128,7 @@ namespace SteepingSpirits.Brewing.Flow
             {
                 if (Session.Phase == BrewPhase.HeatWater) Session.Pour();
                 else if (Session.Phase == BrewPhase.Steep) Session.LiftLeaves();
+                else if (Session.Phase == BrewPhase.Result) Session.NextInfusion();
             }
         }
 

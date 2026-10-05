@@ -117,3 +117,79 @@ Ziehzeit, A, B, H, Stufe, herb, Gesamtdauer, Thermometer benutzt.
 - Ein erster Aufguss aus kaltem Wasser dauert ~25–40 s, mit heißem Kessel kürzer.
 - Die Darstellung wurde nur kompiliert, nicht im Editor gespielt (keine Unity-CLI in der
   Entwicklungsumgebung).
+
+---
+
+# Phase 2 – mehrere Aufgüsse, Oolong, Erinnerungsfunke
+
+Branch `feature/brewing-phase2`. Sandbox neu bauen (Menü wie oben) – der Builder legt
+zusätzlich `Tea_Oolong` an (vorhandene Assets bleiben).
+
+## Neue Steuerung
+
+| Aktion | Tastatur | Gamepad |
+|---|---|---|
+| Oolong wählen | 4 | Steuerkreuz ↓ |
+| Dieselben Blätter nochmal aufgießen | Leertaste (im Ergebnis) | A |
+| Erinnerungsfunke fangen | E | RB |
+| Frisches Wasser holen | Q | Select |
+
+## Mehrere Aufgüsse
+
+- Jede Blattportion hat eine **Kapazität** (`leafCapacity`). Nach jedem Aufguss sinkt der
+  `ResidualExtract` um das gelöste Aroma A.
+- Das Aroma-Maximum des nächsten Aufgusses folgt sättigend dem Rest:
+  `Amax = (1 − e^(−Rest/s)) / (1 − e^(−Kapazität/s))` (`leafSaturation = s`).
+  Der erste Aufguss bleibt damit exakt wie in Phase 1; spätere werden sanft schwächer
+  statt abrupt leer. Optional pro Aufguss `infusionSteps` (Fensterverschiebung,
+  Raten-Faktoren, Aroma-Faktor).
+- `maxInfusions` begrenzt die Aufgüsse; danach „Die Blätter haben alles gegeben“ – nie ein Fehlschlag.
+- Jeder Aufguss bekommt ein eigenes **Profil** (`InfusionProfile`: A, B, H, Stufe, Funke,
+  Charakter hell/kräftig/weich/zart) in `BrewSession.History`.
+- **Qref** gilt jetzt für die ganze Serie (bester Aufguss bei idealem Spiel). Für Schwarz-,
+  Weiß- und Grüntee ist das unverändert der erste Aufguss.
+
+Ideale Serien (H je Aufguss, Test `PrintSeriesReport`):
+
+| Sorte | 1. | 2. | 3. | 4. | 5. | 6. |
+|---|---|---|---|---|---|---|
+| Schwarztee | 1,00 | 0,92 | 0,74 | | | |
+| Weißtee | 1,00 | 0,96 | 0,88 | 0,73 | | |
+| Grüntee | 1,00 | 0,92 | 0,74 | | | |
+| Oolong („entfaltend“) | 0,67 | 0,88 | **1,00** | 0,96 | 0,80 | 0,71 |
+
+Oolong: Das gute Fenster wandert von 85–95 °C auf bis zu 91–101 °C, die beste Ziehzeit sinkt
+von 11,6 s auf 7,5 s (Blätter öffnen sich).
+
+## Erinnerungsfunke
+
+- Erscheint einmal pro Aufguss, wenn Q beim Ziehen über `qShareThreshold × bestes Q dieses
+  Aufgusses` steigt (Standard 90 %). Bleibt `catchWindowSeconds` (1,5 s) fangbar.
+- **Fangen** (E): sofort `bonusOnCatch` (+0,03 H), der Bonus wächst bis `bonusMax` (+0,10),
+  solange man der Erinnerung folgt, also weiterziehen lässt (`followSeconds` 2,5 s).
+  Das Risiko ist die Bitterkeit, die dabei weiter steigt.
+- **Verpassen**: keinerlei Nachteil. H bleibt durch den Bonus auf höchstens 1 begrenzt.
+
+## Wasservolumen
+
+- Kessel fasst `capacity` 1,2 l, jeder Aufguss nimmt `pourVolume` 0,3 l. Ist zu wenig drin,
+  passiert beim Aufgießen nichts; Hinweis „[Q] frisches Wasser“.
+- Weniger Wasser heizt schneller (`heatingRate × capacity / volume`, begrenzt über
+  `minThermalShare`). Ein voller Kessel verhält sich exakt wie in Phase 1.
+
+## Platzhalter-Ton
+
+`FilteredNoiseSource` filtert jetzt sanfter: Hochpass gegen Dröhnen, dreipoliger Tiefpass
+für weiche Höhen, langsame zufällige An-/Abschwellungen (Blubbern) und ein weicher Limiter.
+Pro Stufe in `BrewingTuning → presentation.stages`: `noiseHighpassHz`, `swellRate`, `swellDepth`.
+Numerisch geprüft (stabil, kein Gleichanteil, lauteste Stufe ≈ −28 dBFS RMS bei Master 0,6),
+klanglich **ungeprüft**.
+
+## Tests
+
+77 EditMode-Tests (`dotnet test Tests/BrewingCore.DotNet`), neu u. a.: Restextrakt sinkt um A,
+Aufguss-Index zählt, Profile pro Aufguss, Ende nach `maxInfusions` ohne Fehlschlag, Oolong wird
+über die ersten drei Aufgüsse besser und sein Fenster wandert, Funke erscheint nur beim
+Aufwärtskreuzen, Fangen gibt Bonus, Verpassen nichts, Folgen vertieft die Erinnerung und
+erhöht die Bitterkeit, Wasser reicht für 4 Aufgüsse, leerer Kessel blockiert nichts,
+Zufalls-Eingaben inkl. Phase-2-Befehlen.

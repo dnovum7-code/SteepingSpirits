@@ -123,6 +123,7 @@ namespace SteepingSpirits.Brewing.Presentation
             // Placeholder noise covers every stage without a clip.
             kettleNoise.SetGlide(Look.audioCrossfadeSeconds);
             kettleNoise.SetTarget(clip == null ? look.noiseVolume * master : 0f, look.noiseCutoffHz, look.crackleRate);
+            kettleNoise.SetTexture(look.highpassHz, look.swellRate, look.swellDepth);
         }
 
         private void UpdatePour(BrewSession s)

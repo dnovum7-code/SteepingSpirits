@@ -16,6 +16,7 @@ namespace SteepingSpirits.Brewing.Core
     /// <summary>
     /// One brewing session as a plain state machine:
     ///   SelectTea → HeatWater → (PreWarm) → Pour → Steep → Result → SelectTea
+    ///   Result → HeatWater again for the next infusion of the same leaves (Phase 2).
     /// Input arrives as commands; time arrives via <see cref="Tick"/>.
     /// Commands that do not fit the current phase are ignored (return false) –
     /// there is no way to break or fail a brew.
@@ -24,7 +25,8 @@ namespace SteepingSpirits.Brewing.Core
     {
         private readonly BrewConfig config;
         private readonly List<TeaParams> teas;
-        private readonly Dictionary<string, CalibrationResult> calibrations = new Dictionary<string, CalibrationResult>();
+        private readonly Dictionary<string, CalibrationSeries> calibrations = new Dictionary<string, CalibrationSeries>();
+        private readonly List<InfusionProfile> history = new List<InfusionProfile>();
 
         private float phaseTimer;
         private float brewStartTime;
@@ -49,6 +51,9 @@ namespace SteepingSpirits.Brewing.Core
         public event Action<BoilStage, BoilStage> BoilStageChanged;
         public event Action<BrewResult> Finished;
 
+        /// <summary>Memory spark state changes (Visible, Caught, Missed).</summary>
+        public event Action<SparkState> SparkChanged;
+
         public BrewConfig Config => config;
         public IReadOnlyList<TeaParams> Teas => teas;
         public BrewPhase Phase { get; private set; } = BrewPhase.SelectTea;
@@ -56,8 +61,24 @@ namespace SteepingSpirits.Brewing.Core
 
         public TeaParams Tea { get; private set; }
         public int TeaIndex { get; private set; } = -1;
+        /// <summary>Calibration of the current infusion; QReference is the series reference.</summary>
         public CalibrationResult Calibration { get; private set; }
+
+        public CalibrationSeries Series { get; private set; }
         public LeafState Leaves { get; private set; }
+
+        /// <summary>Effective tea for the current infusion (window shifted, rates scaled).</summary>
+        public TeaParams InfusionTea { get; private set; }
+
+        /// <summary>Profiles of all finished infusions of the current leaves.</summary>
+        public IReadOnlyList<InfusionProfile> History => history;
+
+        /// <summary>The memory spark of the current steep (null outside Steep/Result).</summary>
+        public MemorySpark Spark { get; private set; }
+
+        public bool CanInfuseAgain =>
+            Tea != null && Leaves != null && InfusionIndex + 1 < Math.Max(1, Tea.maxInfusions)
+            && Leaves.ResidualExtract > 0.001f;
 
         /// <summary>Infusion number of the current leaves (0 = first). Phase 2 hook.</summary>
         public int InfusionIndex { get; private set; }
@@ -91,19 +112,19 @@ namespace SteepingSpirits.Brewing.Core
                 return new QualityEvaluation(0f, 0f, QualityTier.Flat, false);
             }
 
-            return QualityEvaluator.Evaluate(Extraction.Aroma, Extraction.Bitterness, Tea, config.quality,
+            return QualityEvaluator.Evaluate(Extraction.Aroma, Extraction.Bitterness, InfusionTea, config.quality,
                 Calibration.QReference);
         }
 
-        public CalibrationResult CalibrationFor(TeaParams tea)
+        public CalibrationSeries SeriesFor(TeaParams tea)
         {
-            if (!calibrations.TryGetValue(tea.id, out CalibrationResult result))
+            if (!calibrations.TryGetValue(tea.id, out CalibrationSeries series))
             {
-                result = BrewCalibration.Calibrate(tea, config.extraction, config.quality, config.water.roomTemperature);
-                calibrations[tea.id] = result;
+                series = BrewCalibration.CalibrateSeries(tea, config.extraction, config.quality, config.water.roomTemperature);
+                calibrations[tea.id] = series;
             }
 
-            return result;
+            return series;
         }
 
         /// <summary>Forget cached calibrations (after live tuning changes).</summary>
@@ -112,8 +133,16 @@ namespace SteepingSpirits.Brewing.Core
             calibrations.Clear();
             if (Tea != null)
             {
-                Calibration = CalibrationFor(Tea);
+                Series = SeriesFor(Tea);
+                UpdateInfusionCalibration();
             }
+        }
+
+        private void UpdateInfusionCalibration()
+        {
+            InfusionTea = Tea.ForInfusion(InfusionIndex);
+            InfusionCalibration inf = Series.For(InfusionIndex);
+            Calibration = new CalibrationResult(Series.QReference, inf.OptimalSeconds, inf.StartTemperature);
         }
 
         // ---------------------------------------------------------------
@@ -130,11 +159,14 @@ namespace SteepingSpirits.Brewing.Core
 
             TeaIndex = index;
             Tea = teas[index];
-            Calibration = CalibrationFor(Tea);
-            Leaves = new LeafState();
+            Series = SeriesFor(Tea);
+            Leaves = new LeafState(Tea.leafCapacity);
             InfusionIndex = 0;
+            history.Clear();
+            UpdateInfusionCalibration();
             VesselPrewarmed = false;
             Extraction = null;
+            Spark = null;
             thermometerUsed = false;
             brewStartTime = ElapsedSeconds;
             SetPhase(BrewPhase.HeatWater);
@@ -176,9 +208,9 @@ namespace SteepingSpirits.Brewing.Core
 
         public bool Pour()
         {
-            if (Phase != BrewPhase.HeatWater)
+            if (Phase != BrewPhase.HeatWater || !Water.TakePour())
             {
-                return false;
+                return false; // nothing happens without enough water – refill instead
             }
 
             pourKettleTemperature = Water.Temperature;
@@ -195,6 +227,27 @@ namespace SteepingSpirits.Brewing.Core
             }
 
             QualityEvaluation q = PreviewQuality();
+            float steep = Extraction.ElapsedSeconds;
+            float bonus = Spark != null ? Spark.Bonus(steep) : 0f;
+            float harmony = Math.Min(1f, q.Harmony + bonus);
+            QualityTier tier = QualityEvaluator.Classify(harmony, config.quality);
+
+            // The leaves lose what this infusion dissolved.
+            Leaves.ResidualExtract = Math.Max(0f, Leaves.ResidualExtract - Extraction.Aroma);
+
+            InfusionCharacter character = InfusionProfile.Classify(InfusionIndex, Extraction.Aroma,
+                Extraction.Bitterness, InfusionTea.bitterTolerance, config.quality);
+            history.Add(new InfusionProfile
+            {
+                InfusionIndex = InfusionIndex,
+                Aroma = Extraction.Aroma,
+                Bitterness = Extraction.Bitterness,
+                Harmony = harmony,
+                Tier = tier,
+                MemoryCaught = Spark != null && Spark.State == SparkState.Caught,
+                Character = character
+            });
+
             LastResult = new BrewResult
             {
                 TeaId = Tea.id,
@@ -203,21 +256,70 @@ namespace SteepingSpirits.Brewing.Core
                 SteepStartTemperature = Extraction.StartTemperature,
                 Prewarmed = VesselPrewarmed,
                 StaleWater = staleAtPour,
-                SteepSeconds = Extraction.ElapsedSeconds,
+                SteepSeconds = steep,
                 Aroma = Extraction.Aroma,
                 Bitterness = Extraction.Bitterness,
                 Q = q.Q,
-                Harmony = q.Harmony,
-                Tier = q.Tier,
+                BaseHarmony = q.Harmony,
+                Harmony = harmony,
+                HarmonyBonus = harmony - q.Harmony,
+                Tier = tier,
                 IsTart = q.IsTart,
                 TotalSeconds = ElapsedSeconds - brewStartTime,
                 ThermometerUsed = thermometerUsed,
-                Hint = BrewAdvisor.Diagnose(Tea, Calibration, Extraction.StartTemperature,
-                    Extraction.ElapsedSeconds, staleAtPour, q.Tier)
+                Hint = BrewAdvisor.Diagnose(InfusionTea, Calibration, Extraction.StartTemperature,
+                    steep, staleAtPour, tier),
+                SparkAppeared = Spark != null && Spark.State != SparkState.None,
+                MemoryCaught = Spark != null && Spark.State == SparkState.Caught,
+                MemoryDepth = Spark != null ? Spark.Depth(steep) : 0f,
+                Character = character,
+                ResidualAfter = Leaves.ResidualExtract,
+                CanInfuseAgain = CanInfuseAgain
             };
 
             SetPhase(BrewPhase.Result);
             Finished?.Invoke(LastResult);
+            return true;
+        }
+
+        /// <summary>
+        /// Infuse the same leaves again: back to heating with the next infusion
+        /// index. The vessel is still warm from the last infusion.
+        /// </summary>
+        public bool NextInfusion()
+        {
+            if (Phase != BrewPhase.Result || !CanInfuseAgain)
+            {
+                return false;
+            }
+
+            InfusionIndex++;
+            UpdateInfusionCalibration();
+            VesselPrewarmed = true;
+            Extraction = null;
+            Spark = null;
+            thermometerUsed = false;
+            brewStartTime = ElapsedSeconds;
+            SetPhase(BrewPhase.HeatWater);
+            return true;
+        }
+
+        /// <summary>Catch the memory spark while it is visible.</summary>
+        public bool CatchSpark()
+        {
+            return Phase == BrewPhase.Steep && Spark != null && Extraction != null
+                   && Spark.TryCatch(Extraction.ElapsedSeconds);
+        }
+
+        /// <summary>Fresh cold water (full kettle) – possible whenever no tea is being poured or steeped.</summary>
+        public bool RefillWater()
+        {
+            if (Phase == BrewPhase.Pour || Phase == BrewPhase.Steep || Phase == BrewPhase.PreWarm)
+            {
+                return false;
+            }
+
+            Water.Refill();
             return true;
         }
 
@@ -240,7 +342,11 @@ namespace SteepingSpirits.Brewing.Core
             Tea = null;
             TeaIndex = -1;
             Leaves = null;
+            InfusionTea = null;
+            InfusionIndex = 0;
+            history.Clear();
             Extraction = null;
+            Spark = null;
             VesselPrewarmed = false;
             SetPhase(BrewPhase.SelectTea);
         }
@@ -289,6 +395,7 @@ namespace SteepingSpirits.Brewing.Core
 
                 case BrewPhase.Steep:
                     Extraction.Tick(deltaTime);
+                    Spark?.Tick(deltaTime, QualityEvaluator.RawQuality(Extraction.Aroma, Extraction.Bitterness, config.quality));
                     break;
             }
         }
@@ -296,8 +403,12 @@ namespace SteepingSpirits.Brewing.Core
         private void BeginSteep()
         {
             float start = config.pour.StartTemperature(pourKettleTemperature, VesselPrewarmed);
-            float aromaMax = (staleAtPour ? config.water.staleAromaFactor : 1f) * Leaves.ResidualExtract;
-            Extraction = new ExtractionModel(Tea, config.extraction, start, config.water.roomTemperature, aromaMax);
+            float aromaMax = BrewCalibration.AromaMaxFor(Tea, InfusionIndex, Leaves.ResidualExtract, staleAtPour,
+                config.water.staleAromaFactor);
+            Extraction = new ExtractionModel(InfusionTea, config.extraction, start, config.water.roomTemperature, aromaMax);
+            Spark = new MemorySpark(config.spark, Series.For(InfusionIndex).BestQ,
+                InfusionIndex >= config.spark.firstInfusion);
+            Spark.StateChanged += state => SparkChanged?.Invoke(state);
             SetPhase(BrewPhase.Steep);
         }
 

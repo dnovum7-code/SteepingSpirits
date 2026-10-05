@@ -31,5 +31,24 @@ namespace SteepingSpirits.Brewing.Core
 
         /// <summary>Main reason the cup was not perfect (for a gentle tip).</summary>
         public BrewHint Hint { get; internal set; }
+
+        /// <summary>Harmony before the memory bonus.</summary>
+        public float BaseHarmony { get; internal set; }
+
+        public bool SparkAppeared { get; internal set; }
+        public bool MemoryCaught { get; internal set; }
+
+        /// <summary>0..1 – how long the player followed the memory after catching it.</summary>
+        public float MemoryDepth { get; internal set; }
+
+        public float HarmonyBonus { get; internal set; }
+
+        public InfusionCharacter Character { get; internal set; }
+
+        /// <summary>What the leaves still hold after this infusion.</summary>
+        public float ResidualAfter { get; internal set; }
+
+        /// <summary>True if the same leaves can be infused again.</summary>
+        public bool CanInfuseAgain { get; internal set; }
     }
 }

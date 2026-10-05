@@ -39,6 +39,21 @@ namespace SteepingSpirits.Brewing.Core
         public bool IsBoiling => HeatOn && Temperature >= parameters.boilingPoint - BoilEpsilon;
         public bool IsStale { get; private set; }
 
+        /// <summary>Water in the kettle (litres).</summary>
+        public float Volume { get; private set; }
+
+        public bool HasWaterForPour => Volume + 1e-4f >= parameters.pourVolume;
+
+        /// <summary>Heating speed for the current volume (°C/s).</summary>
+        public float EffectiveHeatingRate
+        {
+            get
+            {
+                float share = parameters.capacity > 0f ? Volume / parameters.capacity : 1f;
+                return parameters.heatingRate / Math.Max(parameters.minThermalShare, Math.Min(1f, share));
+            }
+        }
+
         /// <summary>Upper bound for aroma extraction with this water (1 = fresh).</summary>
         public float AromaCeiling => IsStale ? parameters.staleAromaFactor : 1f;
 
@@ -63,14 +78,27 @@ namespace SteepingSpirits.Brewing.Core
             UpdateStage();
         }
 
-        /// <summary>Fresh, cold water: room temperature, not stale, fire off.</summary>
+        /// <summary>Fresh, cold water: full kettle, room temperature, not stale, fire off.</summary>
         public void Refill()
         {
             Temperature = parameters.roomTemperature;
+            Volume = parameters.capacity;
             HeatOn = false;
             BoilingSeconds = 0f;
             IsStale = false;
             UpdateStage();
+        }
+
+        /// <summary>Takes one pour out of the kettle. Returns false (and changes nothing) if too little water is left.</summary>
+        public bool TakePour()
+        {
+            if (!HasWaterForPour)
+            {
+                return false;
+            }
+
+            Volume = Math.Max(0f, Volume - parameters.pourVolume);
+            return true;
         }
 
         public void Tick(float deltaTime)
@@ -82,7 +110,7 @@ namespace SteepingSpirits.Brewing.Core
 
             if (HeatOn)
             {
-                Temperature = Math.Min(parameters.boilingPoint, Temperature + parameters.heatingRate * deltaTime);
+                Temperature = Math.Min(parameters.boilingPoint, Temperature + EffectiveHeatingRate * deltaTime);
             }
             else
             {

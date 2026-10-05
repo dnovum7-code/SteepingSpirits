@@ -85,16 +85,17 @@ namespace SteepingSpirits.Brewing.Presentation
             string lines =
                 $"<b>Brew debug</b>  (F1)   tea: {tea}   phase: {s.Phase}\n" +
                 $"Kettle {w.Temperature:0.0} °C   stage: {w.Stage} ({BrewTexts.Stage(w.Stage)})   fire: {(w.HeatOn ? "on" : "off")}\n" +
-                $"Boiling {w.BoilingSeconds:0.0} s   stale: {(w.IsStale ? "YES" : "no")}   prewarmed: {(s.VesselPrewarmed ? "yes" : "no")}\n" +
+                $"Boiling {w.BoilingSeconds:0.0} s   stale: {(w.IsStale ? "YES" : "no")}   prewarmed: {(s.VesselPrewarmed ? "yes" : "no")}   water {w.Volume:0.00} l\n" +
+                (s.Tea != null ? $"Infusion #{s.InfusionIndex + 1}/{s.Tea.maxInfusions}   residual {s.Leaves.ResidualExtract:0.00}/{s.Tea.leafCapacity:0.0}   spark: {(s.Spark != null ? s.Spark.State.ToString() : "-")}{(s.Spark != null && s.Spark.State == SparkState.Visible ? $" ({s.Spark.TimeLeft:0.0} s)" : "")}{(s.Spark != null && s.Spark.State == SparkState.Caught && e != null ? $" depth {s.Spark.Depth(e.ElapsedSeconds):0.00} bonus {s.Spark.Bonus(e.ElapsedSeconds):0.00}" : "")}\n" : "") +
                 (s.Tea != null ? $"Window {s.Tea.idealMin:0}–{s.Tea.idealMax:0} °C   Qref {s.Calibration.QReference:0.000}   optimum {s.Calibration.OptimalSeconds:0.0} s\n" : "\n") +
                 (e != null
                     ? $"Steep {e.ElapsedSeconds:0.0} s   vessel {e.Temperature:0.0} °C   onset {e.BitterOnset:0.00}\n" +
                       $"A {e.Aroma:0.000} / {e.AromaMax:0.00}   B {e.Bitterness:0.000}   Q {q.Q:0.000}   H {q.Harmony:0.00}\n" +
                       $"→ {q.Tier} ({BrewTexts.Tier(q.Tier)}){(q.IsTart ? "  · herb" : "")}"
                     : "Steep –");
-            GUI.Label(new Rect(box.x + 10f, box.y + 8f, box.width - 20f, 130f), lines, text);
+            GUI.Label(new Rect(box.x + 10f, box.y + 8f, box.width - 20f, 150f), lines, text);
 
-            DrawCurves(new Rect(box.x + 10f, box.y + 150f, box.width - 20f, box.height - 170f), s);
+            DrawCurves(new Rect(box.x + 10f, box.y + 166f, box.width - 20f, box.height - 186f), s);
         }
 
         private void DrawCurves(Rect area, BrewSession s)

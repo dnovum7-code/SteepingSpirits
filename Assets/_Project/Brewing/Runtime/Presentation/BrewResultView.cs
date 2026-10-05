@@ -55,7 +55,8 @@ namespace SteepingSpirits.Brewing.Presentation
             textStyle.normal.textColor = new Color(normalColor.r, normalColor.g, normalColor.b, alpha);
             GUI.Label(new Rect(box.x + 20f, box.y + 60f, box.width - 40f, 28f), BrewTexts.TierMessage(r.Tier), textStyle);
 
-            string notes = "";
+            string notes = BrewTexts.Infusion(r.InfusionIndex) + ", " + BrewTexts.Character(r.Character) + ".  ";
+            if (r.MemoryCaught) notes += BrewTexts.MemoryCaught + "  ";
             if (r.IsTart) notes += BrewTexts.Tart + "  ";
             if (r.StaleWater) notes += BrewTexts.StaleWater;
             if (r.Tier == QualityTier.Flat || r.Tier == QualityTier.Decent)

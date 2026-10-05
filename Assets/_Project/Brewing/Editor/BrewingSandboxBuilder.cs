@@ -41,7 +41,9 @@ namespace SteepingSpirits.Brewing.EditorTools
                 LoadOrCreateTea("Tea_White", "Weißtee", "Scheu und langsam, aber verzeihend.",
                     TeaPresets.White(), new Color(0.95f, 0.83f, 0.5f), new Color(0.75f, 0.75f, 0.65f)),
                 LoadOrCreateTea("Tea_Green", "Grüntee", "Nervös, mit schmalem Fenster – mag kein kochendes Wasser.",
-                    TeaPresets.Green(), new Color(0.72f, 0.78f, 0.3f), new Color(0.25f, 0.45f, 0.18f))
+                    TeaPresets.Green(), new Color(0.72f, 0.78f, 0.3f), new Color(0.25f, 0.45f, 0.18f)),
+                LoadOrCreateTea("Tea_Oolong", "Oolong", "Entfaltend – wird mit jedem Aufguss schöner, das Fenster wandert.",
+                    TeaPresets.Oolong(), new Color(0.85f, 0.6f, 0.25f), new Color(0.3f, 0.32f, 0.15f))
             };
             BrewingTuning tuning = LoadOrCreate<BrewingTuning>(DataFolder + "/BrewingTuning.asset");
             BrewAudioSet audioSet = LoadOrCreate<BrewAudioSet>(DataFolder + "/BrewAudioSet.asset");
