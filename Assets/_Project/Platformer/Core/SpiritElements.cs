@@ -26,7 +26,7 @@ namespace SteepingSpirits.Platforming.Core
     [Serializable]
     public class LanternSpiritParams
     {
-        public float lightRadius = 3.2f;
+        public float lightRadius = 4f;
 
         /// <summary>How fast ghost platforms appear / fade (1/s).</summary>
         public float fadeRate = 6f;

@@ -84,7 +84,7 @@
 | D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | erledigt (58 Tests grün, UI ungeprüft) |
 | D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | erledigt (63 Tests grün, Verhalten ungeprüft) |
 | D3 | Level 1 (Einstieg ohne Text) | erledigt (Erreichbarkeit per Test, Spielgefühl ungeprüft) |
-| D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | offen |
+| D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | erledigt (Wege per Test, Spielgefühl ungeprüft) |
 | S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | erledigt (9 Schaukel-Tests grün, Gefühl ungeprüft) |
 | E1 | Debug-Overlay (F1) | offen |
 | E2 | Telemetrie (jumpnrun_log.jsonl pro Abschnitt) | offen |
@@ -190,3 +190,12 @@
 - [ ] In eine Lücke fallen → sanftes Auffangen an der letzten Laterne.
 - [ ] Ohne Unity: `dotnet test Tests/PlatformingCore.DotNet` prüft, dass Ziel, Laternen und alle
       Zutaten erreichbar sind (grob, siehe `LevelReachability`).
+
+### D4 – Level 2 „Geisterhain“
+- [ ] *Build Levels* → `JumpNRun_Level2.unity`; Level 1 → Ziel → „Weiter“ lädt Level 2 (ungeprüft).
+- [ ] Teich mit sinkenden Blättern → Laterne → zwei Wege:
+      unten über Dornenranken und die **Schaukel** über die Schlucht,
+      oben mit dem **Windgeist**, Laufsteg, **Tautropfen-Blatt** (optional hoch zum Sternentau).
+- [ ] Beide Wege treffen sich an der zweiten Laterne; der **Laternengeist** folgt und macht die
+      Geistertreppe über die Klamm fest; optional höher hinauf zur Geisterblüte.
+- [ ] Ohne Unity: Test prüft, dass jeder Weg allein zum Ziel führt und ohne beide nicht.

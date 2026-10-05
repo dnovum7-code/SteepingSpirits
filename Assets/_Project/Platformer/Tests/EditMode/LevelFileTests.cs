@@ -66,3 +66,62 @@ namespace SteepingSpirits.Platforming.Tests
         }
     }
 }
+
+namespace SteepingSpirits.Platforming.Tests
+{
+    public class Level2DesignTests
+    {
+        private static bool GoalReachable(string text)
+        {
+            LevelLayout l = LevelLayout.Parse(text);
+            var r = new LevelReachability(l);
+            r.Run();
+            return r.CanTouch(l.All(TileKind.Goal)[0]);
+        }
+
+        private static string Without(string text, char symbol)
+        {
+            // Keep header lines intact; only blank the symbol in grid rows.
+            var lines = text.Replace("\r\n", "\n").Split('\n');
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (!lines[i].StartsWith("@") && !lines[i].StartsWith("//"))
+                {
+                    lines[i] = lines[i].Replace(symbol, '.');
+                }
+            }
+
+            return string.Join("\n", lines);
+        }
+
+        [Test]
+        public void Level2_HasTwoIndependentWays()
+        {
+            string text = LevelFiles.Read("Level2");
+            Assert.IsTrue(GoalReachable(Without(text, 'W')), "lower way (swing) alone must work");
+            Assert.IsTrue(GoalReachable(Without(text, 'O')), "upper way (wind) alone must work");
+            Assert.IsFalse(GoalReachable(Without(Without(text, 'O'), 'W')), "without both the gorge must block");
+        }
+
+        [Test]
+        public void Level2_UsesAllSpiritElementsAndHidesRareFinds()
+        {
+            LevelLayout l = LevelLayout.Parse(LevelFiles.Read("Level2"));
+            foreach (TileKind k in new[] { TileKind.WindSpirit, TileKind.LanternSpirit, TileKind.Swing, TileKind.DewLeaf })
+            {
+                Assert.IsNotEmpty(l.All(k), k.ToString());
+            }
+
+            Assert.IsNotEmpty(l.GhostPlatforms);
+            Assert.IsNotEmpty(l.LeafPlatforms);
+
+            int rare = 0;
+            foreach (LevelMarker m in l.All(TileKind.Ingredient))
+            {
+                if (IngredientIds.IsRare(IngredientIds.FromSymbol(m.symbol))) rare++;
+            }
+
+            Assert.GreaterOrEqual(rare, 1);
+        }
+    }
+}

@@ -194,11 +194,13 @@ namespace SteepingSpirits.Platforming.Core
                 }
             }
 
-            // Swing: sitting down from a nearby cell, then flying off either way.
+            // Swing: jump onto the seat, then fly off either way.
             foreach (LevelMarker o in layout.All(TileKind.Swing))
             {
                 float seatY = o.y + 0.5f - elements.swing.ropeLength;
-                if (Math.Abs(o.x - from.x) > 2 || Math.Abs(from.y - seatY) > 2.5f)
+                float toSeat = Math.Max(0f, Math.Abs(o.x - from.x) - 0.5f) + Margin;
+                int rise = (int)Math.Ceiling(seatY - from.y);
+                if (Reach(rise) < toSeat)
                 {
                     continue;
                 }
