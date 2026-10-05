@@ -7,7 +7,9 @@
 
 ## Nächster konkreter Schritt
 
-Alle Backlog-Punkte A–F sind umgesetzt und gepusht (91 dotnet-Tests grün, Kompilat gegen
+**Runde 2 läuft – siehe Abschnitt „Runde 2“: erster Punkt mit Status „offen“.**
+
+Runde 1: Alle Backlog-Punkte A–F sind umgesetzt und gepusht (91 dotnet-Tests grün, Kompilat gegen
 Unity-Referenzen ohne neue Warnungen). **Nächster Schritt: in Unity prüfen** – Projekt öffnen,
 *SteepingSpirits → JumpNRun → Build Levels*, dann die Editor-Checklisten unten von A1 an
 abhaken. Alles mit „ungeprüft“ ist noch nicht in Unity gesehen worden.
@@ -17,6 +19,52 @@ Offene Ideen für danach:
 - Portal von der Wiese zur Lichtung (braucht eine Änderung an `TestMeadow`, bewusst nicht gemacht).
 - Sammelbeutel ans Inventar/Teehaus übergeben (IDs sind schon neutral).
 - Echte Sprites statt `PlaceholderVisual`, Schaukel-Animation (Beine ausstrecken/anziehen im Takt).
+
+## Runde 2 (Stand: in Arbeit)
+
+**Playtest-Notizen:** `Docs/PLAYTEST_NOTES.md` existiert noch nicht. Sobald sie existiert,
+hat sie Vorrang (Fehler → Gefühl → Wünsche, Status und Commit je Notiz).
+
+**Neue Freigaben (je eigener kleiner Commit):** Portal Wiese → Lichtung, Sammelbeutel →
+Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerController2D` bleibt).
+
+### Annahmen Runde 2
+- R1. Es gibt ein Inventar (`PlayerInventory`, DontDestroyOnLoad, von der Testwiese angelegt).
+  Läuft es, gehen die Zutaten dorthin (Teeblatt → vorhandene ID `item_teeblatt`, damit die
+  Sammel-Quest von Oma Hilde mitzählt). Läuft es nicht (Level direkt gestartet), landen sie im
+  „Vorratsschrank“ (`pantry.json`, versioniert). Beides gleichzeitig wäre doppelte Buchführung.
+- R2. Ein allgemeines Speichersystem fehlt → kleines versioniertes JSON `jumpnrun_save.json`.
+- R3. Der Smoke-Test-Bot spielt die Wege nicht pixelgenau nach, sondern steuert mit echten
+  Eingaben (über eine Eingabe-Schnittstelle des Spielers) von Stehplatz zu Stehplatz entlang des
+  Pfads der Erreichbarkeitsprüfung.
+
+### Backlog Runde 2
+
+| # | Punkt | Status |
+|---|---|---|
+| R2-1 | Smoke-Test per Menü + PlayMode-Tests | offen |
+| R2-2 | Eingabe-Aufzeichnung F5/F6 | offen |
+| R2-3 | Builder-Prüfungen (Prefab-Referenzen, Erreichbarkeit, Laternen-Reihenfolge) | offen |
+| R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | offen |
+| R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | offen |
+| R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | offen |
+| R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | offen |
+| R2-7b | Kletterpfad auf neuen Controller hinter Schalter | offen |
+| R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | offen |
+| R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | offen |
+| R2-10 | Schaukel-Kombinationen | offen |
+| R2-11 | Level 3 (Schaukel-Thema) | offen |
+| R2-12 | Hub-Lichtung lebendig | offen |
+| R2-13 | Level 4 | offen |
+| R2-14 | Pooling, keine Allokationen in Update | offen |
+| R2-15 | AudioSet-Asset pro Modul | offen |
+| R2-16 | Barrierefreiheit | offen |
+| R2-17 | Probe-Merge `integration/probe` | offen |
+| R2-18 | Eigene Verbesserungen | offen |
+
+### Editor-Checklisten Runde 2
+
+_(pro Commit ergänzt)_
 
 ## Erkundung (Stand `main` 5629997)
 
