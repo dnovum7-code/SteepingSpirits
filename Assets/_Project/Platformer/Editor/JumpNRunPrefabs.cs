@@ -35,6 +35,29 @@ namespace SteepingSpirits.Platformer.EditorTools
             Save(JumpNRunElementFactory.CreateDoor(), ElementPath("LevelDoor"));
         }
 
+        public static readonly string[] ElementNames =
+        {
+            "Lantern", "Bramble", "Ingredient", "Goal", "WindSpirit", "LanternSpirit", "DewLeaf", "PlaygroundSwing",
+            "SpiritNpc", "PathLantern", "LevelDoor"
+        };
+
+        /// <summary>Warns in the console about prefabs that did not come out of the build.</summary>
+        public static void CheckAll()
+        {
+            if (Player == null)
+            {
+                Debug.LogWarning("[JumpNRun] Player prefab missing: " + PlayerPath);
+            }
+
+            foreach (string name in ElementNames)
+            {
+                if (Element(name) == null)
+                {
+                    Debug.LogWarning("[JumpNRun] Element prefab missing: " + ElementPath(name));
+                }
+            }
+        }
+
         public static string ElementPath(string name) => ElementFolder + "/" + name + ".prefab";
 
         public static GameObject Element(string name) => AssetDatabase.LoadAssetAtPath<GameObject>(ElementPath(name));

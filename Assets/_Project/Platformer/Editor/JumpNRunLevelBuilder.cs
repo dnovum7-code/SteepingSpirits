@@ -76,6 +76,14 @@ namespace SteepingSpirits.Platformer.EditorTools
                 string path = entry.Key;
                 LevelLayout layout = entry.Value;
                 string id = layout.Setting("id", Path.GetFileNameWithoutExtension(path));
+                SpiritElementsTuning elements = AssetDatabase.LoadAssetAtPath<SpiritElementsTuning>(JumpNRunBuilder.DataFolder + "/SpiritElementsTuning.asset");
+                MovementTuning movement = AssetDatabase.LoadAssetAtPath<MovementTuning>(JumpNRunBuilder.DataFolder + "/MovementTuning.asset");
+                foreach (string warning in LevelLint.Check(layout, movement != null ? movement.movement : null,
+                             elements != null ? elements.elements : null))
+                {
+                    Debug.LogWarning($"[JumpNRun] {path}: {warning}");
+                }
+
                 string scenePath = JumpNRunBuilder.SceneFolder + "/JumpNRun_" + id + ".unity";
                 BuildLevelScene(layout, id, scenePath);
                 built.Add(scenePath);
@@ -160,6 +168,11 @@ namespace SteepingSpirits.Platformer.EditorTools
             if (cam != null)
             {
                 cam.backgroundColor = mood.sky;
+            }
+
+            foreach (string problem in JumpNRunSceneChecks.Check(scene))
+            {
+                Debug.LogWarning($"[JumpNRun] {scenePath}: {problem}");
             }
 
             EditorSceneManager.SaveScene(scene, scenePath);

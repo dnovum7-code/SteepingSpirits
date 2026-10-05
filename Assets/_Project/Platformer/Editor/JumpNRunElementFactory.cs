@@ -239,7 +239,14 @@ namespace SteepingSpirits.Platformer.EditorTools
 
         private static GameObject Place(string prefabName, Transform parent, Vector3 position, LevelMarker m)
         {
-            GameObject go = JumpNRunPrefabs.Place(JumpNRunPrefabs.Element(prefabName), parent, position);
+            GameObject prefab = JumpNRunPrefabs.Element(prefabName);
+            if (prefab == null)
+            {
+                Debug.LogWarning($"[JumpNRun] Prefab '{prefabName}' missing ({JumpNRunPrefabs.ElementPath(prefabName)}) – placeholder used for {m}.");
+                return Placeholder(parent, m);
+            }
+
+            GameObject go = JumpNRunPrefabs.Place(prefab, parent, position);
             go.name = $"{prefabName} #{m.index}";
             return go;
         }
