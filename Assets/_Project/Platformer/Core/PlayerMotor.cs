@@ -60,6 +60,22 @@ namespace SteepingSpirits.Platforming.Core
         public bool DashReady { get; private set; } = true;
         public int Facing { get; private set; } = 1;
 
+        /// <summary>Air jumps granted by assist options on top of the tuning value.</summary>
+        public int BonusAirJumps
+        {
+            get => bonusAirJumps;
+            set
+            {
+                int delta = value - bonusAirJumps;
+                bonusAirJumps = value;
+                AirJumpsLeft = Math.Max(0, Math.Min(AirJumpCapacity, AirJumpsLeft + delta));
+            }
+        }
+
+        private int bonusAirJumps;
+
+        public int AirJumpCapacity => Math.Max(0, Params.airJumps) + Math.Max(0, BonusAirJumps);
+
         /// <summary>Fall speed (positive) at the moment of the last landing.</summary>
         public float LastLandingSpeed { get; private set; }
 
@@ -72,7 +88,7 @@ namespace SteepingSpirits.Platforming.Core
         public PlayerMotor(MovementParams parameters)
         {
             Params = parameters ?? new MovementParams();
-            AirJumpsLeft = Params.airJumps;
+            AirJumpsLeft = AirJumpCapacity;
         }
 
         /// <summary>Clears timers and velocity (respawn, catch).</summary>
@@ -85,7 +101,7 @@ namespace SteepingSpirits.Platforming.Core
             DashTimer = 0f;
             Rising = false;
             DashReady = true;
-            AirJumpsLeft = Params.airJumps;
+            AirJumpsLeft = AirJumpCapacity;
             lowestAirVy = 0f;
         }
 
@@ -98,7 +114,7 @@ namespace SteepingSpirits.Platforming.Core
             CoyoteTimer = 0f;
             if (refillAirJumps)
             {
-                AirJumpsLeft = Params.airJumps;
+                AirJumpsLeft = AirJumpCapacity;
                 DashReady = true;
             }
         }
@@ -120,7 +136,7 @@ namespace SteepingSpirits.Platforming.Core
             if (Grounded)
             {
                 CoyoteTimer = p.coyoteTime;
-                AirJumpsLeft = p.airJumps;
+                AirJumpsLeft = AirJumpCapacity;
                 if (!IsDashing)
                 {
                     DashReady = true;

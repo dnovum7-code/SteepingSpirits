@@ -64,6 +64,9 @@
 10. **Neuer Spieler statt Umbau:** Die neuen Level bekommen einen eigenen Controller auf
     Basis des Cores. Der Kletterpfad (`JumpAndRun.unity`) behält den alten
     `PlatformerController2D` unverändert (ersetzt Annahme 3/4 für diese eine Szene).
+11. **Spieltempo-Assist** läuft über `Time.timeScale` (nur in Jump'n'Run-Leveln, `JumpNRunTime`
+    stellt beim Verlassen 1 wieder her). `GamePause` bleibt unberührt.
+12. **Optionen** werden pro Spieler in `PlayerPrefs` gespeichert (Komfort-Einstellung, kein Spielstand).
 
 ## Backlog
 
@@ -77,7 +80,7 @@
 | B2 | Kamera (Folgen, Vorausschau, Totzone, vertikal nach Landung) | erledigt (8 Kamera-Tests grün, Bild ungeprüft) |
 | B3 | Feedback (Squash/Stretch, Staub/Blätter, Töne) | erledigt (45 Tests grün, Klang/Bild ungeprüft) |
 | C1 | Laternen-Checkpoints + sanftes Auffangen | erledigt (48 Tests grün, Ablauf ungeprüft) |
-| C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | offen |
+| C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | erledigt (54 Tests grün, Menü ungeprüft) |
 | D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | offen |
 | D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | offen |
 | D3 | Level 1 (Einstieg ohne Text) | offen |
@@ -143,3 +146,10 @@
 - [ ] In ein Loch fallen → Bild dunkelt weich ab (~0,35 s), Geist-Wölkchen, Figur steht an
       der letzten Laterne, Bild hellt auf. Kein Tod-Zähler, keine Wartezeit.
 - [ ] Eine frühere Laterne nochmal berühren → Rücksetzpunkt springt nicht zurück.
+
+### C2 – Komfort-Optionen
+- [ ] Level 1 → Play → Esc: Pausemenü „Pause · Komfort“, Spiel steht (ungeprüft).
+- [ ] Spieltempo mit A/D auf 70 % → alles läuft ruhiger; Extra-Luftsprung an → in der Luft
+      nochmal springen; Absturzschutz an → nach Sturz an der letzten sicheren Stelle weiter.
+- [ ] Play beenden und neu starten → Einstellungen sind gemerkt.
+- [ ] Nach dem Verlassen des Levels läuft die Wiese wieder mit normalem Tempo.
