@@ -62,7 +62,7 @@
 | # | Punkt | Status |
 |---|---|---|
 | A1 | Szenen per Editor-Builder (Menü SteepingSpirits → JumpNRun → Build Levels) | erledigt (Kompilat geprüft, Unity ungeprüft) |
-| A2 | Core-Assembly `SteepingSpirits.Platforming.Core` + dotnet-Tests | offen |
+| A2 | Core-Assembly `SteepingSpirits.Platforming.Core` + dotnet-Tests | erledigt (5 Tests grün) |
 | A3 | Tuning-ScriptableObjects (Movement, Camera, Feedback) | offen |
 | A4 | Level als Daten (Tile-Strings) + Builder baut daraus | offen |
 | B1 | Assist-Techniken (Coyote, Buffer, Cut, Apex, Fallschwerkraft, Max-Fall, Ecken, Luftkontrolle) | offen |
@@ -88,3 +88,9 @@
 - [ ] `Assets/Scenes/TestMeadow.unity` öffnen → Play → Wiese baut sich wie bisher auf.
 - [ ] `Assets/Scenes/JumpAndRun.unity` öffnen → Play → Kletterpfad wie bisher.
 - [ ] *File → Build Profiles*: beide Szenen stehen in der Liste.
+
+### A2 – Core-Assembly
+- [ ] Unity: Konsole ohne Fehler; im Projekt erscheinen die Assemblies
+      `SteepingSpirits.Platforming.Core` und `SteepingSpirits.Platforming.Tests.EditMode` (ungeprüft).
+- [ ] *Window → General → Test Runner → EditMode*: Platforming-Tests laufen grün.
+- [x] Ohne Unity: `dotnet test Tests/PlatformingCore.DotNet` → grün.
