@@ -16,6 +16,51 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string FallProtectionHelp = "Nach einem Sturz geht es dort weiter, wo du zuletzt sicher standest.";
         public const string AutoSwing = "Auto-Schwung";
         public const string AutoSwingHelp = "Schaukeln: eine Richtung halten genügt, der Takt kommt von allein.";
+        public const string HighContrast = "Hoher Kontrast";
+        public const string HighContrastHelp = "Geisterplattformen und Lichter deutlicher sichtbar.";
+        public const string KeysButton = "Tasten anpassen …";
+
+        // Key rebinding
+        public const string KeysTitle = "Tastenbelegung";
+        public const string KeysHint = "Feld wählen und bestätigen, dann neue Taste drücken. Gamepad bleibt fest belegt.";
+        public const string KeysListening = "Neue Taste drücken … (Esc bricht ab)";
+        public const string KeysPress = "…";
+        public const string KeysReset = "Standard";
+        public const string KeysBack = "Zurück";
+
+        public static string ActionName(SteepingSpirits.Platforming.Core.BindAction a)
+        {
+            switch (a)
+            {
+                case SteepingSpirits.Platforming.Core.BindAction.Left: return "Nach links";
+                case SteepingSpirits.Platforming.Core.BindAction.Right: return "Nach rechts";
+                case SteepingSpirits.Platforming.Core.BindAction.Up: return "Hoch";
+                case SteepingSpirits.Platforming.Core.BindAction.Down: return "Runter";
+                case SteepingSpirits.Platforming.Core.BindAction.Jump: return "Springen";
+                case SteepingSpirits.Platforming.Core.BindAction.Dash: return "Dash";
+                default: return "Greifen";
+            }
+        }
+
+        public static string KeyName(string key)
+        {
+            switch (key)
+            {
+                case "": case null: return "–";
+                case "Space": return "Leertaste";
+                case "LeftArrow": return "Pfeil links";
+                case "RightArrow": return "Pfeil rechts";
+                case "UpArrow": return "Pfeil hoch";
+                case "DownArrow": return "Pfeil runter";
+                case "LeftShift": return "Umschalt links";
+                case "RightShift": return "Umschalt rechts";
+                case "LeftCtrl": return "Strg links";
+                case "RightCtrl": return "Strg rechts";
+                case "Enter": return "Eingabe";
+                default: return key.StartsWith("Digit") ? key.Substring(5) : key;
+            }
+        }
+
         public const string On = "an";
         public const string Off = "aus";
         public const string Resume = "Weiter";

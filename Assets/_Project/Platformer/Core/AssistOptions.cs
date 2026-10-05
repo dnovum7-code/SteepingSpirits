@@ -26,7 +26,10 @@ namespace SteepingSpirits.Platforming.Core
         /// <summary>Swing: holding a direction pumps in the right rhythm by itself.</summary>
         public bool autoSwing;
 
-        public bool AnyActive => gameSpeed < MaxSpeed - 0.001f || extraAirJump || fallProtection || autoSwing;
+        /// <summary>Ghost platforms and lights drawn with strong contrast.</summary>
+        public bool highContrast;
+
+        public bool AnyActive => gameSpeed < MaxSpeed - 0.001f || extraAirJump || fallProtection || autoSwing || highContrast;
 
         public AssistOptions Clone() => (AssistOptions)MemberwiseClone();
 
@@ -53,7 +56,9 @@ namespace SteepingSpirits.Platforming.Core
         {
             string s = string.Format(CultureInfo.InvariantCulture, "speed={0:0.0};air={1};fall={2}",
                 ClampedSpeed, extraAirJump ? 1 : 0, fallProtection ? 1 : 0);
-            return autoSwing ? s + ";swing=1" : s;
+            if (autoSwing) s += ";swing=1";
+            if (highContrast) s += ";contrast=1";
+            return s;
         }
 
         public static AssistOptions Parse(string text)
@@ -92,6 +97,9 @@ namespace SteepingSpirits.Platforming.Core
                         break;
                     case "swing":
                         o.autoSwing = value == "1";
+                        break;
+                    case "contrast":
+                        o.highContrast = value == "1";
                         break;
                 }
             }

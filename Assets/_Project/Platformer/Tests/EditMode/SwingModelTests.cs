@@ -241,6 +241,9 @@ namespace SteepingSpirits.Platforming.Tests
             Assert.AreEqual("speed=1.0;air=0;fall=0;swing=1", o.Serialize());
             Assert.IsTrue(AssistOptions.Parse(o.Serialize()).autoSwing);
             Assert.IsFalse(AssistOptions.Parse("speed=1.0;air=0;fall=0").autoSwing);
+            var c = new AssistOptions { highContrast = true };
+            Assert.AreEqual("speed=1.0;air=0;fall=0;contrast=1", c.Serialize());
+            Assert.IsTrue(AssistOptions.Parse(c.Serialize()).highContrast);
         }
     }
 }

@@ -50,12 +50,20 @@ namespace SteepingSpirits.Platformer.JumpNRun
             visibility = PMath.Damp(visibility, box.enabled ? 1f : 0f, p.lanternSpirit.fadeRate, Time.fixedDeltaTime);
         }
 
+        [SerializeField] private Color highContrastColor = new Color(1f, 0.95f, 0.4f, 1f);
+
         private void Update()
         {
-            if (visual != null && visual.Renderer != null)
+            if (visual == null || visual.Renderer == null)
             {
-                visual.Renderer.color = new Color(color.r, color.g, color.b, Mathf.Lerp(hiddenAlpha, 0.9f, visibility));
+                return;
             }
+
+            // Comfort option "hoher Kontrast": bright outline colour, clearly visible even when unlit.
+            bool contrast = JumpNRunOptions.Instance != null && JumpNRunOptions.Instance.Options.highContrast;
+            Color c = contrast ? highContrastColor : color;
+            float hidden = contrast ? 0.45f : hiddenAlpha;
+            visual.Renderer.color = new Color(c.r, c.g, c.b, Mathf.Lerp(hidden, contrast ? 1f : 0.9f, visibility));
         }
     }
 }

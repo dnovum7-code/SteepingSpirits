@@ -30,6 +30,9 @@ namespace SteepingSpirits.Platforming.Core
 
         public string Assists = "";
 
+        /// <summary>Custom keyboard bindings (KeyBindings text); empty = defaults.</summary>
+        public string Keys = "";
+
         public JumpNRunSave()
         {
             foreach (string id in InitiallyUnlocked) unlocked.Add(id);
@@ -82,6 +85,7 @@ namespace SteepingSpirits.Platforming.Core
             Array(sb, "rareIds", rareIds);
             Array(sb, "challenges", challenges);
             sb.Append(",\"assists\":").Append(MiniJson.Quote(Assists));
+            if (!string.IsNullOrEmpty(Keys)) sb.Append(",\"keys\":").Append(MiniJson.Quote(Keys));
             return sb.Append('}').ToString();
         }
 
@@ -116,6 +120,7 @@ namespace SteepingSpirits.Platforming.Core
             Read(root, "rareIds", save.rareIds);
             Read(root, "challenges", save.challenges);
             if (root.TryGetValue("assists", out object a) && a is string s) save.Assists = s;
+            if (root.TryGetValue("keys", out object k) && k is string ks) save.Keys = ks;
             return save;
         }
 

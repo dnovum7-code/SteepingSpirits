@@ -138,6 +138,11 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 return source.Read();
             }
 
+            if (JumpNRunKeys.IsCustom)
+            {
+                return JumpNRunKeys.Read();
+            }
+
             return new PlayerInputFrame
             {
                 move = GameInput.Move,

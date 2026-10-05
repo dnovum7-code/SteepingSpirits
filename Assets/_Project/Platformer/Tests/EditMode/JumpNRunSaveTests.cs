@@ -40,7 +40,7 @@ namespace SteepingSpirits.Platforming.Tests
         [Test]
         public void Json_RoundTrip()
         {
-            var s = new JumpNRunSave { Assists = "speed=0.8;air=1;fall=0" };
+            var s = new JumpNRunSave { Assists = "speed=0.8;air=1;fall=0", Keys = "Jump=J,Space" };
             s.Complete("Level1", "Level2");
             s.FoundRare("Level1", 54, 11, IngredientIds.GoldenTip);
             s.CompleteChallenge("Level1");
@@ -53,6 +53,7 @@ namespace SteepingSpirits.Platforming.Tests
             Assert.IsTrue(back.HasFoundRareAt("Level1", 54, 11));
             Assert.IsTrue(back.IsChallengeDone("Level1"));
             Assert.AreEqual("speed=0.8;air=1;fall=0", back.Assists);
+            Assert.AreEqual("Jump=J,Space", back.Keys);
             Assert.AreEqual(json, back.ToJson(), "stable output");
         }
 

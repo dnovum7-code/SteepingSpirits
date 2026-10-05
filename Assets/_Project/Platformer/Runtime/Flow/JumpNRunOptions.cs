@@ -85,8 +85,31 @@ namespace SteepingSpirits.Platformer.JumpNRun
             RefreshValues();
         }
 
+        private void OpenKeys()
+        {
+            if (keyPanel == null)
+            {
+                keyPanel = new JumpNRunKeyPanel(() =>
+                {
+                    panel.SetActive(true);
+                    JumpNRunUi.Focus(rows[rows.Count - 2]);
+                });
+            }
+
+            panel.SetActive(false);
+            keyPanel.Open();
+        }
+
         private void Update()
         {
+            if (keyPanel != null && keyPanel.IsOpen)
+            {
+                // The key screen owns Escape while it listens; otherwise Escape goes back.
+                if (keyPanel.IsListening) keyPanel.Tick();
+                else if (GameInput.CancelPressed) keyPanel.Close();
+                return;
+            }
+
             if (GameInput.CancelPressed)
             {
                 SetOpen(!open);
@@ -106,14 +129,15 @@ namespace SteepingSpirits.Platformer.JumpNRun
             lastMoveX = x;
             if (dx != 0)
             {
-                for (int i = 0; i < rows.Count - 1; i++)
+                for (int i = 0; i < RowCount; i++)
                 {
                     if (JumpNRunUi.IsFocused(rows[i])) Change(i, dx);
                 }
             }
         }
 
-        private const int RowCount = 4;
+        private const int RowCount = 5;
+        private JumpNRunKeyPanel keyPanel;
 
         private void Change(int row, int dir)
         {
@@ -123,6 +147,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 case 1: options.extraAirJump = !options.extraAirJump; break;
                 case 2: options.fallProtection = !options.fallProtection; break;
                 case 3: options.autoSwing = !options.autoSwing; break;
+                case 4: options.highContrast = !options.highContrast; break;
             }
 
             Apply();
@@ -159,12 +184,17 @@ namespace SteepingSpirits.Platformer.JumpNRun
             UiFactory.FullStretch((RectTransform)panel.transform);
             JumpNRunUi.Dim(panel.transform, 0.45f);
             RectTransform content = JumpNRunUi.Window(panel.transform, JumpNRunTexts.OptionsTitle,
-                new Vector2(760f, 260f + RowCount * 92f), out _);
+                new Vector2(760f, 330f + RowCount * 92f), out _);
 
             AddRow(content, JumpNRunTexts.GameSpeed, JumpNRunTexts.GameSpeedHelp, 0);
             AddRow(content, JumpNRunTexts.ExtraAirJump, JumpNRunTexts.ExtraAirJumpHelp, 1);
             AddRow(content, JumpNRunTexts.FallProtection, JumpNRunTexts.FallProtectionHelp, 2);
             AddRow(content, JumpNRunTexts.AutoSwing, JumpNRunTexts.AutoSwingHelp, 3);
+            AddRow(content, JumpNRunTexts.HighContrast, JumpNRunTexts.HighContrastHelp, 4);
+
+            Button keys = JumpNRunUi.Button(content, JumpNRunTexts.KeysButton);
+            keys.onClick.AddListener(OpenKeys);
+            rows.Add(keys);
             Button resume = JumpNRunUi.Button(content, JumpNRunTexts.Resume);
             resume.onClick.AddListener(() => SetOpen(false));
             rows.Add(resume);
@@ -202,6 +232,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             SetText(values[1], JumpNRunTexts.OnOff(options.extraAirJump));
             SetText(values[2], JumpNRunTexts.OnOff(options.fallProtection));
             SetText(values[3], JumpNRunTexts.OnOff(options.autoSwing));
+            SetText(values[4], JumpNRunTexts.OnOff(options.highContrast));
         }
 
         private static void SetText(Text t, string s)

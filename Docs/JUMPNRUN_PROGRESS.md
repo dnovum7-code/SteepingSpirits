@@ -29,6 +29,9 @@ hat sie Vorrang (Fehler → Gefühl → Wünsche, Status und Commit je Notiz).
 Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerController2D` bleibt).
 
 ### Annahmen Runde 2
+- R6. Tastenbelegung nur im Jump'n'Run: `GameInput` ist ein anderes System (keine Freigabe). Mit
+  Standardbelegung liest der Spieler weiterhin `GameInput`; erst eigene Belegungen schalten auf
+  `JumpNRunKeys` um (Tastatur nach Belegung, Gamepad direkt mit denselben Knöpfen).
 - R5. Schaukel-Aufsitzen ist großzügiger: Nähe zum Sitz genügt (auch im Flug), nicht mehr nur fallend.
   Nötig für Schaukel→Schaukel und angenehmer für alle.
 - R4. Für den Zugriff von Tests und Werkzeugen gibt es eine kleine Assembly
@@ -66,7 +69,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-13 | Level 4 | erledigt („Taunacht“: Erreichbarkeit, 2 Wege, Bot-Durchlauf; Unity ungeprüft) |
 | R2-14 | Pooling, keine Allokationen in Update | erledigt (Audit + PlayMode-Messtest; Messung ungeprüft) |
 | R2-15 | AudioSet-Asset pro Modul | erledigt (Jump'n'Run; das Brüh-Modul hat sein `BrewAudioSet` schon – nicht angefasst) |
-| R2-16 | Barrierefreiheit | offen |
+| R2-16 | Barrierefreiheit | erledigt (Belegung 4 Tests; Menü/Tasten ungeprüft) |
 | R2-17 | Probe-Merge `integration/probe` | offen |
 | R2-18 | Eigene Verbesserungen | offen |
 
@@ -79,6 +82,14 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-16 – Barrierefreiheit
+- [ ] Esc → „Hoher Kontrast“ an → Geisterplattformen gelb und auch unbeleuchtet gut sichtbar (ungeprüft).
+- [ ] Esc → „Tasten anpassen …“ → Feld wählen, Enter, neue Taste drücken; Esc bricht ab; „Standard“ setzt zurück.
+      Je Aktion zwei Tasten; eine schon vergebene Taste wechselt zur neuen Aktion (nichts doppelt belegt).
+- [ ] Belegung gilt im Jump'n'Run (Level, Lichtung, Kletterpfad mit neuem Controller), bleibt nach Neustart.
+      Gamepad bleibt fest belegt. Wiese/Kampf nutzen weiter `GameInput` (nicht geändert).
+- [ ] Alter Input Manager: Belegung funktioniert ebenfalls (Namen werden auf KeyCode umgesetzt).
 
 #### R2-15 – Audio-Set
 - [ ] *Build Levels* legt `Assets/_Project/Platformer/Data/JumpNRunAudioSet.asset` an (bleibt danach erhalten) (ungeprüft).
