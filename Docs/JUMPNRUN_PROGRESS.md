@@ -62,7 +62,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | erledigt (6 neue Tests, 117 grün; Klang/Bild ungeprüft) |
 | R2-10 | Schaukel-Kombinationen | erledigt (Bot schafft Schaukel→Schaukel und Schaukel→Wind in der Simulation; Unity ungeprüft) |
 | R2-11 | Level 3 (Schaukel-Thema) | erledigt (Erreichbarkeit, 2 Wege, Bot-Durchlauf in der Simulation; Unity ungeprüft) |
-| R2-12 | Hub-Lichtung lebendig | offen |
+| R2-12 | Hub-Lichtung lebendig | erledigt (Satzwahl 3 Tests; Anzeige ungeprüft) |
 | R2-13 | Level 4 | offen |
 | R2-14 | Pooling, keine Allokationen in Update | offen |
 | R2-15 | AudioSet-Asset pro Modul | offen |
@@ -79,6 +79,14 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-12 – Lebendige Lichtung
+- [ ] Lichtung: Regal auf der kleinen Plattform mit fünf Plätzen; gefundene Seltenheiten leuchten in
+      ihrer Farbe, fehlende sind blass; darüber „Seltene Funde: x von 5“ (ungeprüft).
+- [ ] Türen erledigter Level zeigen „geschafft“ (und „alle Laternen“ nach der Laternen-Herausforderung).
+- [ ] Zwei Geister: einer spricht über die Wege (neu → erster Weg → mehrere → alle → alle Laternen),
+      einer über das Regal (leer → einige → die Hälfte → alle fünf).
+- Neue Tür „5“ führt zum Kletterpfad, „4“ zu Level 4 (ab R2-13).
 
 #### R2-11 – Level 3 „Abendschaukel“
 - [ ] *Build Levels* → `JumpNRun_Level3.unity`; Lichtung hat Tür „Abendschaukel“, Level 2 → „Weiter“ führt hierher (ungeprüft).

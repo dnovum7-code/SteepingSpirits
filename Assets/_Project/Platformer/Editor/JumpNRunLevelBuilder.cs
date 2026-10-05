@@ -166,6 +166,26 @@ namespace SteepingSpirits.Platformer.EditorTools
             Transform objects = Child(root.transform, "Objects");
             JumpNRunElementFactory.Build(layout, level, objects);
 
+            if (layout.IsHub)
+            {
+                int count = 0;
+                foreach (LevelMarker d in layout.All(TileKind.Door))
+                {
+                    string target = layout.DoorTarget(d);
+                    if (target != "meadow" && target != "climb") count++;
+                }
+
+                level.hubLevelCount = count;
+                string[] shelf = layout.Setting("shelf").Split(' ');
+                if (shelf.Length == 2 && int.TryParse(shelf[0], out int sx) && int.TryParse(shelf[1], out int sy))
+                {
+                    var go = new GameObject("RareShelf");
+                    go.transform.SetParent(objects, false);
+                    go.transform.position = new Vector3(sx + 0.5f, sy, 0f);
+                    go.AddComponent<RareShelf>();
+                }
+            }
+
             Camera cam = Object.FindAnyObjectByType<Camera>();
             if (cam != null)
             {

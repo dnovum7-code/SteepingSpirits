@@ -56,6 +56,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 case "evening_hello": return "Abends schaukeln die Geister am liebsten. Mitschwingen, nicht drängeln!";
                 case "evening_chain": return "Von Schaukel zu Schaukel – einfach in die Nähe fliegen, sie fangen dich.";
                 case "hub_welcome": return "Willkommen auf der Lichtung. Jede Tür führt zu einem Sammelplatz.";
+                case "hub_first": return "Du riechst nach Morgenwiese! Hinter der nächsten Tür wartet der Geisterhain.";
+                case "hub_more": return "Die Lichtung wird heller, je mehr Wege du gehst. Man merkt es an den Laternen.";
+                case "hub_all": return "Alle Wege gegangen! Die Pfadlaternen leuchten aber noch nicht überall …";
+                case "hub_all_lanterns": return "Jede Laterne brennt. So hell war die Lichtung seit hundert Jahren nicht.";
+                case "shelf_empty": return "Mein Regal ist leer. Seltene Funde liegen oft abseits des Weges.";
+                case "shelf_some": return "Oh, ein seltener Fund! Ich stelle ihn hier ins Regal.";
+                case "shelf_half": return "Das Regal füllt sich. Die Hälfte der Schätze hast du schon.";
+                case "shelf_full": return "Alle fünf Seltenheiten! Selbst die alten Geister staunen.";
                 default: return "…";
             }
         }
@@ -64,6 +72,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string DoorMeadow = "Zur Wiese";
         public const string DoorClimb = "Kletterpfad";
         public const string DoorHint = "W: hinein";
+        public const string DoorDone = "geschafft";
+        public const string DoorAllLanterns = "alle Laternen";
+        public static string ShelfCount(int found, int total) => $"Seltene Funde: {found} von {total}";
         public const string DoorLocked = "noch verschlossen – erst den Weg davor gehen";
 
         public static string Percent(float value) => $"{UnityEngine.Mathf.RoundToInt(value * 100f)} %";

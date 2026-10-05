@@ -60,6 +60,19 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
         }
 
+        /// <summary>"geschafft · alle Laternen" for finished levels (empty otherwise).</summary>
+        private string Progress()
+        {
+            if (string.IsNullOrEmpty(levelId) || !JumpNRunSaveStore.Current.IsCompleted(levelId))
+            {
+                return "";
+            }
+
+            return JumpNRunSaveStore.Current.IsChallengeDone(levelId)
+                ? JumpNRunTexts.DoorDone + " · " + JumpNRunTexts.DoorAllLanterns
+                : JumpNRunTexts.DoorDone;
+        }
+
         private void Start()
         {
             sign = new WorldLabel("DoorSign", 22, new Color(1f, 0.93f, 0.8f), new Color(0.2f, 0.13f, 0.08f, 0.7f), 340f);
@@ -81,7 +94,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             if (state != shownState)
             {
                 shownState = state;
-                string hintLine = state == 2 ? JumpNRunTexts.DoorLocked : state == 1 ? JumpNRunTexts.DoorHint : "";
+                string hintLine = state == 2 ? JumpNRunTexts.DoorLocked : state == 1 ? JumpNRunTexts.DoorHint : Progress();
                 sign.SetText(hintLine.Length > 0 ? label + "\n<size=16>" + hintLine + "</size>" : label, hintLine.Length > 0 ? 2 : 1);
                 sign.SetAlpha(1f);
             }

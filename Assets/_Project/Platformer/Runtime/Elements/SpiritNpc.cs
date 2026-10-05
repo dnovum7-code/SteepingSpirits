@@ -33,6 +33,12 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private void Start()
         {
+            // Spirits on the clearing pick their line from the player's progress.
+            JumpNRunLevel level = JumpNRunLevel.Current;
+            int levels = level != null ? level.hubLevelCount : 0;
+            lineKey = SteepingSpirits.Platforming.Core.HubLines.Pick(lineKey, JumpNRunSaveStore.Current, levels,
+                SteepingSpirits.Platforming.Core.IngredientIds.Rare.Length);
+
             bubble = new WorldLabel("SpeechBubble", 20, Color.white, new Color(0.12f, 0.14f, 0.22f, 0.85f), bubbleWidth);
             bubble.SetText(JumpNRunTexts.NpcLine(lineKey), 2);
         }

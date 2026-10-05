@@ -20,6 +20,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         public int lanternCount;
 
+        /// <summary>Hubs only: how many levels the doors lead to (for the spirits' progress lines).</summary>
+        public int hubLevelCount;
+
         /// <summary>The level text the scene was built from (route planning in tools and tests).</summary>
         [TextArea(2, 6)] public string layoutText = "";
 
