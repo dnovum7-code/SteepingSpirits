@@ -58,6 +58,9 @@ namespace SteepingSpirits.Platforming.Core
                    && (layout.IsStandable(x, y - 1) || layout.At(x, y - 1) == TileKind.DewLeaf);
         }
 
+        /// <summary>Is this standing cell on top of a dew leaf (landing there bounces)?</summary>
+        public bool IsOnDew(Cell c) => layout.At(c.x, c.y - 1) == TileKind.DewLeaf;
+
         /// <summary>Solid for a body passing through (ground, ghost, leaf).</summary>
         public bool IsBlocking(int x, int y) => IsBlocked(x, y);
 
@@ -393,15 +396,19 @@ namespace SteepingSpirits.Platforming.Core
                 }
 
                 // Tiles touched by the body during a jump: need height (y − feet) ≤ peak + body.
+                // Standing on a dew leaf the bounce goes higher.
+                float bonus = layout.At(s.x, s.y - 1) == TileKind.DewLeaf
+                    ? SpiritMath.DewBounceVelocity(elements.dew, move.Gravity, true)
+                    : 0f;
                 int dy = y - s.y;
                 float needHeight = Math.Max(0f, dy - BodyHeight + 0.5f);
-                if (needHeight > PeakHeight())
+                if (needHeight > PeakHeight(bonus))
                 {
                     continue;
                 }
 
                 float dist = Math.Max(0f, Math.Abs(x - s.x) - 0.5f);
-                float reach = Reach((int)Math.Ceiling(needHeight));
+                float reach = Reach((int)Math.Ceiling(needHeight), bonus);
                 if (reach >= dist)
                 {
                     return true;

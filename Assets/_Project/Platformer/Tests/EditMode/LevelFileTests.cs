@@ -251,3 +251,70 @@ namespace SteepingSpirits.Platforming.Tests
         }
     }
 }
+
+namespace SteepingSpirits.Platforming.Tests
+{
+    public class Level4DesignTests
+    {
+        private static bool Finishable(string text)
+        {
+            LevelLayout l = LevelLayout.Parse(text);
+            var r = new LevelReachability(l);
+            r.Run();
+            return r.CanTouch(l.All(TileKind.Goal)[0]);
+        }
+
+        private static string Edit(string text, System.Func<int, int, char, char> change)
+        {
+            LevelLayout probe = LevelLayout.Parse(text);
+            var lines = text.Replace("\r\n", "\n").Split('\n');
+            int gridRow = 0;
+            int firstGridLine = -1;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].StartsWith("@") || lines[i].StartsWith("//")) continue;
+                if (firstGridLine < 0) firstGridLine = i;
+                int y = probe.Height - 1 - gridRow;
+                char[] row = lines[i].ToCharArray();
+                for (int x = 0; x < row.Length; x++) row[x] = change(x, y, row[x]);
+                lines[i] = new string(row);
+                gridRow++;
+            }
+
+            return string.Join("\n", lines);
+        }
+
+        [Test]
+        public void Level4_IsAboutDewAtNight()
+        {
+            LevelLayout l = LevelLayout.Parse(LevelFiles.Read("Level4"));
+            Assert.GreaterOrEqual(l.All(TileKind.DewLeaf).Count, 6);
+            Assert.AreEqual("night", l.Setting("mood"));
+            Assert.IsNotEmpty(l.All(TileKind.LanternSpirit));
+            Assert.IsNotEmpty(l.GhostPlatforms);
+            Assert.AreEqual(1, l.All(TileKind.Ingredient).FindAll(m => IngredientIds.IsRare(IngredientIds.FromSymbol(m.symbol))).Count);
+        }
+
+        [Test]
+        public void Level4_PoolHasTwoWays()
+        {
+            string text = LevelFiles.Read("Level4");
+            Assert.IsTrue(Finishable(Edit(text, (x, y, c) => c == 'F' ? '.' : c)), "pillar bounces alone");
+            Assert.IsTrue(Finishable(Edit(text, (x, y, c) => c == 'D' && (x == 24 || x == 29 || x == 34) ? '.' : c)), "sinking leaves alone");
+        }
+
+        [Test]
+        public void Level4_NightGorgeNeedsTheGhostSteps()
+        {
+            string text = LevelFiles.Read("Level4");
+            Assert.IsFalse(Finishable(Edit(text, (x, y, c) => c == 'G' ? '.' : c)));
+        }
+
+        [Test]
+        public void Bot_FinishesLevel4()
+        {
+            var r = RouteBotTests.Play(LevelLayout.Parse(LevelFiles.Read("Level4")));
+            Assert.IsTrue(r.finished, r.log);
+        }
+    }
+}

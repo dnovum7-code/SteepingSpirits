@@ -55,6 +55,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 case "grove_light": return "Ohne Licht sind die Stufen nur eine Erinnerung.";
                 case "evening_hello": return "Abends schaukeln die Geister am liebsten. Mitschwingen, nicht drängeln!";
                 case "evening_chain": return "Von Schaukel zu Schaukel – einfach in die Nähe fliegen, sie fangen dich.";
+                case "dew_hello": return "Ein Tropfen Tau trägt dich weiter, als du denkst. Halte den Sprung fest!";
+                case "dew_night": return "Nachts sieht man die Geisterstufen nur mit Licht. Nimm den kleinen Laternengeist mit.";
                 case "hub_welcome": return "Willkommen auf der Lichtung. Jede Tür führt zu einem Sammelplatz.";
                 case "hub_first": return "Du riechst nach Morgenwiese! Hinter der nächsten Tür wartet der Geisterhain.";
                 case "hub_more": return "Die Lichtung wird heller, je mehr Wege du gehst. Man merkt es an den Laternen.";

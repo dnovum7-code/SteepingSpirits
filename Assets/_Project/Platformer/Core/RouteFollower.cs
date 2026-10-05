@@ -167,7 +167,8 @@ namespace SteepingSpirits.Platforming.Core
             }
 
             Vec2 t = s.Target;
-            return o.grounded && !o.riding && Math.Abs(o.feet.x - t.x) < 0.45f && Math.Abs(o.feet.y - t.y) < 0.4f;
+            // A dew leaf is a thin slab: standing on it, the feet are ~0.35 below the cell's height.
+            return o.grounded && !o.riding && Math.Abs(o.feet.x - t.x) < 0.45f && Math.Abs(o.feet.y - t.y) < 0.7f;
         }
 
         private void JumpStep(RouteObservation o, RouteStep s, ref MotorInput input)
@@ -211,7 +212,9 @@ namespace SteepingSpirits.Platforming.Core
             }
 
             // In the air: hold jump while rising (full height), steer onto the target.
-            input.jumpHeld = jumpLatch || s.kind == LevelReachability.MoveKind.Dew;
+            // Landing on a dew leaf with jump held bounces higher for the next move.
+            bool landingOnDew = reach != null && reach.IsOnDew(s.to);
+            input.jumpHeld = jumpLatch || s.kind == LevelReachability.MoveKind.Dew || landingOnDew;
             input.moveX = Steer(dx, o.velocity.x, target.y > o.feet.y + 0.2f && o.velocity.y < 0f);
         }
 
