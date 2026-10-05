@@ -38,6 +38,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
         private float ignoreTimer;
         private object controller;
 
+        // Corner correction queries, created once (no garbage per physics step).
+        private Func<float, bool> headQuery;
+        private Func<float, bool> ledgeQuery;
+        private Func<Vector2, bool> ceilingNormal;
+        private Func<Vector2, bool> wallNormal;
+        private float queryDistance;
+        private Vector2 queryDirection;
+
         public PlayerMotor Motor => motor;
         public MovementParams Params => motor.Params;
         public Rigidbody2D Body => body;
@@ -83,6 +91,10 @@ namespace SteepingSpirits.Platformer.JumpNRun
             box.sharedMaterial = new PhysicsMaterial2D("JumpNRunPlayer_frictionless") { friction = 0f, bounciness = 0f };
 
             solidFilter = new ContactFilter2D { useTriggers = false };
+            ceilingNormal = n => n.y < -0.6f;
+            wallNormal = n => Mathf.Abs(n.x) > 0.6f;
+            headQuery = dx => BoxBlocked(new Vector2(dx, 0f), Vector2.up, queryDistance, ceilingNormal);
+            ledgeQuery = dy => BoxBlocked(new Vector2(0f, dy), queryDirection, queryDistance, wallNormal);
             if (tuning == null && JumpNRunLevel.Current != null)
             {
                 tuning = JumpNRunLevel.Current.movementTuning;
@@ -228,7 +240,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             MotorContacts contacts = ReadContacts();
 
             // Down + jump on a thin platform drops through it.
-            if (jumpPressed && move.y < -0.5f && Ground != null && Ground.GetComponent<OneWayPlatform>() != null)
+            if (jumpPressed && move.y < -0.5f && Ground != null && Ground.TryGetComponent(out OneWayPlatform _))
             {
                 ignoredPlatform = Ground;
                 ignoreTimer = dropThroughSeconds;
@@ -306,8 +318,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
                     continue;
                 }
 
-                OneWayPlatform oneWay = col.GetComponent<OneWayPlatform>();
-                if (oneWay != null && feet < oneWay.Top - 0.08f)
+                if (col.TryGetComponent(out OneWayPlatform oneWay) && feet < oneWay.Top - 0.08f)
                 {
                     continue;
                 }
@@ -334,7 +345,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             for (int i = 0; i < count; i++)
             {
                 Collider2D col = hits[i].collider;
-                if (col != null && col != ignoredPlatform && col.GetComponent<OneWayPlatform>() == null && normalOk(hits[i].normal))
+                if (col != null && col != ignoredPlatform && !col.TryGetComponent(out OneWayPlatform _) && normalOk(hits[i].normal))
                 {
                     return true;
                 }
@@ -351,7 +362,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             for (int i = 0; i < count; i++)
             {
                 Collider2D col = hits[i].collider;
-                if (col == null || col == box || col == ignoredPlatform || col.GetComponent<OneWayPlatform>() != null)
+                if (col == null || col == box || col == ignoredPlatform || col.TryGetComponent(out OneWayPlatform _))
                 {
                     continue;
                 }
@@ -377,12 +388,11 @@ namespace SteepingSpirits.Platformer.JumpNRun
             // Head clips a corner while rising → slide around it.
             if (velocity.y > 0f && p.cornerCorrection > 0f)
             {
-                float dist = velocity.y * dt + contactSkin;
-                if (BoxBlocked(Vector2.zero, Vector2.up, dist, n => n.y < -0.6f))
+                queryDistance = velocity.y * dt + contactSkin;
+                if (BoxBlocked(Vector2.zero, Vector2.up, queryDistance, ceilingNormal))
                 {
                     int prefer = Mathf.Abs(velocity.x) > 0.1f ? (int)Mathf.Sign(velocity.x) : motor.Facing;
-                    if (CornerCorrection.TryHead(dx => BoxBlocked(new Vector2(dx, 0f), Vector2.up, dist, n => n.y < -0.6f),
-                            p.cornerCorrection, prefer, out float dx))
+                    if (CornerCorrection.TryHead(headQuery, p.cornerCorrection, prefer, out float dx))
                     {
                         body.position += new Vector2(dx, 0f);
                     }
@@ -392,12 +402,11 @@ namespace SteepingSpirits.Platformer.JumpNRun
             // Feet catch a ledge while moving sideways → step up onto it.
             if (Mathf.Abs(velocity.x) > 0.5f && p.ledgeCorrection > 0f && velocity.y <= 1f)
             {
-                Vector2 dir = new Vector2(Mathf.Sign(velocity.x), 0f);
-                float dist = Mathf.Abs(velocity.x) * dt + contactSkin;
-                if (BoxBlocked(Vector2.zero, dir, dist, n => Mathf.Abs(n.x) > 0.6f))
+                queryDirection = new Vector2(Mathf.Sign(velocity.x), 0f);
+                queryDistance = Mathf.Abs(velocity.x) * dt + contactSkin;
+                if (BoxBlocked(Vector2.zero, queryDirection, queryDistance, wallNormal))
                 {
-                    if (CornerCorrection.TryLedge(dy => BoxBlocked(new Vector2(0f, dy), dir, dist, n => Mathf.Abs(n.x) > 0.6f),
-                            p.ledgeCorrection, out float dy))
+                    if (CornerCorrection.TryLedge(ledgeQuery, p.ledgeCorrection, out float dy))
                     {
                         body.position += new Vector2(0f, dy);
                         if (velocity.y < 0f)

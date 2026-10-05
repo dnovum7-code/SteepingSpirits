@@ -183,7 +183,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private static bool IsSafeGround(Collider2D ground)
         {
-            if (ground == null || ground.GetComponentInParent<UnsafeGround>() != null)
+            if (ground == null || UnsafeGround.Contains(ground))
             {
                 return false;
             }

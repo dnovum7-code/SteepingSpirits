@@ -64,7 +64,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-11 | Level 3 (Schaukel-Thema) | erledigt (Erreichbarkeit, 2 Wege, Bot-Durchlauf in der Simulation; Unity ungeprüft) |
 | R2-12 | Hub-Lichtung lebendig | erledigt (Satzwahl 3 Tests; Anzeige ungeprüft) |
 | R2-13 | Level 4 | erledigt („Taunacht“: Erreichbarkeit, 2 Wege, Bot-Durchlauf; Unity ungeprüft) |
-| R2-14 | Pooling, keine Allokationen in Update | offen |
+| R2-14 | Pooling, keine Allokationen in Update | erledigt (Audit + PlayMode-Messtest; Messung ungeprüft) |
 | R2-15 | AudioSet-Asset pro Modul | offen |
 | R2-16 | Barrierefreiheit | offen |
 | R2-17 | Probe-Merge `integration/probe` | offen |
@@ -79,6 +79,14 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-14 – Keine Allokationen pro Frame
+- [ ] Test Runner PlayMode: `Running_AllocatesAlmostNothingPerFrame` grün; Konsole zeigt „Allocated about … bytes
+      per frame“ (Editor-Grundrauschen inklusive, Grenze 4 KB) (ungeprüft).
+- [ ] Optional: Profiler → GC Alloc in `JumpNRunPlayer.FixedUpdate` = 0 B.
+- Geändert: Eckenkorrektur mit einmal erzeugten Delegates, `TryGetComponent` statt `GetComponent` in den
+  Physik-Abfragen, Indexschleifen statt `foreach` über `IReadOnlyList`, „unsicherer Boden“ als Collider-Menge.
+  Partikel waren schon gepoolt; Texte werden nur bei Änderung gesetzt (R2-8).
 
 #### R2-13 – Level 4 „Taunacht“ (Thema Morgentau, Nacht)
 - [ ] *Build Levels* → `JumpNRun_Level4.unity`; Level 3 → „Weiter“, Lichtungs-Tür 4 (nach Level 3 offen) (ungeprüft).

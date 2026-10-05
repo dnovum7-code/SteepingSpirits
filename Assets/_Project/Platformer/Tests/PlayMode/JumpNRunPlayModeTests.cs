@@ -136,5 +136,29 @@ namespace SteepingSpirits.Platformer.Tests
             Assert.IsFalse(p.Riding, "jump lets go");
             Assert.Greater(p.PlayerVelocity.magnitude, 2f, "and the player flies off with the swing's speed");
         }
+
+        [UnityTest]
+        public IEnumerator Running_AllocatesAlmostNothingPerFrame()
+        {
+            yield return Load("JumpNRun_Level1");
+            var input = new ScriptedInput { Next = { move = Vector2.right } };
+            JumpNRunHooks.InputOverride = input;
+            for (int i = 0; i < 30; i++) yield return null; // warm up (pools, sounds, UI)
+
+            long before = System.GC.GetAllocatedBytesForCurrentThread();
+            const int frames = 120;
+            for (int i = 0; i < frames; i++)
+            {
+                input.Next.jumpPressed = i % 40 == 0;
+                input.Next.jumpHeld = i % 40 < 20;
+                yield return null;
+            }
+
+            long perFrame = (System.GC.GetAllocatedBytesForCurrentThread() - before) / frames;
+            Debug.Log($"[JumpNRun] Allocated about {perFrame} bytes per frame while running and jumping (editor).");
+
+            // The editor itself allocates a little every frame; gameplay code should add nothing noticeable.
+            Assert.Less(perFrame, 4096, "gameplay allocates garbage every frame");
+        }
     }
 }

@@ -103,8 +103,10 @@ namespace SteepingSpirits.Platformer.JumpNRun
             VineSegment bestSegment = null;
             float best = float.MaxValue;
 
-            foreach (GrabPoint p in GrabPoint.All)
+            var points = GrabPoint.All;
+            for (int i = 0; i < points.Count; i++)
             {
+                GrabPoint p = points[i];
                 if (p == lastPoint && regrabTimer > -0.2f) continue;
                 Vector2 hand = p.GrabMode == GrabPoint.Mode.Hold ? c + Vector2.up * holdOffset : c;
                 float d = Vector2.Distance(hand, p.Position);
@@ -115,8 +117,10 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 }
             }
 
-            foreach (VineSegment s in VineSegment.All)
+            var segments = VineSegment.All;
+            for (int i = 0; i < segments.Count; i++)
             {
+                VineSegment s = segments[i];
                 if (!s.IsGrabbable || (s.Vine == lastVine && regrabTimer > -0.2f)) continue;
                 float d = Vector2.Distance(c, s.Body.position);
                 if (d <= vineCatchRadius && d < best)

@@ -110,9 +110,10 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private static PlaygroundSwing RiddenSwing()
         {
-            foreach (PlaygroundSwing s in PlaygroundSwing.All)
+            var swings = PlaygroundSwing.All;
+            for (int i = 0; i < swings.Count; i++)
             {
-                if (s.Occupied) return s;
+                if (swings[i].Occupied) return swings[i];
             }
 
             return null;
