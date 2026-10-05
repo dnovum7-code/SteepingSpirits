@@ -4,6 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SteepingSpirits.DevTools;
+using SteepingSpirits.Platformer.JumpNRun;
 
 namespace SteepingSpirits.Platformer.EditorTools
 {
@@ -18,6 +19,7 @@ namespace SteepingSpirits.Platformer.EditorTools
         public const string SceneFolder = "Assets/Scenes";
         public const string MeadowScene = SceneFolder + "/TestMeadow.unity";
         public const string ClimbScene = SceneFolder + "/JumpAndRun.unity";
+        public const string DataFolder = "Assets/_Project/Platformer/Data";
 
         [MenuItem("SteepingSpirits/JumpNRun/Build Levels")]
         public static void BuildAll()
@@ -27,6 +29,8 @@ namespace SteepingSpirits.Platformer.EditorTools
                 return;
             }
 
+            EnsureTuningAssets();
+
             var built = new List<string>();
             built.Add(BuildSingleComponentScene<TestMeadow>(MeadowScene, "TestMeadow"));
             built.Add(BuildSingleComponentScene<PlatformerCourse>(ClimbScene, "PlatformerCourse"));
@@ -35,6 +39,41 @@ namespace SteepingSpirits.Platformer.EditorTools
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[JumpNRun] Built scenes:\n" + string.Join("\n", built));
+        }
+
+        /// <summary>Tuning assets are created once and then only edited by hand in the Inspector.</summary>
+        public static void EnsureTuningAssets()
+        {
+            EnsureAsset<MovementTuning>(DataFolder + "/MovementTuning.asset");
+            EnsureAsset<CameraTuning>(DataFolder + "/CameraTuning.asset");
+            EnsureAsset<FeedbackTuning>(DataFolder + "/FeedbackTuning.asset");
+        }
+
+        /// <summary>Loads an asset or creates it with defaults. Existing assets are never overwritten.</summary>
+        public static T EnsureAsset<T>(string path) where T : ScriptableObject
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            EnsureFolder(System.IO.Path.GetDirectoryName(path).Replace('\\', '/'));
+            var asset = ScriptableObject.CreateInstance<T>();
+            AssetDatabase.CreateAsset(asset, path);
+            return asset;
+        }
+
+        public static void EnsureFolder(string folder)
+        {
+            if (AssetDatabase.IsValidFolder(folder))
+            {
+                return;
+            }
+
+            string parent = System.IO.Path.GetDirectoryName(folder).Replace('\\', '/');
+            EnsureFolder(parent);
+            AssetDatabase.CreateFolder(parent, System.IO.Path.GetFileName(folder));
         }
 
         /// <summary>Scenes whose content is created at runtime by one builder component.</summary>

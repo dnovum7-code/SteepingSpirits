@@ -63,7 +63,7 @@
 |---|---|---|
 | A1 | Szenen per Editor-Builder (Menü SteepingSpirits → JumpNRun → Build Levels) | erledigt (Kompilat geprüft, Unity ungeprüft) |
 | A2 | Core-Assembly `SteepingSpirits.Platforming.Core` + dotnet-Tests | erledigt (5 Tests grün) |
-| A3 | Tuning-ScriptableObjects (Movement, Camera, Feedback) | offen |
+| A3 | Tuning-ScriptableObjects (Movement, Camera, Feedback) | erledigt (Kompilat geprüft) |
 | A4 | Level als Daten (Tile-Strings) + Builder baut daraus | offen |
 | B1 | Assist-Techniken (Coyote, Buffer, Cut, Apex, Fallschwerkraft, Max-Fall, Ecken, Luftkontrolle) | offen |
 | B2 | Kamera (Folgen, Vorausschau, Totzone, vertikal nach Landung) | offen |
@@ -94,3 +94,8 @@
       `SteepingSpirits.Platforming.Core` und `SteepingSpirits.Platforming.Tests.EditMode` (ungeprüft).
 - [ ] *Window → General → Test Runner → EditMode*: Platforming-Tests laufen grün.
 - [x] Ohne Unity: `dotnet test Tests/PlatformingCore.DotNet` → grün.
+
+### A3 – Tuning-Assets
+- [ ] *Build Levels* legt `Assets/_Project/Platformer/Data/MovementTuning.asset`,
+      `CameraTuning.asset`, `FeedbackTuning.asset` an (ungeprüft).
+- [ ] Wert in einem Asset ändern → *Build Levels* erneut → Wert bleibt erhalten.
