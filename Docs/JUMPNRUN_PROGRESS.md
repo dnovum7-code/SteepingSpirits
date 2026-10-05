@@ -91,7 +91,7 @@
 | E3 | Doku Docs/JUMPNRUN.md | erledigt (Hub und Geist-NPCs folgen in F) |
 | F1 | Geister-NPCs mit Einzeilern (Texte zentral) | erledigt (Kompilat + Daten-Test, Anzeige ungeprüft) |
 | F2 | Wandrutschen/-sprung abschaltbar | erledigt mit B1 (`MovementParams.wallSlideEnabled/wallJumpEnabled`) |
-| F3 | Parallax-Hintergrund + Abendlicht | offen |
+| F3 | Parallax-Hintergrund + Abendlicht | erledigt (Kompilat geprüft, Bild ungeprüft) |
 | F4 | Laternen-Herausforderung | offen |
 | F5 | Eigene Verbesserung: Hub-Lichtung mit Türen zu allen Leveln | offen |
 
@@ -223,3 +223,8 @@
 ### F1 – Geister-NPCs
 - [ ] Level 1/2 → an einem blassen Geist vorbeilaufen → Sprechblase mit einem Satz blendet
       weich ein und wieder aus (ungeprüft). Sätze stehen in `JumpNRunTexts.NpcLine`.
+
+### F3 – Parallax und Abendlicht
+- [ ] Level 1 (Morgen) und Level 2 (`@mood evening`): drei Hügel-Ebenen bewegen sich beim Laufen
+      unterschiedlich schnell; Level 2 hat warmen Abendhimmel und einen leichten Lichtschleier (ungeprüft).
+- [ ] `@mood night` in einer Level-Datei → dunkelblaue Palette nach *Build Levels*.

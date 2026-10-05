@@ -1,5 +1,6 @@
 @id Level1
 @name Morgenwiese
+@mood morning
 @next Level2
 @npc0 meadow_hello
 @npc1 meadow_spring
