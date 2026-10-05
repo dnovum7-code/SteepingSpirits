@@ -30,6 +30,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public bool Finished { get; private set; }
         public int Catches { get; private set; }
 
+        /// <summary>Where the bag went at the goal (inventory or pantry).</summary>
+        public HandoverTarget Handover { get; private set; }
+
         /// <summary>Assist "fall protection": respawn at the last safe ground instead of the lantern.</summary>
         public bool FallProtection { get; set; }
 
@@ -118,6 +121,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
 
             Finished = true;
+            Handover = IngredientHandover.Deliver(bag);
             if (player != null)
             {
                 player.TakeControl(this);

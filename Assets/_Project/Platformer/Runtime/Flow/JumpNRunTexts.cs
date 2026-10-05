@@ -30,6 +30,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string EndCollected = "Im Beutel";
         public const string EndNothing = "Diesmal nur frische Luft geschnappt – auch schön.";
         public const string EndRare = "selten";
+        public const string HandedToInventory = "Alles liegt jetzt in deinem Inventar.";
+        public const string HandedToPantry = "Alles steht jetzt im Vorratsschrank des Teehauses.";
         public const string NextLevel = "Weiter";
         public const string Again = "Nochmal";
         public static string PathLanterns(int lit, int total) => $"Laternenpfad: {lit} von {total}";

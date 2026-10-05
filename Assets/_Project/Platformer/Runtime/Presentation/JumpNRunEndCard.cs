@@ -91,7 +91,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
             float a = Mathf.Clamp01((Time.unscaledTime - shownAt) / 0.6f);
             GuiDraw.Solid(new Rect(0f, 0f, Screen.width, Screen.height), new Color(0.05f, 0.06f, 0.1f, 0.4f * a));
-            float h = 210f + Mathf.Max(1, lines.Count) * 26f;
+            float h = 230f + Mathf.Max(1, lines.Count) * 26f;
             var r = new Rect(Screen.width * 0.5f - 210f, Screen.height * 0.5f - h * 0.5f, 420f, h);
             GuiDraw.Panel(r, 0.94f * a);
             Color old = GUI.color;
@@ -125,6 +125,13 @@ namespace SteepingSpirits.Platformer.JumpNRun
             if (lanterns > 0 && session.Checkpoints != null)
             {
                 GUI.Label(new Rect(r.x, y + 6f, r.width, 20f), JumpNRunTexts.LanternsLit(session.Checkpoints.LitCount, lanterns), small);
+                y += 20f;
+            }
+
+            if (session.Handover != HandoverTarget.Nothing)
+            {
+                string where = session.Handover == HandoverTarget.Inventory ? JumpNRunTexts.HandedToInventory : JumpNRunTexts.HandedToPantry;
+                GUI.Label(new Rect(r.x, y + 6f, r.width, 20f), where, small);
                 y += 20f;
             }
 

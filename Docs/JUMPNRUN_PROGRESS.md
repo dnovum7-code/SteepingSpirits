@@ -49,7 +49,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-2 | Eingabe-Aufzeichnung F5/F6 | erledigt (Format + Wiedergabe getestet, auch Replay in der Simulation; Unity ungeprüft) |
 | R2-3 | Builder-Prüfungen (Prefab-Referenzen, Erreichbarkeit, Laternen-Reihenfolge) | erledigt (LevelLint 4 Tests, ausgelieferte Level warnungsfrei) |
 | R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | erledigt (4 eigene Tests + 106 Jump'n'Run-Tests grün) |
-| R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | offen |
+| R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | erledigt (Vorratsschrank 4 Tests; Inventar-Übergabe ungeprüft) |
 | R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | offen |
 | R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | offen |
 | R2-7b | Kletterpfad auf neuen Controller hinter Schalter | offen |
@@ -74,6 +74,13 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-5 – Übergabe des Sammelbeutels
+- [ ] Level **direkt** starten, Zutaten sammeln, Ziel → Karte zeigt „… im Vorratsschrank des Teehauses“;
+      `persistentDataPath/pantry.json` enthält `{"version":1,…,"items":{…}}` (ungeprüft).
+- [ ] Über die **Wiese** (Portal, ab R2-6) ins Level, Ziel → „… in deinem Inventar“; Inventar (I) zeigt
+      Teeblatt, Wiesenkraut … als Material. Teeblätter zählen für Oma Hildes Sammel-Quest.
+- Übergabe erst am Ziel (nicht beim Verlassen mitten im Level). Volles Inventar → Rest in den Vorratsschrank.
 
 #### R2-4 – Zutaten-Katalog
 - [ ] Unity: neue Assembly `SteepingSpirits.Ingredients` (Ordner `Assets/_Project/Ingredients`), Konsole ohne Fehler (ungeprüft).
