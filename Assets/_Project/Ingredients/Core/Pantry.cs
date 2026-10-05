@@ -101,8 +101,12 @@ namespace SteepingSpirits.Ingredients
         private static string Escape(string s) => (s ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"");
     }
 
-    /// <summary>Tiny JSON reader for flat objects (strings, numbers, nested objects, bools, null).</summary>
-    internal sealed class MiniJson
+    /// <summary>
+    /// Tiny JSON reader (objects, arrays, strings, numbers, bools, null) for the
+    /// small save files of the project. Objects become Dictionary&lt;string, object&gt;,
+    /// arrays List&lt;object&gt;, numbers double.
+    /// </summary>
+    public sealed class MiniJson
     {
         private readonly string s;
         private int i;
@@ -136,10 +140,48 @@ namespace SteepingSpirits.Ingredients
             throw new FormatException("unterminated object");
         }
 
+        /// <summary>Parses a whole document whose root is an object (null if it is not).</summary>
+        public static Dictionary<string, object> ParseObject(string json) => new MiniJson(json ?? "").ReadObject();
+
+        private List<object> ReadArray()
+        {
+            Expect('[');
+            var list = new List<object>();
+            Skip();
+            if (Peek() == ']') { i++; return list; }
+            while (i < s.Length)
+            {
+                list.Add(ReadValue());
+                Skip();
+                if (Peek() == ',') { i++; continue; }
+                Expect(']');
+                return list;
+            }
+
+            throw new FormatException("unterminated array");
+        }
+
+        /// <summary>Writes a JSON string literal.</summary>
+        public static string Quote(string value)
+        {
+            var sb = new StringBuilder("\"");
+            foreach (char c in value ?? "")
+            {
+                if (c == '"') sb.Append("\\\"");
+                else if (c == '\\') sb.Append("\\\\");
+                else if (c == '\n') sb.Append("\\n");
+                else if (c < 0x20) sb.Append("\\u").Append(((int)c).ToString("x4"));
+                else sb.Append(c);
+            }
+
+            return sb.Append('"').ToString();
+        }
+
         private object ReadValue()
         {
             Skip();
             char c = Peek();
+            if (c == '[') return ReadArray();
             if (c == '{') return ReadObject();
             if (c == '"') return ReadString();
             if (s.Length - i >= 4 && string.CompareOrdinal(s, i, "true", 0, 4) == 0) { i += 4; return true; }

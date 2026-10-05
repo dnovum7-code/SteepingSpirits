@@ -37,6 +37,9 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
   Sammel-Quest von Oma Hilde mitzählt). Läuft es nicht (Level direkt gestartet), landen sie im
   „Vorratsschrank“ (`pantry.json`, versioniert). Beides gleichzeitig wäre doppelte Buchführung.
 - R2. Ein allgemeines Speichersystem fehlt → kleines versioniertes JSON `jumpnrun_save.json`.
+  Der JSON-Leser `MiniJson` liegt öffentlich im gemeinsamen Modul `SteepingSpirits.Ingredients`
+  (wird dort für den Vorratsschrank gebraucht), damit es keinen zweiten Leser gibt.
+  Bereits gefundene Seltenheiten wachsen beim nächsten Besuch als normale Variante nach.
 - R3. Der Smoke-Test-Bot spielt die Wege nicht pixelgenau nach, sondern steuert mit echten
   Eingaben (über eine Eingabe-Schnittstelle des Spielers) von Stehplatz zu Stehplatz entlang des
   Pfads der Erreichbarkeitsprüfung.
@@ -51,7 +54,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | erledigt (4 eigene Tests + 106 Jump'n'Run-Tests grün) |
 | R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | erledigt (Vorratsschrank 4 Tests; Inventar-Übergabe ungeprüft) |
 | R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | erledigt (Kompilat geprüft, Wege ungeprüft) |
-| R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | offen |
+| R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | erledigt (5 Speicher-Tests; Unity ungeprüft) |
 | R2-7b | Kletterpfad auf neuen Controller hinter Schalter | offen |
 | R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | offen |
 | R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | offen |
@@ -74,6 +77,14 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-7 – Speichern
+- [ ] Erster Start: Lichtung → Tür „Geisterhain“ zeigt „noch verschlossen“; Morgenwiese ist offen (ungeprüft).
+- [ ] Level 1 beenden → Geisterhain offen; nach Neustart von Play immer noch offen.
+- [ ] Seltene Zutat einsammeln, Level neu betreten → an der Stelle liegt jetzt die normale Variante.
+- [ ] Komfort-Optionen bleiben nach Neustart erhalten (übernimmt einmalig alte PlayerPrefs-Werte).
+- [ ] Datei: `persistentDataPath/jumpnrun_save.json` (Version 1). Unlesbare Datei → Warnung, Datei bleibt
+      unangetastet, Spiel läuft ohne Speichern weiter. Der Smoke-Test schreibt nichts in Spielstand/Vorrat/Inventar.
 
 #### R2-6 – Wege verbinden
 - [ ] *Build Levels* → `TestMeadow.unity` enthält zusätzlich `HubPortal` (türkise Raute über dem lila

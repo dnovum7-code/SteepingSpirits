@@ -12,6 +12,11 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public string targetScenePath = "";
         public string label = "";
 
+        /// <summary>Level behind the door (empty = always open, e.g. the meadow).</summary>
+        public string levelId = "";
+
+        public bool IsOpen => string.IsNullOrEmpty(levelId) || JumpNRunSaveStore.Current.IsUnlocked(levelId);
+
         private bool playerInside;
         private float lastMoveY;
         private GUIStyle labelStyle, hintStyle;
@@ -39,6 +44,12 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
             if (!playerInside || GamePause.IsBlocked || string.IsNullOrEmpty(targetScenePath))
             {
+                return;
+            }
+
+            if ((upPressed || GameInput.InteractPressed) && !IsOpen)
+            {
+                JumpNRunSounds.Play(JumpNRunSound.Land, 0.1f);
                 return;
             }
 
@@ -70,8 +81,13 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
 
             var r = new Rect(s.x - 90f, Screen.height - s.y - 12f, 180f, 24f);
+            bool open = IsOpen;
             GuiDraw.ShadowLabel(r, label, labelStyle);
-            if (playerInside)
+            if (!open)
+            {
+                GuiDraw.ShadowLabel(new Rect(r.x, r.y + 20f, r.width, 20f), JumpNRunTexts.DoorLocked, hintStyle);
+            }
+            else if (playerInside)
             {
                 GuiDraw.ShadowLabel(new Rect(r.x, r.y + 20f, r.width, 20f), JumpNRunTexts.DoorHint, hintStyle);
             }

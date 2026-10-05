@@ -29,14 +29,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
         private void Awake()
         {
             Instance = this;
-            try
+            // Options live in the Jump'n'Run save; older PlayerPrefs values are taken over once.
+            string stored = JumpNRunSaveStore.Current.Assists;
+            if (string.IsNullOrEmpty(stored))
             {
-                options = AssistOptions.Parse(PlayerPrefs.GetString(PrefsKey, ""));
+                stored = PlayerPrefs.GetString(PrefsKey, "");
             }
-            catch (System.Exception)
-            {
-                options = new AssistOptions();
-            }
+
+            options = AssistOptions.Parse(stored);
         }
 
         private void Start()
@@ -67,7 +67,12 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 JumpNRunSession.Current.FallProtection = options.fallProtection;
             }
 
-            PlayerPrefs.SetString(PrefsKey, options.Serialize());
+            string text = options.Serialize();
+            if (JumpNRunSaveStore.Current.Assists != text)
+            {
+                JumpNRunSaveStore.Current.Assists = text;
+                JumpNRunSaveStore.Save();
+            }
         }
 
         private void Update()

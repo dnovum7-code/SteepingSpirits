@@ -60,6 +60,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string DoorMeadow = "Zur Wiese";
         public const string DoorClimb = "Kletterpfad";
         public const string DoorHint = "W: hinein";
+        public const string DoorLocked = "noch verschlossen – erst den Weg davor gehen";
 
         public static string Percent(float value) => $"{UnityEngine.Mathf.RoundToInt(value * 100f)} %";
 

@@ -186,6 +186,8 @@ namespace SteepingSpirits.Platformer.EditorTools
                     var ing = go.GetComponent<Ingredient>();
                     ing.ingredientId = id;
                     ing.rare = IngredientIds.IsRare(id);
+                    ing.spotX = m.x;
+                    ing.spotY = m.y;
                     var v = go.GetComponent<PlaceholderVisual>();
                     v.color = Ingredient.ColorOf(id);
                     v.shape = ing.rare ? PlaceholderVisual.Shape.Diamond : PlaceholderVisual.Shape.Circle;
@@ -219,6 +221,7 @@ namespace SteepingSpirits.Platformer.EditorTools
                     string target = layout.DoorTarget(m);
                     door.targetScenePath = JumpNRunLevelBuilder.ScenePathFor(target);
                     door.label = JumpNRunLevelBuilder.DisplayNameFor(target);
+                    door.levelId = target == "meadow" || target == "climb" ? "" : target;
                     go.name = "Door " + target;
                     break;
                 case TileKind.Npc:

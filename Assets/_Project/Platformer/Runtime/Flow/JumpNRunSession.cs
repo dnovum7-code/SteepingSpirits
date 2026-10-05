@@ -122,6 +122,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
             Finished = true;
             Handover = IngredientHandover.Deliver(bag);
+            JumpNRunLevel lvl = JumpNRunLevel.Current;
+            if (lvl != null)
+            {
+                JumpNRunSaveStore.Current.Complete(lvl.levelId, lvl.nextLevelId);
+                if (challenge.Complete) JumpNRunSaveStore.Current.CompleteChallenge(lvl.levelId);
+                JumpNRunSaveStore.Save();
+            }
+
             if (player != null)
             {
                 player.TakeControl(this);

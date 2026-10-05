@@ -10,6 +10,10 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public string ingredientId = IngredientIds.TeaLeaf;
         public bool rare;
 
+        /// <summary>Tile of the marker (rare finds are remembered per spot).</summary>
+        public int spotX;
+        public int spotY;
+
         private Vector3 basePosition;
         private float phase;
         private bool collected;
@@ -38,6 +42,19 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private void Start()
         {
+            // A rare spot that was already harvested grows the common variant on later visits.
+            JumpNRunLevel level = JumpNRunLevel.Current;
+            if (rare && level != null && JumpNRunSaveStore.Current.HasFoundRareAt(level.levelId, spotX, spotY))
+            {
+                rare = false;
+                ingredientId = IngredientIds.BaseOf(ingredientId);
+                if (visual != null && visual.Renderer != null)
+                {
+                    visual.Renderer.sprite = PlaceholderVisual.SpriteFor(PlaceholderVisual.Shape.Circle);
+                    visual.Renderer.color = ColorOf(ingredientId);
+                }
+            }
+
             if (rare && visual != null)
             {
                 halo = SteepingSpirits.Core.PlaceholderSprites.CreateSpriteObject("Halo",
@@ -80,6 +97,12 @@ namespace SteepingSpirits.Platformer.JumpNRun
             if (rare)
             {
                 JumpNRunTime.SlowMotion(fp.rareSlowMoScale, fp.rareSlowMoSeconds);
+                JumpNRunLevel level = JumpNRunLevel.Current;
+                if (level != null)
+                {
+                    JumpNRunSaveStore.Current.FoundRare(level.levelId, spotX, spotY, ingredientId);
+                    JumpNRunSaveStore.Save();
+                }
             }
 
             gameObject.SetActive(false);

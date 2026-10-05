@@ -32,9 +32,15 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         public static string PantryPath => Path.Combine(Application.persistentDataPath, Pantry.FileName);
 
+        /// <summary>Tools (smoke test) switch the handover off so test runs never fill the real inventory or pantry.</summary>
+        public static bool DryRun { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => DryRun = false;
+
         public static HandoverTarget Deliver(IngredientBag bag)
         {
-            if (bag == null || bag.Total == 0)
+            if (bag == null || bag.Total == 0 || DryRun)
             {
                 return HandoverTarget.Nothing;
             }

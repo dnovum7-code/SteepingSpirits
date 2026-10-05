@@ -29,6 +29,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
         /// <summary>Where "back" leads from the end card (the clearing; empty = previous scene or meadow).</summary>
         public string backScenePath = "";
 
+        /// <summary>Id of the next level (unlocked when this one is finished).</summary>
+        public string nextLevelId = "";
+
         /// <summary>Scene path of the next level (empty = none).</summary>
         public string nextScenePath = "";
 

@@ -57,6 +57,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         {
             Application.logMessageReceived += OnLog;
             JumpNRunHooks.InputOverride = this;
+            JumpNRunSaveStore.ReadOnly = true;
+            IngredientHandover.DryRun = true;
         }
 
         private void OnDisable()
