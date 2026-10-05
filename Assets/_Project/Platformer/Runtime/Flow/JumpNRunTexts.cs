@@ -14,6 +14,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string ExtraAirJumpHelp = "Ein zusätzlicher Sprung in der Luft.";
         public const string FallProtection = "Absturzschutz";
         public const string FallProtectionHelp = "Nach einem Sturz geht es dort weiter, wo du zuletzt sicher standest.";
+        public const string AutoSwing = "Auto-Schwung";
+        public const string AutoSwingHelp = "Schaukeln: eine Richtung halten genügt, der Takt kommt von allein.";
         public const string On = "an";
         public const string Off = "aus";
         public const string Resume = "Weiter";

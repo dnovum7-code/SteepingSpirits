@@ -23,7 +23,10 @@ namespace SteepingSpirits.Platforming.Core
         /// <summary>Respawn at the last safe ground instead of the last lantern.</summary>
         public bool fallProtection;
 
-        public bool AnyActive => gameSpeed < MaxSpeed - 0.001f || extraAirJump || fallProtection;
+        /// <summary>Swing: holding a direction pumps in the right rhythm by itself.</summary>
+        public bool autoSwing;
+
+        public bool AnyActive => gameSpeed < MaxSpeed - 0.001f || extraAirJump || fallProtection || autoSwing;
 
         public AssistOptions Clone() => (AssistOptions)MemberwiseClone();
 
@@ -48,8 +51,9 @@ namespace SteepingSpirits.Platforming.Core
 
         public string Serialize()
         {
-            return string.Format(CultureInfo.InvariantCulture, "speed={0:0.0};air={1};fall={2}",
+            string s = string.Format(CultureInfo.InvariantCulture, "speed={0:0.0};air={1};fall={2}",
                 ClampedSpeed, extraAirJump ? 1 : 0, fallProtection ? 1 : 0);
+            return autoSwing ? s + ";swing=1" : s;
         }
 
         public static AssistOptions Parse(string text)
@@ -85,6 +89,9 @@ namespace SteepingSpirits.Platforming.Core
                         break;
                     case "fall":
                         o.fallProtection = value == "1";
+                        break;
+                    case "swing":
+                        o.autoSwing = value == "1";
                         break;
                 }
             }

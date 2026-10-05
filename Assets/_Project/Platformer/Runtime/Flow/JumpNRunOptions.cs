@@ -113,7 +113,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
         }
 
-        private const int RowCount = 3;
+        private const int RowCount = 4;
 
         private void Change(int row, int dir)
         {
@@ -122,6 +122,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 case 0: options.StepSpeed(dir); break;
                 case 1: options.extraAirJump = !options.extraAirJump; break;
                 case 2: options.fallProtection = !options.fallProtection; break;
+                case 3: options.autoSwing = !options.autoSwing; break;
             }
 
             Apply();
@@ -163,6 +164,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             AddRow(content, JumpNRunTexts.GameSpeed, JumpNRunTexts.GameSpeedHelp, 0);
             AddRow(content, JumpNRunTexts.ExtraAirJump, JumpNRunTexts.ExtraAirJumpHelp, 1);
             AddRow(content, JumpNRunTexts.FallProtection, JumpNRunTexts.FallProtectionHelp, 2);
+            AddRow(content, JumpNRunTexts.AutoSwing, JumpNRunTexts.AutoSwingHelp, 3);
             Button resume = JumpNRunUi.Button(content, JumpNRunTexts.Resume);
             resume.onClick.AddListener(() => SetOpen(false));
             rows.Add(resume);
@@ -199,6 +201,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             SetText(values[0], JumpNRunTexts.Percent(options.ClampedSpeed));
             SetText(values[1], JumpNRunTexts.OnOff(options.extraAirJump));
             SetText(values[2], JumpNRunTexts.OnOff(options.fallProtection));
+            SetText(values[3], JumpNRunTexts.OnOff(options.autoSwing));
         }
 
         private static void SetText(Text t, string s)

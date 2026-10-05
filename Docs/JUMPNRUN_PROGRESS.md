@@ -57,7 +57,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | erledigt (5 Speicher-Tests; Unity ungeprüft) |
 | R2-7b | Kletterpfad auf neuen Controller hinter Schalter | erledigt, Schalter **aus** bis zu deiner Bestätigung (Kompilat geprüft, Spiel ungeprüft) |
 | R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | erledigt (Kompilat geprüft, Bild/Navigation ungeprüft) |
-| R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | offen |
+| R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | erledigt (6 neue Tests, 117 grün; Klang/Bild ungeprüft) |
 | R2-10 | Schaukel-Kombinationen | offen |
 | R2-11 | Level 3 (Schaukel-Thema) | offen |
 | R2-12 | Hub-Lichtung lebendig | offen |
@@ -77,6 +77,13 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-9 – Schaukel-Feinschliff
+- [ ] Level-Datei: `@rope0 4.5` / `@angle0 60` ändern Seillänge und Höchstwinkel der ersten Schaukel
+      (Nummer = Reihenfolge von links); im Inspector `PlaygroundSwing → Rope Length / Max Angle Override` (ungeprüft).
+- [ ] An den Umkehrpunkten leises Holzknarzen, das mit dem Ausschlag höher wird; bei großem Schwung fallen Blättchen.
+- [ ] Stick: leicht neigen pumpt sanft, voll neigen kräftig.
+- [ ] Esc → „Auto-Schwung“ an → eine Richtung halten reicht, der Takt kommt von allein.
 
 #### R2-8 – Oberflächen auf uGUI
 - [ ] Esc / Pad-B: Pausemenü im Holz-Look wie Dialog und Questlog (ungeprüft). Hoch/runter (Pfeile, Stick,

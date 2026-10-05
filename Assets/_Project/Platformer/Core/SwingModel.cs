@@ -40,6 +40,22 @@ namespace SteepingSpirits.Platforming.Core
         public float mountRadius = 1.0f;
 
         public SwingParams Clone() => (SwingParams)MemberwiseClone();
+
+        /// <summary>Copies all values (no allocation; used to follow live tuning with per-swing overrides).</summary>
+        public void CopyFrom(SwingParams o)
+        {
+            ropeLength = o.ropeLength;
+            gravity = o.gravity;
+            pumpAcceleration = o.pumpAcceleration;
+            brakeAcceleration = o.brakeAcceleration;
+            startThreshold = o.startThreshold;
+            damping = o.damping;
+            maxAngleDeg = o.maxAngleDeg;
+            releaseBoost = o.releaseBoost;
+            releaseUpBonus = o.releaseUpBonus;
+            remountDelay = o.remountDelay;
+            mountRadius = o.mountRadius;
+        }
     }
 
     public enum SwingPump
@@ -71,10 +87,18 @@ namespace SteepingSpirits.Platforming.Core
 
         public float MaxAngle => Params.maxAngleDeg * (float)Math.PI / 180f;
 
+        /// <summary>True for the one step in which the swing turned around at a high point.</summary>
+        public bool TurnedThisStep { get; private set; }
+
         /// <summary>Seat speed along the arc (units/s, signed).</summary>
         public float TangentialSpeed => AngularVelocity * Params.ropeLength;
 
-        public void Step(float dt, float inputX)
+        /// <summary>
+        /// Advances the swing. inputX is analog (−1…1, a stick pumps gently when
+        /// tilted a little). With autoPump (comfort option) holding any direction
+        /// pumps in the right rhythm by itself.
+        /// </summary>
+        public void Step(float dt, float inputX, bool autoPump = false)
         {
             SwingParams p = Params;
             float L = Math.Max(0.1f, p.ropeLength);
@@ -84,23 +108,30 @@ namespace SteepingSpirits.Platforming.Core
             double alpha = -(p.gravity / L) * sin;
             LastPump = SwingPump.None;
 
-            if (Math.Abs(inputX) > 0.2f)
+            float strength = Math.Min(1f, Math.Abs(inputX));
+            if (strength > 0.2f)
             {
                 int dir = inputX > 0f ? 1 : -1;
+                if (autoPump && Math.Abs(AngularVelocity) >= p.startThreshold)
+                {
+                    dir = Math.Sign(AngularVelocity);
+                }
+
                 if (Math.Abs(AngularVelocity) < p.startThreshold || dir == Math.Sign(AngularVelocity))
                 {
                     // In rhythm: pushing along the motion. Works best near the bottom (cos).
-                    alpha += dir * p.pumpAcceleration * Math.Max(0.0, cos) / L;
+                    alpha += dir * p.pumpAcceleration * strength * Math.Max(0.0, cos) / L;
                     LastPump = SwingPump.Gain;
                 }
                 else
                 {
-                    alpha -= Math.Sign(AngularVelocity) * p.brakeAcceleration / L;
+                    alpha -= Math.Sign(AngularVelocity) * p.brakeAcceleration * strength / L;
                     LastPump = SwingPump.Brake;
                 }
             }
 
             float before = AngularVelocity;
+            TurnedThisStep = false;
             AngularVelocity += (float)(alpha * dt);
 
             // The brake can stop the swing but never push it the other way.
@@ -110,6 +141,11 @@ namespace SteepingSpirits.Platforming.Core
             }
 
             AngularVelocity *= (float)Math.Exp(-p.damping * dt);
+            if (before != 0f && Math.Sign(before) != Math.Sign(AngularVelocity) && LastPump != SwingPump.Brake)
+            {
+                TurnedThisStep = true;
+            }
+
             Angle += AngularVelocity * dt;
 
             float max = MaxAngle;
@@ -117,6 +153,7 @@ namespace SteepingSpirits.Platforming.Core
             {
                 Angle = Math.Sign(Angle) * max;
                 AngularVelocity = 0f;
+                TurnedThisStep = true;
             }
         }
 

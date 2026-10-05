@@ -269,6 +269,14 @@ namespace SteepingSpirits.Platforming.Core
             return true;
         }
 
+        /// <summary>Highest swing angle of a swing marker ("@angle&lt;index&gt; 70", else the tuning value), degrees.</summary>
+        public float MaxAngleDeg(LevelMarker swing)
+        {
+            string s = layout.Setting("angle" + swing.index);
+            return float.TryParse(s, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture,
+                out float v) && v >= 20f && v <= 89f ? v : elements.swing.maxAngleDeg;
+        }
+
         /// <summary>Rope length of a swing marker (per-swing "@rope&lt;index&gt; 3.5", else the tuning value).</summary>
         public float RopeLength(LevelMarker swing)
         {

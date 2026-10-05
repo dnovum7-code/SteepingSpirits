@@ -13,7 +13,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         Catch,
         Bounce,
         Wind,
-        Goal
+        Goal,
+        Creak
     }
 
     /// <summary>
@@ -25,7 +26,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
     {
         private const int Rate = 22050;
 
-        [SerializeField] private AudioClip[] overrides = new AudioClip[9];
+        [SerializeField] private AudioClip[] overrides = new AudioClip[10];
         [SerializeField] private float masterVolume = 1f;
         [SerializeField] private float pitchVariation = 0.04f;
 
@@ -72,11 +73,20 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
         }
 
-        private void PlayInternal(JumpNRunSound sound, float volume)
+        /// <summary>Plays with a chosen pitch (e.g. the swing's creak rises with its height).</summary>
+        public static void PlayPitched(JumpNRunSound sound, float volume, float pitch)
+        {
+            if (Instance != null)
+            {
+                Instance.PlayInternal(sound, volume, pitch);
+            }
+        }
+
+        private void PlayInternal(JumpNRunSound sound, float volume, float pitch = -1f)
         {
             AudioSource s = sources[next];
             next = (next + 1) % sources.Length;
-            s.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
+            s.pitch = pitch > 0f ? pitch : 1f + Random.Range(-pitchVariation, pitchVariation);
             s.PlayOneShot(clips[(int)sound], Mathf.Clamp01(volume * masterVolume));
         }
 
@@ -119,6 +129,13 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 case JumpNRunSound.Wind:
                     b = new float[SoftSynth.Samples(Rate, 0.6f)];
                     SoftSynth.Puff(b, Rate, 0.9f, 500f, 0.25f, 23);
+                    break;
+                case JumpNRunSound.Creak:
+                    // Soft wooden creak: a low, slightly falling tone inside a short low-passed rub.
+                    b = new float[SoftSynth.Samples(Rate, 0.32f)];
+                    SoftSynth.Puff(b, Rate, 0.35f, 900f, 0.12f, 41);
+                    SoftSynth.Pluck(b, Rate, 170f, 0.55f, 0.14f, -0.12f);
+                    SoftSynth.Normalize(b, 0.9f);
                     break;
                 default:
                     b = new float[SoftSynth.Samples(Rate, 1.2f)];

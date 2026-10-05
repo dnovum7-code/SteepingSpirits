@@ -15,6 +15,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
         [SerializeField] private Color seatColor = new Color(0.62f, 0.45f, 0.30f);
         [SerializeField] private Color gainColor = new Color(0.75f, 0.92f, 0.6f, 0.5f);
 
+        [Tooltip("Rope length of this swing (0 = SpiritElementsTuning value)")]
+        public float ropeLengthOverride;
+
+        [Tooltip("Highest angle of this swing in degrees (0 = SpiritElementsTuning value)")]
+        public float maxAngleOverride;
+
+        private readonly SwingParams own = new SwingParams();
+
         private SwingModel model;
         private RopeVisual ropeLeft;
         private RopeVisual ropeRight;
@@ -32,7 +40,17 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public Vector2 Seat => SeatPosition;
         public SwingModel Model => model;
 
-        private SwingParams Params => SpiritElementsTuning.Current.swing;
+        /// <summary>Live tuning values with this swing's overrides (no allocation).</summary>
+        private SwingParams Params
+        {
+            get
+            {
+                own.CopyFrom(SpiritElementsTuning.Current.swing);
+                if (ropeLengthOverride > 0.5f) own.ropeLength = ropeLengthOverride;
+                if (maxAngleOverride >= 20f) own.maxAngleDeg = maxAngleOverride;
+                return own;
+            }
+        }
 
         private Vector2 Pivot => transform.position;
         private Vector2 SeatPosition => Pivot + ToVector(model.SeatOffset);
@@ -88,7 +106,13 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
 
             lastAngle = model.Angle;
-            model.Step(dt, rider.MoveInput.x);
+            bool auto = JumpNRunOptions.Instance != null && JumpNRunOptions.Instance.Options.autoSwing;
+            model.Step(dt, rider.MoveInput.x, auto);
+            if (model.TurnedThisStep)
+            {
+                TurnFeedback();
+            }
+
             Vector2 feet = SeatPosition + Vector2.up * 0.1f;
             Vector2 offset = (Vector2)rider.transform.position - rider.Feet;
             rider.Body.MovePosition(feet + offset);
@@ -100,6 +124,23 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 JumpNRunSounds.Play(JumpNRunSound.Wind, 0.06f + 0.01f * Mathf.Abs(model.TangentialSpeed));
                 JumpNRunParticles.Burst(SeatPosition, 2, -ToVector(model.SeatVelocity).normalized, 30f, 1f, gainColor,
                     0.14f, 0.7f, 1f, 1, 200f);
+            }
+        }
+
+        /// <summary>At the high points: a soft creak that rises with the swing, a few leaves at big swings.</summary>
+        private void TurnFeedback()
+        {
+            float share = Mathf.Clamp01(model.Amplitude / Mathf.Max(0.1f, model.MaxAngle));
+            if (share < 0.2f)
+            {
+                return;
+            }
+
+            JumpNRunSounds.PlayPitched(JumpNRunSound.Creak, 0.04f + 0.1f * share, 0.8f + 0.6f * share);
+            int leaves = Mathf.RoundToInt(share * 4f);
+            if (leaves > 0)
+            {
+                JumpNRunParticles.Burst(SeatPosition + Vector2.up * 0.2f, leaves, Vector2.up, 70f, 1.2f, gainColor, 0.16f, 1.1f, 0.8f, 1, 200f);
             }
         }
 

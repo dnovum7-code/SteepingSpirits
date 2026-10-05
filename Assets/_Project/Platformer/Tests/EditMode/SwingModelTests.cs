@@ -169,3 +169,78 @@ namespace SteepingSpirits.Platforming.Tests
         }
     }
 }
+
+namespace SteepingSpirits.Platforming.Tests
+{
+    public class SwingPolishTests
+    {
+        private const float Dt = 1f / 120f;
+
+        [Test]
+        public void AutoSwing_HoldingOneDirectionBuildsUp()
+        {
+            var s = new SwingModel(new SwingParams());
+            for (float t = 0f; t < 10f; t += Dt) s.Step(Dt, 1f, true);
+            Assert.Greater(s.Amplitude * 180f / (float)System.Math.PI, 50f);
+        }
+
+        [Test]
+        public void WithoutAutoSwing_HoldingOneDirectionStaysSmall()
+        {
+            var s = new SwingModel(new SwingParams());
+            for (float t = 0f; t < 10f; t += Dt) s.Step(Dt, 1f, false);
+            Assert.Less(s.Amplitude * 180f / (float)System.Math.PI, 30f);
+        }
+
+        [Test]
+        public void GentleStickTilt_PumpsLessThanFullTilt()
+        {
+            SwingModel full = new SwingModel(new SwingParams()), gentle = new SwingModel(new SwingParams());
+            for (float t = 0f; t < 4f; t += Dt)
+            {
+                full.Step(Dt, full.AngularVelocity >= 0f ? 1f : -1f);
+                gentle.Step(Dt, gentle.AngularVelocity >= 0f ? 0.4f : -0.4f);
+            }
+
+            Assert.Greater(gentle.Amplitude, 0.05f);
+            Assert.Less(gentle.Amplitude, full.Amplitude);
+        }
+
+        [Test]
+        public void TurnsAreReportedAtTheHighPoints()
+        {
+            var s = new SwingModel(new SwingParams { damping = 0f }) { Angle = 0.6f };
+            int turns = 0;
+            for (float t = 0f; t < 3.5f; t += Dt)
+            {
+                s.Step(Dt, 0f);
+                if (s.TurnedThisStep)
+                {
+                    turns++;
+                    Assert.Greater(System.Math.Abs(s.Angle), 0.5f, "turning happens near the top");
+                }
+            }
+
+            Assert.AreEqual(3, turns, "released at the top: turning points after 1, 2 and 3 s (period 2 s)");
+        }
+
+        [Test]
+        public void PerSwingSettings_AreReadFromTheLevel()
+        {
+            LevelLayout l = LevelLayout.Parse("@rope0 4.5\n@angle0 60\n....O....\n.........\n.........\n.........\n.........\n.........\nP.......E\n#########");
+            var r = new LevelReachability(l);
+            LevelMarker o = l.All(TileKind.Swing)[0];
+            Assert.AreEqual(4.5f, r.RopeLength(o), 1e-5f);
+            Assert.AreEqual(60f, r.MaxAngleDeg(o), 1e-5f);
+        }
+
+        [Test]
+        public void AssistOptions_KeepAutoSwing()
+        {
+            var o = new AssistOptions { autoSwing = true };
+            Assert.AreEqual("speed=1.0;air=0;fall=0;swing=1", o.Serialize());
+            Assert.IsTrue(AssistOptions.Parse(o.Serialize()).autoSwing);
+            Assert.IsFalse(AssistOptions.Parse("speed=1.0;air=0;fall=0").autoSwing);
+        }
+    }
+}

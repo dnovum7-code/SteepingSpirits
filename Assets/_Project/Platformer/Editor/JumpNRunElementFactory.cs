@@ -229,7 +229,16 @@ namespace SteepingSpirits.Platformer.EditorTools
                     go.GetComponent<SpiritNpc>().lineKey = layout.Setting("npc" + m.index);
                     break;
                 case TileKind.Swing:
-                    Place("PlaygroundSwing", parent, new Vector3(m.x + 0.5f, m.y + 0.5f, 0f), m);
+                    go = Place("PlaygroundSwing", parent, new Vector3(m.x + 0.5f, m.y + 0.5f, 0f), m);
+                    var swing = go.GetComponent<PlaygroundSwing>();
+                    if (swing != null)
+                    {
+                        var r = new LevelReachability(layout, null, level.elementsTuning != null ? level.elementsTuning.elements : null);
+                        string ropeSetting = layout.Setting("rope" + m.index), angleSetting = layout.Setting("angle" + m.index);
+                        swing.ropeLengthOverride = string.IsNullOrEmpty(ropeSetting) ? 0f : r.RopeLength(m);
+                        swing.maxAngleOverride = string.IsNullOrEmpty(angleSetting) ? 0f : r.MaxAngleDeg(m);
+                    }
+
                     break;
                 case TileKind.DewLeaf:
                     Place("DewLeaf", parent, new Vector3(m.x + 0.5f, m.y + 0.175f, 0f), m);

@@ -104,7 +104,9 @@ bereits erzeugten Klänge).
 `SwingModel` (Core) ist ein Pendel (Periode ≈ 2π·√(L/g), Standard 2 s). Wer **in
 Bewegungsrichtung drückt**, gibt Schwung (am stärksten unten); **gegen die Bewegung** bremst
 es deutlich stärker – deshalb wird man auch langsamer, wenn man eine Taste einfach festhält.
-Maximal 80° Ausschlag. Beim Absprung übernimmt die Figur die Sitzgeschwindigkeit
+Maximal 80° Ausschlag (pro Schaukel über `@angle<n>` und `@rope<n>` in der Level-Datei änderbar).
+Ein Stick pumpt analog (leicht geneigt = sanft). Komfort-Option **Auto-Schwung**: Richtung halten genügt.
+An den Umkehrpunkten knarzt das Holz leise, mit steigender Tonhöhe bei größerem Schwung. Beim Absprung übernimmt die Figur die Sitzgeschwindigkeit
 (× `releaseBoost`) plus einen kleinen Aufwärtsschub und fliegt im Bogen weiter.
 
 ## Kamera und Feedback

@@ -104,6 +104,7 @@ namespace SteepingSpirits.Platforming.Core
         {
             SwingParams p = elements.swing.Clone();
             p.ropeLength = reach.RopeLength(o);
+            p.maxAngleDeg = reach.MaxAngleDeg(o);
             return p;
         }
 
