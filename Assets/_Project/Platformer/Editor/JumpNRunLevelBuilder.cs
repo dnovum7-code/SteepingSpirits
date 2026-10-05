@@ -75,6 +75,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             level.elementsTuning = AssetDatabase.LoadAssetAtPath<SpiritElementsTuning>(JumpNRunBuilder.DataFolder + "/SpiritElementsTuning.asset");
             level.bounds = new Rect(0f, 0f, layout.Width, layout.Height);
             level.lanternCount = layout.All(TileKind.Lantern).Count;
+            level.pathLanternCount = layout.All(TileKind.PathLantern).Count;
             var placed = new IngredientBag();
             foreach (var pair in IngredientTally.Available(layout)) placed.Add(pair.Key, pair.Value);
             level.availableIngredients = placed.Serialize();

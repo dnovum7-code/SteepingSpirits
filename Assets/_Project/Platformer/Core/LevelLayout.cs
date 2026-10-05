@@ -20,7 +20,8 @@ namespace SteepingSpirits.Platforming.Core
         DewLeaf,
         Swing,
         Npc,
-        Bramble
+        Bramble,
+        PathLantern
     }
 
     /// <summary>An axis-aligned block of tiles in world units (x right, y up, 1 tile = 1 unit).</summary>
@@ -72,13 +73,14 @@ namespace SteepingSpirits.Platforming.Core
     ///   G  ghost platform (solid only in a lantern spirit's light)
     ///   F  leaf platform (sinks)  D  dew leaf (bounces)
     ///   O  swing anchor           N  spirit NPC   ^  bramble (gentle catch)
+    ///   l  small path lantern (lantern challenge, not a checkpoint)
     ///   .  or space: empty
     ///
     /// Runs of '#', '=', 'G', 'F' are merged into rectangles.
     /// </summary>
     public sealed class LevelLayout
     {
-        public const string Legend = "#=PLEtkbmqTKBMQWSGFDON^";
+        public const string Legend = "#=PLEtkbmqTKBMQWSGFDON^l";
 
         public string Name = "";
         public int Width;
@@ -138,6 +140,7 @@ namespace SteepingSpirits.Platforming.Core
                 case 'O': return TileKind.Swing;
                 case 'N': return TileKind.Npc;
                 case '^': return TileKind.Bramble;
+                case 'l': return TileKind.PathLantern;
                 default: return TileKind.Empty;
             }
         }

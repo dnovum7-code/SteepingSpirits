@@ -18,12 +18,14 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private CheckpointTracker checkpoints;
         private readonly IngredientBag bag = new IngredientBag();
+        private LanternChallenge challenge = new LanternChallenge(0);
         private CatchSequence catchSequence;
         private JumpNRunPlayer player;
         private Texture2D tintTexture;
 
         public CheckpointTracker Checkpoints => checkpoints;
         public IngredientBag Bag => bag;
+        public LanternChallenge Challenge => challenge;
         public bool IsCatching => catchSequence != null && catchSequence.Active;
         public bool Finished { get; private set; }
         public int Catches { get; private set; }
@@ -35,6 +37,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public event Action Caught;
         public event Action Respawned;
         public event Action Finish;
+        public event Action ChallengeComplete;
 
         public static JumpNRunSession Current { get; private set; }
 
@@ -44,6 +47,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             JumpNRunLevel level = GetComponent<JumpNRunLevel>();
             FeedbackParams fp = level != null && level.feedbackTuning != null ? level.feedbackTuning.feedback : new FeedbackParams();
             catchSequence = new CatchSequence(fp);
+            challenge = new LanternChallenge(level != null ? level.pathLanternCount : 0);
             tintTexture = Texture2D.whiteTexture;
         }
 
@@ -86,6 +90,18 @@ namespace SteepingSpirits.Platformer.JumpNRun
             JumpNRunParticles.Burst(player.Feet + Vector2.up * 0.6f, 10, Vector2.up, 60f, 1.2f, spiritColor, 0.3f, 0.9f, -0.6f);
             JumpNRunSounds.Play(JumpNRunSound.Catch, p.catchVolume);
             Caught?.Invoke();
+        }
+
+        /// <summary>A path lantern was lit; completing all gives the bonus ingredient.</summary>
+        public void LightPathLantern(int index)
+        {
+            if (Finished || !challenge.Light(index))
+            {
+                return;
+            }
+
+            bag.Add(challenge.RewardId);
+            ChallengeComplete?.Invoke();
         }
 
         public void Collect(string ingredientId)

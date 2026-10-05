@@ -46,6 +46,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public const string EndRare = "selten";
         public const string NextLevel = "Weiter";
         public const string Again = "Nochmal";
+        public static string PathLanterns(int lit, int total) => $"Laternenpfad: {lit} von {total}";
+        public const string ChallengeDone = "Alle Pfadlaternen leuchten – ein Quellkristall als Dank!";
         public static string LanternsLit(int lit, int total) => $"Laternen entzündet: {lit} von {total}";
         public static string Found(int found, int available) => available > 0 ? $"{found} / {available}" : $"{found}";
 

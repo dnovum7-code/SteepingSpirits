@@ -92,7 +92,7 @@
 | F1 | Geister-NPCs mit Einzeilern (Texte zentral) | erledigt (Kompilat + Daten-Test, Anzeige ungeprüft) |
 | F2 | Wandrutschen/-sprung abschaltbar | erledigt mit B1 (`MovementParams.wallSlideEnabled/wallJumpEnabled`) |
 | F3 | Parallax-Hintergrund + Abendlicht | erledigt (Kompilat geprüft, Bild ungeprüft) |
-| F4 | Laternen-Herausforderung | offen |
+| F4 | Laternen-Herausforderung | erledigt (89 Tests grün, Ablauf ungeprüft) |
 | F5 | Eigene Verbesserung: Hub-Lichtung mit Türen zu allen Leveln | offen |
 
 ## Editor-Checklisten pro Commit
@@ -228,3 +228,8 @@
 - [ ] Level 1 (Morgen) und Level 2 (`@mood evening`): drei Hügel-Ebenen bewegen sich beim Laufen
       unterschiedlich schnell; Level 2 hat warmen Abendhimmel und einen leichten Lichtschleier (ungeprüft).
 - [ ] `@mood night` in einer Level-Datei → dunkelblaue Palette nach *Build Levels*.
+
+### F4 – Laternen-Herausforderung
+- [ ] Level 1/2: kleine Rauten-Laternen (`l`) leuchten beim Berühren bläulich auf (ungeprüft).
+- [ ] Alle entzünden → hellerer Glockenakkord, Quellkristall landet im Beutel; Abschlusskarte zeigt
+      „Alle Pfadlaternen leuchten …“, sonst „Laternenpfad: x von y“. Kein Zeitlimit, kein Nachteil.

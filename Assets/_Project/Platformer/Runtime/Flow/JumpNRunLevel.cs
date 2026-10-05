@@ -20,6 +20,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         public int lanternCount;
 
+        /// <summary>Small path lanterns for the optional lantern challenge.</summary>
+        public int pathLanternCount;
+
         /// <summary>Scene path of the next level (empty = none).</summary>
         public string nextScenePath = "";
 

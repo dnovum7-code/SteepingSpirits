@@ -53,6 +53,7 @@ Level-Textdateien, den Builder-Code oder die Tuning-Assets.
 | `O` | Schaukel | Aufhängepunkt; Sitz hängt 3 Felder tiefer |
 | `N` | Geist (NPC) | sagt einen kurzen Satz, wenn man vorbeikommt |
 | `^` | Dornenranke | kein Schaden – ein Geist trägt die Figur zurück |
+| `l` | Pfadlaterne | Laternen-Herausforderung: alle entzünden (beliebige Reihenfolge, ohne Zeit) → Quellkristall als Dank |
 
 Zeilen mit `@schlüssel wert` sind Einstellungen (`@id`, `@name`, `@next`, `@npc0 …`),
 Zeilen mit `//` Kommentare. Die oberste Rasterzeile ist die höchste, ein Zeichen = 1 Einheit.

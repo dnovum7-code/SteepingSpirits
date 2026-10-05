@@ -89,6 +89,16 @@ namespace SteepingSpirits.Platformer.EditorTools
             return go;
         }
 
+        public static GameObject CreatePathLantern()
+        {
+            GameObject go = Template("PathLantern", PlaceholderVisual.Shape.Diamond, new Color(0.40f, 0.38f, 0.42f), new Vector2(0.3f, 0.45f));
+            var box = go.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            box.size = new Vector2(0.9f, 1.4f);
+            go.AddComponent<PathLantern>();
+            return go;
+        }
+
         public static GameObject CreateSpiritNpc()
         {
             GameObject go = Template("SpiritNpc", PlaceholderVisual.Shape.Circle, new Color(0.88f, 0.93f, 1f, 0.75f), new Vector2(0.8f, 1f));
@@ -185,6 +195,10 @@ namespace SteepingSpirits.Platformer.EditorTools
                     break;
                 case TileKind.LanternSpirit:
                     Place("LanternSpirit", parent, center, m);
+                    break;
+                case TileKind.PathLantern:
+                    go = Place("PathLantern", parent, center, m);
+                    go.GetComponent<PathLantern>().index = m.index;
                     break;
                 case TileKind.Npc:
                     go = Place("SpiritNpc", parent, center + Vector3.up * 0.3f, m);
