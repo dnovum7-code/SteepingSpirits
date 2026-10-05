@@ -65,12 +65,12 @@ namespace SteepingSpirits.Platformer.EditorTools
 
 namespace SteepingSpirits.Platformer.EditorTools
 {
-    /// <summary>Which follow component the level camera gets (own camera from B2 on).</summary>
+    /// <summary>Which follow component the level camera gets.</summary>
     public static class JumpNRunCameraSetup
     {
         public static void Attach(GameObject cameraObject)
         {
-            cameraObject.AddComponent<SteepingSpirits.Player.CameraFollow2D>();
+            cameraObject.AddComponent<JumpNRunCamera>();
         }
     }
 }

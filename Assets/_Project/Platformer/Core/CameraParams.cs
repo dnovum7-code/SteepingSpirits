@@ -6,9 +6,11 @@ namespace SteepingSpirits.Platforming.Core
     [Serializable]
     public class CameraParams
     {
-        /// <summary>Half width / height of the dead zone around the focus (units).</summary>
+        /// <summary>Half width of the horizontal dead zone around the focus (units).</summary>
         public float deadZoneX = 0.6f;
-        public float deadZoneY = 1.2f;
+
+        /// <summary>Ground height changes up to this (units) do not move the camera.</summary>
+        public float deadZoneY = 0.6f;
 
         /// <summary>Look-ahead distance at full run speed (units).</summary>
         public float lookAhead = 2.2f;

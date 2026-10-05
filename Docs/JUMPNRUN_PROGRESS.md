@@ -74,7 +74,7 @@
 | A3 | Tuning-ScriptableObjects (Movement, Camera, Feedback) | erledigt (Kompilat geprüft) |
 | A4 | Level als Daten (Tile-Strings) + Builder baut daraus | erledigt (14 Tests grün, Szene ungeprüft) |
 | B1 | Assist-Techniken (Coyote, Buffer, Cut, Apex, Fallschwerkraft, Max-Fall, Ecken, Luftkontrolle) | erledigt (31 Tests grün, Spielgefühl ungeprüft) |
-| B2 | Kamera (Folgen, Vorausschau, Totzone, vertikal nach Landung) | offen |
+| B2 | Kamera (Folgen, Vorausschau, Totzone, vertikal nach Landung) | erledigt (8 Kamera-Tests grün, Bild ungeprüft) |
 | B3 | Feedback (Squash/Stretch, Staub/Blätter, Töne) | offen |
 | C1 | Laternen-Checkpoints + sanftes Auffangen | offen |
 | C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | offen |
@@ -122,3 +122,10 @@
 - [ ] Kopf stößt knapp an eine Kante → rutscht seitlich vorbei statt abzuprallen.
 - [ ] Dünne Plattform (`=`): von unten durchspringen, mit S + Leertaste nach unten fallen.
 - [ ] Werte in `MovementTuning.asset` während Play ändern → wirken sofort.
+
+### B2 – Kamera
+- [ ] Level 1 → Play: Kamera folgt weich, schaut beim Laufen ~2 Felder voraus (ungeprüft).
+- [ ] Auf der Stelle springen → Kamera bleibt vertikal ruhig; Landung auf höherer Plattform →
+      Kamera gleitet nach oben. Tiefer Fall → Kamera folgt schon im Fall.
+- [ ] Kein Ruckeln beim Laufen (Spieler interpoliert, Kamera in LateUpdate). Kein Wackeln.
+- [ ] Am Levelrand zeigt die Kamera nichts außerhalb der Levelbreite.
