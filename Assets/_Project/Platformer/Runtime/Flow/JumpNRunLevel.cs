@@ -26,6 +26,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
         /// <summary>Small path lanterns for the optional lantern challenge.</summary>
         public int pathLanternCount;
 
+        /// <summary>Where "back" leads from the end card (the clearing; empty = previous scene or meadow).</summary>
+        public string backScenePath = "";
+
         /// <summary>Scene path of the next level (empty = none).</summary>
         public string nextScenePath = "";
 

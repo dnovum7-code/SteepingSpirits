@@ -50,7 +50,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-3 | Builder-Prüfungen (Prefab-Referenzen, Erreichbarkeit, Laternen-Reihenfolge) | erledigt (LevelLint 4 Tests, ausgelieferte Level warnungsfrei) |
 | R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | erledigt (4 eigene Tests + 106 Jump'n'Run-Tests grün) |
 | R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | erledigt (Vorratsschrank 4 Tests; Inventar-Übergabe ungeprüft) |
-| R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | offen |
+| R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | erledigt (Kompilat geprüft, Wege ungeprüft) |
 | R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | offen |
 | R2-7b | Kletterpfad auf neuen Controller hinter Schalter | offen |
 | R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | offen |
@@ -74,6 +74,14 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-6 – Wege verbinden
+- [ ] *Build Levels* → `TestMeadow.unity` enthält zusätzlich `HubPortal` (türkise Raute über dem lila
+      Kletterpfad-Portal bei (-17, 3)) (ungeprüft).
+- [ ] Wiese → Play → zum türkisen Portal → **E** „Zur Lichtung der Geister“ → Lichtung.
+- [ ] Lichtung → Tür „Morgenwiese“ (W/E) → Level → Ziel → Karte → **Zur Lichtung** → wieder auf der Lichtung.
+      Auch nach „Weiter“ (Level 2) führt der Rückweg zur Lichtung, nicht ins vorige Level.
+- [ ] Lichtung → Tür „Zur Wiese“ → Wiese; Zutaten von dort aus liegen im Inventar (R2-5).
 
 #### R2-5 – Übergabe des Sammelbeutels
 - [ ] Level **direkt** starten, Zutaten sammeln, Ziel → Karte zeigt „… im Vorratsschrank des Teehauses“;

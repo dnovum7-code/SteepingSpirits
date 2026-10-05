@@ -123,6 +123,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             var placed = new IngredientBag();
             foreach (var pair in IngredientTally.Available(layout)) placed.Add(pair.Key, pair.Value);
             level.availableIngredients = placed.Serialize();
+            level.backScenePath = layout.IsHub || !levelNames.ContainsKey("Hub") ? "" : JumpNRunBuilder.HubScene;
             string next = layout.Setting("next");
             level.nextScenePath = string.IsNullOrEmpty(next) ? "" : JumpNRunBuilder.SceneFolder + "/JumpNRun_" + next + ".unity";
 

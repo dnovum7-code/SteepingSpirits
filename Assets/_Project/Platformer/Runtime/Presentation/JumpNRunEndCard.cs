@@ -70,6 +70,12 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         private void GoBack()
         {
+            if (level != null && !string.IsNullOrEmpty(level.backScenePath))
+            {
+                ScenePortal.Load(level.backScenePath);
+                return;
+            }
+
             string back = ScenePortal.PreviousScenePath;
             ScenePortal.Load(string.IsNullOrEmpty(back) || back == SceneManager.GetActiveScene().path ? MeadowScene : back);
         }
@@ -160,7 +166,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
             }
 
             bx += bw + 10f;
-            if (GUI.Button(new Rect(bx, by, bw, 32f), JumpNRunTexts.Back, button))
+            if (GUI.Button(new Rect(bx, by, bw, 32f), level != null && !string.IsNullOrEmpty(level.backScenePath)
+                    ? JumpNRunTexts.BackToClearing : JumpNRunTexts.Back, button))
             {
                 GoBack();
             }
