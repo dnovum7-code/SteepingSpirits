@@ -87,7 +87,7 @@
 | D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | erledigt (Wege per Test, Spielgefühl ungeprüft) |
 | S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | erledigt (9 Schaukel-Tests grün, Gefühl ungeprüft) |
 | E1 | Debug-Overlay (F1) | erledigt (Kompilat geprüft, Anzeige ungeprüft) |
-| E2 | Telemetrie (jumpnrun_log.jsonl pro Abschnitt) | offen |
+| E2 | Telemetrie (jumpnrun_log.jsonl pro Abschnitt) | erledigt (84 Tests grün, Datei ungeprüft) |
 | E3 | Doku Docs/JUMPNRUN.md | offen |
 | F* | Extras (Wand-Toggle, Parallax/Abendlicht, Geister-NPCs, Laternen-Herausforderung) | offen |
 
@@ -205,3 +205,10 @@
       Schwerkraft-Phase (rise/apex/fall/wall), Luftsprüngen, Zone (ground/one-way/leaf/ghost/dew/
       wind/swing/catch), Abschnitt, letzter Laterne, sicherem Punkt, Assists und timeScale (ungeprüft).
 - [ ] Springen: Coyote-Balken leert sich nach Verlassen der Kante, Puffer füllt sich beim Drücken.
+
+### E2 – Telemetrie
+- [ ] Level spielen, eine Laterne entzünden, einmal fallen, Ziel erreichen (ungeprüft).
+- [ ] `Application.persistentDataPath/jumpnrun_log.jsonl` (Windows: `%USERPROFILE%/AppData/LocalLow/<Firma>/<Projekt>/`)
+      enthält pro Abschnitt eine Zeile: `section`, `seconds`, `falls`, `ingredients`, `assists`, `end`
+      (`lantern`/`goal`/`left`).
+- [ ] Level mitten im Abschnitt verlassen → letzte Zeile mit `"end":"left"`.

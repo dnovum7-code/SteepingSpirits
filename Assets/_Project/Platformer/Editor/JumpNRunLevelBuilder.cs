@@ -66,6 +66,7 @@ namespace SteepingSpirits.Platformer.EditorTools
             root.AddComponent<JumpNRunHud>();
             root.AddComponent<JumpNRunEndCard>();
             root.AddComponent<JumpNRunDebugOverlay>();
+            root.AddComponent<JumpNRunTelemetry>();
             level.levelId = id;
             level.displayName = layout.Name;
             level.movementTuning = AssetDatabase.LoadAssetAtPath<MovementTuning>(JumpNRunBuilder.DataFolder + "/MovementTuning.asset");
