@@ -85,6 +85,9 @@ namespace SteepingSpirits.Platforming.Core
         public const string Legend = "#=PLEtkbmqTKBMQWSGFDON^l0123456789";
 
         public string Name = "";
+
+        /// <summary>The text this layout was parsed from.</summary>
+        public string SourceText = "";
         public int Width;
         public int Height;
         public readonly Dictionary<string, string> Settings = new Dictionary<string, string>();
@@ -161,7 +164,7 @@ namespace SteepingSpirits.Platforming.Core
         /// <summary>Parses a level text. Throws FormatException with line/column on errors.</summary>
         public static LevelLayout Parse(string text)
         {
-            var layout = new LevelLayout();
+            var layout = new LevelLayout { SourceText = text ?? "" };
             var rows = new List<string>();
             string[] lines = (text ?? "").Replace("\r\n", "\n").Split('\n');
 

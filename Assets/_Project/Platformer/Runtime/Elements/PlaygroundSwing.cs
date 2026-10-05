@@ -23,7 +23,13 @@ namespace SteepingSpirits.Platformer.JumpNRun
         private float remountTimer;
         private float lastAngle;
 
+        private static readonly System.Collections.Generic.List<PlaygroundSwing> all = new System.Collections.Generic.List<PlaygroundSwing>();
+
+        /// <summary>All swings in the loaded level (for tools and tests).</summary>
+        public static System.Collections.Generic.IReadOnlyList<PlaygroundSwing> All => all;
+
         public bool Occupied => rider != null;
+        public Vector2 Seat => SeatPosition;
         public SwingModel Model => model;
 
         private SwingParams Params => SpiritElementsTuning.Current.swing;
@@ -35,6 +41,12 @@ namespace SteepingSpirits.Platformer.JumpNRun
         {
             model = new SwingModel(Params);
         }
+
+        private void OnEnable() => all.Add(this);
+        private void OnDisable() => all.Remove(this);
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => all.Clear();
 
         private void Start()
         {

@@ -29,6 +29,9 @@ hat sie Vorrang (Fehler → Gefühl → Wünsche, Status und Commit je Notiz).
 Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerController2D` bleibt).
 
 ### Annahmen Runde 2
+- R4. Für den Zugriff von Tests und Werkzeugen gibt es eine kleine Assembly
+  `SteepingSpirits.Platformer.Hooks` (Eingabe-Schnittstelle, Probe). Der Spielcode liegt in
+  Assembly-CSharp; ein asmdef dafür würde andere Module mitziehen, das wäre außerhalb der Freigaben.
 - R1. Es gibt ein Inventar (`PlayerInventory`, DontDestroyOnLoad, von der Testwiese angelegt).
   Läuft es, gehen die Zutaten dorthin (Teeblatt → vorhandene ID `item_teeblatt`, damit die
   Sammel-Quest von Oma Hilde mitzählt). Läuft es nicht (Level direkt gestartet), landen sie im
@@ -42,7 +45,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 
 | # | Punkt | Status |
 |---|---|---|
-| R2-1 | Smoke-Test per Menü + PlayMode-Tests | offen |
+| R2-1 | Smoke-Test per Menü + PlayMode-Tests | erledigt (Bot schafft alle Level in der Simulation, 97 Tests grün; Unity-Lauf ungeprüft) |
 | R2-2 | Eingabe-Aufzeichnung F5/F6 | offen |
 | R2-3 | Builder-Prüfungen (Prefab-Referenzen, Erreichbarkeit, Laternen-Reihenfolge) | offen |
 | R2-4 | Gemeinsamer Zutaten-Katalog `SteepingSpirits.Ingredients` | offen |
@@ -64,7 +67,13 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 
 ### Editor-Checklisten Runde 2
 
-_(pro Commit ergänzt)_
+#### R2-1 – Smoke-Test
+- [ ] Menü **SteepingSpirits → JumpNRun → Run Smoke Test** (ungeprüft): baut alles, öffnet jede
+      `JumpNRun_*`-Szene, startet Play, ein Bot spielt (Figur läuft selbst), Play endet von allein,
+      nächste Szene. Am Ende Konsole „Smoke test finished“ und `Docs/SMOKE_REPORT.md` neu.
+- [ ] Abbrechen: **Cancel Smoke Test**.
+- [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
+- [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
 
 ## Erkundung (Stand `main` 5629997)
 

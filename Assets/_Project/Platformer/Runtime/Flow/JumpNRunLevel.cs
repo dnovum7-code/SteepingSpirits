@@ -20,6 +20,9 @@ namespace SteepingSpirits.Platformer.JumpNRun
 
         public int lanternCount;
 
+        /// <summary>The level text the scene was built from (route planning in tools and tests).</summary>
+        [TextArea(2, 6)] public string layoutText = "";
+
         /// <summary>Small path lanterns for the optional lantern challenge.</summary>
         public int pathLanternCount;
 

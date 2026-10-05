@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using SteepingSpirits.Core;
 using SteepingSpirits.Platforming.Core;
+using SteepingSpirits.Platformer.Hooks;
 
 namespace SteepingSpirits.Platformer.JumpNRun
 {
@@ -107,10 +108,29 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 return;
             }
 
-            move = GameInput.Move;
-            jumpHeld = GameInput.JumpHeld;
-            jumpPressed |= GameInput.JumpPressed;
-            dashPressed |= GameInput.DashPressed;
+            PlayerInputFrame frame = ReadInput();
+            move = frame.move;
+            jumpHeld = frame.jumpHeld;
+            jumpPressed |= frame.jumpPressed;
+            dashPressed |= frame.dashPressed;
+        }
+
+        /// <summary>Keyboard/pad, or a bot/recording when one is plugged in.</summary>
+        public static PlayerInputFrame ReadInput()
+        {
+            IPlayerInputSource source = JumpNRunHooks.InputOverride;
+            if (source != null)
+            {
+                return source.Read();
+            }
+
+            return new PlayerInputFrame
+            {
+                move = GameInput.Move,
+                jumpPressed = GameInput.JumpPressed,
+                jumpHeld = GameInput.JumpHeld,
+                dashPressed = GameInput.DashPressed
+            };
         }
 
         /// <summary>The swing or the catch takes over; null hands control back.</summary>

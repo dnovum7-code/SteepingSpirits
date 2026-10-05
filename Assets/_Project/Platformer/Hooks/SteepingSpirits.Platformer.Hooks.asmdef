@@ -1,0 +1,16 @@
+{
+    "name": "SteepingSpirits.Platformer.Hooks",
+    "rootNamespace": "SteepingSpirits.Platformer.Hooks",
+    "references": [
+        "SteepingSpirits.Platforming.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
