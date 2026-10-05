@@ -67,6 +67,10 @@ namespace SteepingSpirits.Platformer.EditorTools
             level.feedbackTuning = AssetDatabase.LoadAssetAtPath<FeedbackTuning>(JumpNRunBuilder.DataFolder + "/FeedbackTuning.asset");
             level.bounds = new Rect(0f, 0f, layout.Width, layout.Height);
 
+            Transform services = Child(root.transform, "Feedback");
+            services.gameObject.AddComponent<JumpNRunParticles>();
+            services.gameObject.AddComponent<JumpNRunSounds>();
+
             Transform geometry = Child(root.transform, "Geometry");
             foreach (TileRect r in layout.Solids)
             {

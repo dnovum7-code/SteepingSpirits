@@ -39,6 +39,8 @@ namespace SteepingSpirits.Platformer.EditorTools
             var player = go.AddComponent<JumpNRunPlayer>();
             player.Configure(AssetDatabase.LoadAssetAtPath<MovementTuning>(JumpNRunBuilder.DataFolder + "/MovementTuning.asset"));
 
+            go.AddComponent<JumpNRunFeedback>();
+
             var visual = go.AddComponent<PlaceholderVisual>();
             visual.shape = PlaceholderVisual.Shape.Square;
             visual.color = new Color(0.96f, 0.86f, 0.70f);

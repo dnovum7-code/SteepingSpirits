@@ -75,7 +75,7 @@
 | A4 | Level als Daten (Tile-Strings) + Builder baut daraus | erledigt (14 Tests grün, Szene ungeprüft) |
 | B1 | Assist-Techniken (Coyote, Buffer, Cut, Apex, Fallschwerkraft, Max-Fall, Ecken, Luftkontrolle) | erledigt (31 Tests grün, Spielgefühl ungeprüft) |
 | B2 | Kamera (Folgen, Vorausschau, Totzone, vertikal nach Landung) | erledigt (8 Kamera-Tests grün, Bild ungeprüft) |
-| B3 | Feedback (Squash/Stretch, Staub/Blätter, Töne) | offen |
+| B3 | Feedback (Squash/Stretch, Staub/Blätter, Töne) | erledigt (45 Tests grün, Klang/Bild ungeprüft) |
 | C1 | Laternen-Checkpoints + sanftes Auffangen | offen |
 | C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | offen |
 | D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | offen |
@@ -129,3 +129,10 @@
       Kamera gleitet nach oben. Tiefer Fall → Kamera folgt schon im Fall.
 - [ ] Kein Ruckeln beim Laufen (Spieler interpoliert, Kamera in LateUpdate). Kein Wackeln.
 - [ ] Am Levelrand zeigt die Kamera nichts außerhalb der Levelbreite.
+
+### B3 – Feedback
+- [ ] Level 1 → Play: beim Springen streckt sich die Figur kurz, bei der Landung staucht sie
+      (stärker bei tiefem Fall), Füße bleiben am Boden (ungeprüft).
+- [ ] Staubwölkchen bei Sprung/Landung, beim Laufen fliegen ab und zu Blätter nach hinten.
+- [ ] Töne leise und weich (kein Klicken): Sprung = sanftes Zupfen, Landung = gedämpftes Pusten.
+- [ ] Werte in `FeedbackTuning.asset` (Lautstärken, Stauchung) wirken nach Neustart von Play.
