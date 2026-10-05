@@ -53,7 +53,7 @@ namespace SteepingSpirits.Platforming.Core
         public int x;
         public int y;
 
-        /// <summary>Running number per kind in reading order (left→right, top→bottom).</summary>
+        /// <summary>Running number per kind from left to right (bottom first on equal x), so "higher index = further on".</summary>
         public int index;
 
         public override string ToString() => $"{kind} '{symbol}' ({x},{y}) #{index}";
@@ -199,7 +199,6 @@ namespace SteepingSpirits.Platforming.Core
             }
 
             layout.grid = new TileKind[layout.Width, layout.Height];
-            var counters = new Dictionary<TileKind, int>();
 
             for (int row = 0; row < rows.Count; row++)
             {
@@ -214,10 +213,20 @@ namespace SteepingSpirits.Platforming.Core
                         continue;
                     }
 
-                    counters.TryGetValue(kind, out int n);
-                    counters[kind] = n + 1;
-                    layout.Markers.Add(new LevelMarker { kind = kind, symbol = c, x = x, y = y, index = n });
+                    layout.Markers.Add(new LevelMarker { kind = kind, symbol = c, x = x, y = y });
                 }
+            }
+
+            // Number markers per kind along the level (x), so lanterns further right count as further on.
+            layout.Markers.Sort((a, b) => a.x != b.x ? a.x.CompareTo(b.x) : a.y.CompareTo(b.y));
+            var counters = new Dictionary<TileKind, int>();
+            for (int i = 0; i < layout.Markers.Count; i++)
+            {
+                LevelMarker m = layout.Markers[i];
+                counters.TryGetValue(m.kind, out int n);
+                counters[m.kind] = n + 1;
+                m.index = n;
+                layout.Markers[i] = m;
             }
 
             MergeRects(layout, TileKind.Solid, layout.Solids);

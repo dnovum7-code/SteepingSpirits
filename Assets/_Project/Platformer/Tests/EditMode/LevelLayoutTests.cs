@@ -74,11 +74,14 @@ namespace SteepingSpirits.Platforming.Tests
         [Test]
         public void Parse_MarkerIndicesRunPerKind()
         {
-            LevelLayout l = LevelLayout.Parse("L..L..E\nP..L...\n#######");
+            // A high lantern further right must count as further on than a low one on the left.
+            LevelLayout l = LevelLayout.Parse("....L.E\nP.L....\n#######");
             var lanterns = l.All(TileKind.Lantern);
-            Assert.AreEqual(3, lanterns.Count);
+            Assert.AreEqual(2, lanterns.Count);
+            Assert.AreEqual(2, lanterns[0].x);
             Assert.AreEqual(0, lanterns[0].index);
-            Assert.AreEqual(2, lanterns[2].index);
+            Assert.AreEqual(4, lanterns[1].x);
+            Assert.AreEqual(1, lanterns[1].index);
         }
 
         [Test]
