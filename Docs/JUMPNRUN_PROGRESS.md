@@ -83,7 +83,7 @@
 | C2 | Assist-Optionen (Tempo, Luftsprung, Absturzschutz) + Optionsmenü | erledigt (54 Tests grün, Menü ungeprüft) |
 | D1 | Zutaten + Sammelbeutel (Core) + Fang-Karte | erledigt (58 Tests grün, UI ungeprüft) |
 | D2 | Geister-Elemente: Windgeist, Laternengeist, Blattplattform, Tautropfen-Blatt | erledigt (63 Tests grün, Verhalten ungeprüft) |
-| D3 | Level 1 (Einstieg ohne Text) | offen |
+| D3 | Level 1 (Einstieg ohne Text) | erledigt (Erreichbarkeit per Test, Spielgefühl ungeprüft) |
 | D4 | Level 2 (mehrere Wege, Kletterpassagen, seltene Zutat) | offen |
 | S1 | Nebenaufgabe: Schaukel (Pumpen im Takt, Absprung im Bogen) | erledigt (9 Schaukel-Tests grün, Gefühl ungeprüft) |
 | E1 | Debug-Overlay (F1) | offen |
@@ -180,3 +180,13 @@
 - [ ] Eine Taste dauerhaft halten oder gegen die Bewegung drücken → Schaukel wird langsamer.
 - [ ] Leertaste → Absprung mit dem Schwung der Schaukel, Flug im Bogen; S → einfach absteigen.
 - [ ] Werte unter `SpiritElementsTuning.asset → swing` (Seillänge, Pump/Bremse, Absprung).
+
+### D3 – Level 1 „Morgenwiese“
+- [ ] *Build Levels* → `Assets/Scenes/JumpNRun_Level1.unity` öffnen → Play (ungeprüft).
+- [ ] Ablauf ohne Text: laufen → kleine Stufe → Blätter in der Luft (Springen lohnt) → 2er-Lücke
+      mit Blättern im Bogen → Laterne → Treppe → 3er-Lücke → Plattformen nach oben (Blüte),
+      darüber optional die seltene Goldspitze → 4er-Lücke → Laterne → Brücke aus dünnen
+      Plattformen (Morgentau) → Quellwasser → Ziel.
+- [ ] In eine Lücke fallen → sanftes Auffangen an der letzten Laterne.
+- [ ] Ohne Unity: `dotnet test Tests/PlatformingCore.DotNet` prüft, dass Ziel, Laternen und alle
+      Zutaten erreichbar sind (grob, siehe `LevelReachability`).
