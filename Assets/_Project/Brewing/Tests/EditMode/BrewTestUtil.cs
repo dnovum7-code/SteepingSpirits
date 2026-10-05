@@ -11,6 +11,12 @@ namespace SteepingSpirits.Brewing.Tests
 
         public static TeaParams[] AllTeas() => new[] { TeaPresets.Black(), TeaPresets.White(), TeaPresets.Green() };
 
+        public static TeaParams[] AllTeasWithOolong() =>
+            new[] { TeaPresets.Black(), TeaPresets.White(), TeaPresets.Green(), TeaPresets.Oolong() };
+
+        public static CalibrationSeries Series(TeaParams tea) =>
+            BrewCalibration.CalibrateSeries(tea, Shape, Quality, Room);
+
         public static CalibrationResult Calibrate(TeaParams tea) =>
             BrewCalibration.Calibrate(tea, Shape, Quality, Room);
 

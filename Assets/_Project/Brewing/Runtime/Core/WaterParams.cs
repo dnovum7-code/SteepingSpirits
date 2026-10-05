@@ -26,5 +26,17 @@ namespace SteepingSpirits.Brewing.Core
 
         /// <summary>Temperature drop when ladling water back (°C).</summary>
         public float ladleCooling = 5f;
+
+        /// <summary>Kettle capacity (litres). A full kettle heats at heatingRate.</summary>
+        public float capacity = 1.2f;
+
+        /// <summary>Water used per infusion (litres).</summary>
+        public float pourVolume = 0.3f;
+
+        /// <summary>
+        /// Less water heats faster: rate × capacity / volume, with the volume
+        /// counted as at least this share of the capacity.
+        /// </summary>
+        public float minThermalShare = 0.25f;
     }
 }
