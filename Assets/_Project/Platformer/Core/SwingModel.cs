@@ -37,7 +37,9 @@ namespace SteepingSpirits.Platforming.Core
         public float remountDelay = 0.4f;
 
         /// <summary>How close the feet must come to the seat to sit down (units).</summary>
-        public float mountRadius = 0.7f;
+        public float mountRadius = 1.0f;
+
+        public SwingParams Clone() => (SwingParams)MemberwiseClone();
     }
 
     public enum SwingPump

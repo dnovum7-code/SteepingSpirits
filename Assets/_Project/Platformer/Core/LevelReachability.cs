@@ -53,8 +53,13 @@ namespace SteepingSpirits.Platforming.Core
         /// <summary>A tile the player can stand in (free tile with ground directly below).</summary>
         public bool IsStanding(int x, int y)
         {
-            return !IsBlocked(x, y) && !IsBlocked(x, y + 1) && (layout.IsStandable(x, y - 1) || layout.At(x, y - 1) == TileKind.DewLeaf);
+            // Brambles are not dangerous, but nobody stands in them on purpose: route over them.
+            return !IsBlocked(x, y) && !IsBlocked(x, y + 1) && layout.At(x, y) != TileKind.Bramble
+                   && (layout.IsStandable(x, y - 1) || layout.At(x, y - 1) == TileKind.DewLeaf);
         }
+
+        /// <summary>Solid for a body passing through (ground, ghost, leaf).</summary>
+        public bool IsBlocking(int x, int y) => IsBlocked(x, y);
 
         private bool IsBlocked(int x, int y)
         {
@@ -153,11 +158,38 @@ namespace SteepingSpirits.Platforming.Core
 
         private IEnumerable<Cell> Neighbours(Cell from, List<Cell> standing)
         {
-            float bonus = 0f;
-            if (layout.At(from.x, from.y - 1) == TileKind.DewLeaf)
+            foreach (Edge e in Edges(from, standing))
             {
-                bonus = SpiritMath.DewBounceVelocity(elements.dew, move.Gravity, true);
+                yield return e.to;
             }
+        }
+
+        /// <summary>How the player gets from one standing cell to the next.</summary>
+        public enum MoveKind
+        {
+            Walk,
+            Jump,
+            Dew,
+            Wind,
+            Swing
+        }
+
+        public struct Edge
+        {
+            public Cell to;
+            public MoveKind kind;
+
+            /// <summary>Marker of the wind spirit or swing used (kind Wind/Swing).</summary>
+            public LevelMarker anchor;
+        }
+
+        public List<Cell> StandingCells() => AllStanding();
+
+        /// <summary>All moves from a standing cell (coarse, see class summary).</summary>
+        public IEnumerable<Edge> Edges(Cell from, List<Cell> standing)
+        {
+            bool onDew = layout.At(from.x, from.y - 1) == TileKind.DewLeaf;
+            float bonus = onDew ? SpiritMath.DewBounceVelocity(elements.dew, move.Gravity, true) : 0f;
 
             foreach (Cell to in standing)
             {
@@ -168,10 +200,10 @@ namespace SteepingSpirits.Platforming.Core
 
                 int dy = to.y - from.y;
                 float dist = Math.Max(0f, Math.Abs(to.x - from.x) - 1f) + Margin;
-                float reach = Reach(dy, bonus);
-                if (reach >= dist)
+                if (Reach(dy, bonus) >= dist)
                 {
-                    yield return to;
+                    MoveKind kind = onDew ? MoveKind.Dew : (IsWalk(from, to) ? MoveKind.Walk : MoveKind.Jump);
+                    yield return new Edge { to = to, kind = kind };
                 }
             }
 
@@ -189,7 +221,7 @@ namespace SteepingSpirits.Platforming.Core
                     float dist = Math.Max(0f, Math.Abs(to.x - w.x) - 1f) + Margin;
                     if (to.y <= top + 1 && Reach(to.y - top) >= dist)
                     {
-                        yield return to;
+                        yield return new Edge { to = to, kind = MoveKind.Wind, anchor = w };
                     }
                 }
             }
@@ -197,7 +229,8 @@ namespace SteepingSpirits.Platforming.Core
             // Swing: jump onto the seat, then fly off either way.
             foreach (LevelMarker o in layout.All(TileKind.Swing))
             {
-                float seatY = o.y + 0.5f - elements.swing.ropeLength;
+                float rope = RopeLength(o);
+                float seatY = o.y + 0.5f - rope;
                 float toSeat = Math.Max(0f, Math.Abs(o.x - from.x) - 0.5f) + Margin;
                 int rise = (int)Math.Ceiling(seatY - from.y);
                 if (Reach(rise) < toSeat)
@@ -208,12 +241,40 @@ namespace SteepingSpirits.Platforming.Core
                 foreach (Cell to in standing)
                 {
                     float dx = Math.Abs(to.x - o.x);
-                    if (to.y <= seatY + 2f && dx <= elements.swing.ropeLength + 3f)
+                    if (to.y <= seatY + 2f && dx <= rope + 3f)
                     {
-                        yield return to;
+                        yield return new Edge { to = to, kind = MoveKind.Swing, anchor = o };
                     }
                 }
             }
+        }
+
+        /// <summary>Same height and solid footing all the way: just walk.</summary>
+        public bool IsWalk(Cell from, Cell to)
+        {
+            if (from.y != to.y)
+            {
+                return false;
+            }
+
+            int step = to.x > from.x ? 1 : -1;
+            for (int x = from.x; x != to.x; x += step)
+            {
+                if (!IsStanding(x, from.y))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>Rope length of a swing marker (per-swing "@rope&lt;index&gt; 3.5", else the tuning value).</summary>
+        public float RopeLength(LevelMarker swing)
+        {
+            string s = layout.Setting("rope" + swing.index);
+            return float.TryParse(s, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture,
+                out float v) && v > 0.5f ? v : elements.swing.ropeLength;
         }
 
         public int ColumnHeight(LevelMarker w)
