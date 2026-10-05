@@ -55,7 +55,7 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 | R2-5 | Übergabe Sammelbeutel → Inventar / Vorratsschrank | erledigt (Vorratsschrank 4 Tests; Inventar-Übergabe ungeprüft) |
 | R2-6 | Wege verbinden (Wiese → Lichtung → Level → Lichtung) | erledigt (Kompilat geprüft, Wege ungeprüft) |
 | R2-7 | Speichern (Level, Seltenheiten, Herausforderungen, Komfort) | erledigt (5 Speicher-Tests; Unity ungeprüft) |
-| R2-7b | Kletterpfad auf neuen Controller hinter Schalter | offen |
+| R2-7b | Kletterpfad auf neuen Controller hinter Schalter | erledigt, Schalter **aus** bis zu deiner Bestätigung (Kompilat geprüft, Spiel ungeprüft) |
 | R2-8 | Spieler-Oberflächen auf UI-Baukasten, Gamepad-Navigation | offen |
 | R2-9 | Schaukel-Feinschliff (pro Schaukel, Knarzen, Blätter, Stick, Auto-Schwung) | offen |
 | R2-10 | Schaukel-Kombinationen | offen |
@@ -77,6 +77,16 @@ Inventar-Adapter, Kletterpfad auf neuen Controller hinter Schalter (`PlatformerC
 - [ ] Abbrechen: **Cancel Smoke Test**.
 - [ ] *Test Runner → PlayMode*: 4 Tests (Spawn, Laterne, Auffangen, Schaukel-Absprung) grün.
 - [x] Ohne Unity: Bot schafft Level 1 und 2 in der Kachel-Simulation (`RouteBotTests`).
+
+#### R2-7b – Kletterpfad mit neuem Controller (Schalter)
+- [ ] Menü **SteepingSpirits → JumpNRun → Climbing Path Uses New Controller** (Häkchen) → *Build Levels* (ungeprüft).
+- [ ] `JumpAndRun.unity` → Play: Figur hat Assists (Coyote, Puffer, Ecken), Dash (Shift/X) geht,
+      Greifen (K/Strg halten) an gelben Haltepunkten, blauen Schwingpunkten (im Takt pumpen) und Lianen,
+      Sprung/Dash löst mit Schwung.
+- [ ] Stacheln und Abstürze: kein Tod, sanftes Auffangen am letzten Checkpoint (Fahne wird grün).
+- [ ] Ziel erfüllt weiterhin die Quest „Der Kletterpfad“; Rückkehr-Portal mit E.
+- [ ] Häkchen wieder aus → *Build Levels* → alter `PlatformerController2D` wie bisher.
+- Hinweis: Die neue Figur springt höher (3,2 statt ~2,3 Felder) – der Pfad wird leichter.
 
 #### R2-7 – Speichern
 - [ ] Erster Start: Lichtung → Tür „Geisterhain“ zeigt „noch verschlossen“; Morgenwiese ist offen (ungeprüft).

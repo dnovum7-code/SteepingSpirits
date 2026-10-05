@@ -40,7 +40,7 @@ namespace SteepingSpirits.Platformer.EditorTools
 
             var built = new List<string>();
             built.Add(BuildMeadowScene());
-            built.Add(BuildSingleComponentScene<PlatformerCourse>(ClimbScene, "PlatformerCourse"));
+            built.Add(BuildClimbScene());
             built.AddRange(JumpNRunLevelBuilder.BuildAllLevels());
 
             RegisterInBuildSettings(built);
@@ -105,6 +105,38 @@ namespace SteepingSpirits.Platformer.EditorTools
 
             EditorSceneManager.SaveScene(scene, MeadowScene);
             return MeadowScene;
+        }
+
+        private const string ClimbSwitchPref = "SteepingSpirits.JumpNRun.ClimbUsesNewController";
+        private const string ClimbSwitchMenu = "SteepingSpirits/JumpNRun/Climbing Path Uses New Controller";
+
+        /// <summary>
+        /// Switch for the old climbing path: off = PlatformerController2D (unchanged),
+        /// on = Jump'n'Run player with assists and the gentle catch. Takes effect on the next build.
+        /// </summary>
+        [MenuItem(ClimbSwitchMenu)]
+        private static void ToggleClimbController()
+        {
+            bool on = !EditorPrefs.GetBool(ClimbSwitchPref, false);
+            EditorPrefs.SetBool(ClimbSwitchPref, on);
+            Debug.Log($"[JumpNRun] Climbing path uses the {(on ? "new Jump'n'Run" : "old")} controller – run Build Levels to apply.");
+        }
+
+        [MenuItem(ClimbSwitchMenu, true)]
+        private static bool ToggleClimbControllerValidate()
+        {
+            Menu.SetChecked(ClimbSwitchMenu, EditorPrefs.GetBool(ClimbSwitchPref, false));
+            return true;
+        }
+
+        private static string BuildClimbScene()
+        {
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var course = new GameObject("PlatformerCourse").AddComponent<PlatformerCourse>();
+            course.ConfigureController(EditorPrefs.GetBool(ClimbSwitchPref, false),
+                AssetDatabase.LoadAssetAtPath<MovementTuning>(DataFolder + "/MovementTuning.asset"));
+            EditorSceneManager.SaveScene(scene, ClimbScene);
+            return ClimbScene;
         }
 
         /// <summary>Scenes whose content is created at runtime by one builder component.</summary>

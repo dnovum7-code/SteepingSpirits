@@ -41,7 +41,19 @@ namespace SteepingSpirits.DevTools
         private static readonly Color Grass = new Color(0.38f, 0.65f, 0.3f);
         private static readonly Color Spike = new Color(0.85f, 0.85f, 0.9f);
 
+        [Tooltip("Uses the Jump'n'Run player (assists, gentle catch, swing-like pumping) instead of PlatformerController2D")]
+        [SerializeField] private bool useJumpNRunController;
+
+        [SerializeField] private SteepingSpirits.Platformer.JumpNRun.MovementTuning jumpNRunTuning;
+
         private Transform root;
+
+        /// <summary>Set by the builder (menu toggle) – the old controller stays the default until confirmed.</summary>
+        public void ConfigureController(bool useJumpNRun, SteepingSpirits.Platformer.JumpNRun.MovementTuning tuning)
+        {
+            useJumpNRunController = useJumpNRun;
+            jumpNRunTuning = tuning;
+        }
         private readonly List<(Vector2 pos, string text)> signs = new List<(Vector2, string)>();
 
         private void Start()
@@ -51,6 +63,15 @@ namespace SteepingSpirits.DevTools
 
             EnsureSystems();
             BuildCourse();
+            if (useJumpNRunController)
+            {
+                Transform newPlayer = SteepingSpirits.Platformer.JumpNRun.ClimbCourseMode.Setup(
+                    transform, new Vector2(-3f, 0f), new Rect(-7f, -6f, 176f, 38f), jumpNRunTuning);
+                SetupCamera(newPlayer);
+                SteepingSpirits.Platformer.JumpNRun.ClimbCourseMode.SetupCamera(Camera.main);
+                return;
+            }
+
             PlatformerController2D player = BuildPlayer(new Vector2(-3f, 1f));
             SetupCamera(player.transform);
         }

@@ -30,7 +30,8 @@ namespace SteepingSpirits.Platformer
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (reached || other.GetComponentInParent<PlatformerController2D>() == null)
+            if (reached || (other.GetComponentInParent<PlatformerController2D>() == null
+                            && other.GetComponentInParent<JumpNRun.JumpNRunPlayer>() == null))
             {
                 return;
             }

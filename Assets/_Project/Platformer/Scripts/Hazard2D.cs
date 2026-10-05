@@ -30,6 +30,13 @@ namespace SteepingSpirits.Platformer
             if (player != null)
             {
                 player.Kill();
+                return;
+            }
+
+            // New controller (climbing path switch): no death, a spirit carries the player back.
+            if (other.GetComponentInParent<JumpNRun.JumpNRunPlayer>() != null)
+            {
+                JumpNRun.JumpNRunSession.Current?.Catch();
             }
         }
     }

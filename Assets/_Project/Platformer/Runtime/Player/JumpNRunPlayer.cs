@@ -46,6 +46,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
         public Vector2 Velocity => body != null ? body.linearVelocity : Vector2.zero;
         public Vector2 MoveInput => move;
         public bool JumpHeld => jumpHeld;
+        public bool GrabHeld { get; private set; }
 
         /// <summary>Ground the player stands on (null in the air).</summary>
         public Collider2D Ground { get; private set; }
@@ -113,6 +114,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             jumpHeld = frame.jumpHeld;
             jumpPressed |= frame.jumpPressed;
             dashPressed |= frame.dashPressed;
+            GrabHeld = frame.grabHeld;
         }
 
         /// <summary>Keyboard/pad, or a bot/recording when one is plugged in.</summary>
@@ -129,7 +131,8 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 move = GameInput.Move,
                 jumpPressed = GameInput.JumpPressed,
                 jumpHeld = GameInput.JumpHeld,
-                dashPressed = GameInput.DashPressed
+                dashPressed = GameInput.DashPressed,
+                grabHeld = GameInput.GrabHeld
             };
         }
 
@@ -160,6 +163,20 @@ namespace SteepingSpirits.Platformer.JumpNRun
             bool pressed = jumpPressed;
             jumpPressed = false;
             return pressed;
+        }
+
+        /// <summary>Consumes a buffered dash press (grab release with dash).</summary>
+        public bool ConsumeDashPress()
+        {
+            bool pressed = dashPressed;
+            dashPressed = false;
+            return pressed;
+        }
+
+        /// <summary>Queues a dash for the next physics step (after letting go of a grab).</summary>
+        public void QueueDash()
+        {
+            dashPressed = true;
         }
 
         /// <summary>Adds an acceleration for the next physics step (updraft …).</summary>
@@ -198,7 +215,7 @@ namespace SteepingSpirits.Platformer.JumpNRun
             if (IsControlled || GamePause.IsBlocked)
             {
                 jumpPressed = jumpPressed && IsControlled;
-                dashPressed = false;
+                dashPressed = dashPressed && IsControlled;
                 externalAcceleration = Vector2.zero;
                 if (GamePause.IsBlocked)
                 {

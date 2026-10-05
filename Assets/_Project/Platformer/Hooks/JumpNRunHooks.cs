@@ -10,6 +10,9 @@ namespace SteepingSpirits.Platformer.Hooks
         public bool jumpPressed;
         public bool jumpHeld;
         public bool dashPressed;
+
+        /// <summary>Grab button held (climbing path: hold points, swing points, vines).</summary>
+        public bool grabHeld;
     }
 
     /// <summary>Anything that can steer the Jump'n'Run player instead of the real devices.</summary>

@@ -29,11 +29,28 @@ namespace SteepingSpirits.Platformer
             PlatformerController2D player = other.GetComponentInParent<PlatformerController2D>();
             if (player == null)
             {
+                LightForNewController(other);
                 return;
             }
 
             Vector2 at = spawnPoint != null ? (Vector2)spawnPoint.position : (Vector2)transform.position;
             if (player.SetCheckpoint(at) && flag != null)
+            {
+                flag.color = activeColor;
+            }
+        }
+
+        /// <summary>Climbing path with the new controller: checkpoints act as lanterns (ordered by x).</summary>
+        private void LightForNewController(Collider2D other)
+        {
+            if (other.GetComponentInParent<JumpNRun.JumpNRunPlayer>() == null || JumpNRun.JumpNRunSession.Current == null)
+            {
+                return;
+            }
+
+            Vector2 at = spawnPoint != null ? (Vector2)spawnPoint.position : (Vector2)transform.position;
+            JumpNRun.JumpNRunSession.Current.LightLantern(Mathf.RoundToInt(at.x * 10f), at);
+            if (flag != null)
             {
                 flag.color = activeColor;
             }
