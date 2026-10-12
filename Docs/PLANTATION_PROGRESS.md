@@ -53,7 +53,7 @@
 
 | # | Punkt | Status |
 |---|---|---|
-| A1 | Raster, Beetfelder, Aktionsgültigkeit (rein, getestet) | offen |
+| A1 | Raster, Beetfelder, Aktionsgültigkeit (rein, getestet) | erledigt (44 Tests) |
 | A2 | Tageswechsel (`IDayClock`, Trocknen, Regen) | offen |
 | A3 | Wachstum (Stufen, Nachwachsen, Determinismus) | offen |
 | A4 | Wasserbedarf-Typen | offen |
@@ -81,4 +81,5 @@
 
 ## Editor-Checklisten pro Commit
 
-_(wird pro Commit ergänzt)_
+- **A1** (Core-Grundlage): Unity öffnen → Konsole ohne Fehler; Test Runner → EditMode →
+  `SteepingSpirits.Plantation.Tests.EditMode` grün. (Ohne Unity geprüft: `dotnet test Tests/PlantationCore.DotNet`.)
