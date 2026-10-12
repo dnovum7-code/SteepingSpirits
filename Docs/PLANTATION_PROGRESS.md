@@ -84,6 +84,27 @@
 `<id>+q2`/`+q3`). Der bestehende Test „10 Zutaten“ zählt jetzt 15 – die einzige Änderung an einem
 bestehenden Test.
 
+## Simulator und Rundendauer (`GardenSimulator`, Test `GardenSimulatorTests`)
+
+28 Tage im echten Layout `Layouts/Teegarten.txt` (48 Beetfelder in 6 Blöcken à 4×2, Startpaket aus der
+Samenkiste, Block → Pflanze laut `@blocks`). Die Bots laufen über das Raster (BFS, 4,5 Felder/s) und
+stellen sich neben das Zielfeld; jede Aktion kostet 0,35 s, Werkzeugwechsel 0,15 s, Nachfüllen 0,8 s,
+Tag beenden 1,5 s.
+
+| Bot | Ernten | Stück | gut/fein/erlesen | Ø Qualität | Gießen | Pflanzen verloren | Runde Ø / max |
+|---|---|---|---|---|---|---|---|
+| sorgfältig | 218 | 534 | 0/0/534 | 3,00 | 1024 | 0 | 48 s / 82 s |
+| schlampig | 124 | 314 | 126/148/40 | 1,73 | 428 | 0 | 35 s / 65 s |
+| nie gießen | 40 | 94 | 94/0/0 | 1,00 | 0 | 0 | 8 s / 65 s |
+| sorgfältig + 1×3-Kanne | 218 | 534 | 0/0/534 | 3,00 | 1024 | 0 | 43 s / 74 s |
+
+- Sorgfältig erntet am meisten und am besten, schlampig erntet trotzdem ~60 %, nichts stirbt.
+- Ohne Gießen trägt nur der genügsame Lavendel (normale Pflanzen warten nach dem verziehenen Tag pro Stufe,
+  Regen 15 % hilft langsam). Das ist gewollt: es zeigt den Wert der Wasser-Typen.
+- Rundendauer: Bot ~1 Minute, ein Mensch braucht etwa doppelt so lang → **2–3 Minuten**, im Rahmen.
+- Saatgut sorgfältig: 60 gefunden, 24 übrig, 42 von 48 Feldern am Ende bepflanzt (einjährige Felder
+  schrumpfen langsam, wenn das Saatgut ausgeht – siehe G22/G25).
+
 ## Backlog
 
 | # | Punkt | Status |

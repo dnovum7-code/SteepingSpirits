@@ -1,0 +1,22 @@
+// Teegarten – read by SteepingSpirits → Plantation → Build Garden and by the simulator.
+// Legend:  .  grass   B  bed cell   :  path   #  hedge   W  well   L  lantern (end the day)
+//          P  start   G  gate to the meadow (left edge)   C  seed chest (starter pack)
+// Top row is the north edge. 1 character = 1 Unity unit.
+@name Teegarten
+// Starter pack in the seed chest (plant:count).
+@seeds tea:8 mint:16 chamomile:16 jasmine:8 lavender:8 lemon_balm:8
+// Suggested plant per bed block (blocks counted from the top left, row by row) – simulator only.
+@blocks tea mint chamomile jasmine lavender lemon_balm
+######################
+#W..........:.......C#
+#...........:........#
+#.BBBB..BBBB:.BBBB...#
+#.BBBB..BBBB:.BBBB...#
+#...........:........#
+#::::::::::::::::::::#
+#...........:........#
+#.BBBB..BBBB:.BBBB...#
+#.BBBB..BBBB:.BBBB...#
+#...........:........#
+G:P.........:...L....#
+######################
