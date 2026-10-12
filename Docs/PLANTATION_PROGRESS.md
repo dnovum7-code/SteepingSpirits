@@ -46,6 +46,11 @@
    (Inventar, sonst Vorratsschrank). Die Qualität steckt in der Zutaten-ID-Variante `<id>+q<n>`
    (Katalog-Erweiterung `IngredientQuality`, additiv); Stufe 1 benutzt die normale ID.
 5. **Saatgut** sind Inventar-Gegenstände `seed_<pflanze>` (Kategorie Material), keine Zutaten.
+7. **Saatgut-Sicherung** (siehe Steuerung): nötig, weil `PlayerInventory` laufzeit-registrierte Items nach
+   einem Neustart nicht zurücklädt. Doppelt entstehen kann nichts: die Sicherung spiegelt immer den Stand der
+   letzten Garten-Speicherung, und Saatgut verschwindet nur durch Säen.
+8. **Kompost:** Der Brau-Code kennt kein Item für „herben“ Tee. Der Garten nimmt die IDs aus
+   `GardenSettings.compostInputIds` (Start: `tea_tart`); das Brauen muss beim Merge eine solche Tasse ausgeben.
 6. **Benutzen-Taste:** Leertaste / J / linke Maustaste / Pad X (wie Angriff auf der Wiese – im Garten gibt
    es keinen Kampf). Brunnen und Laterne werden mit derselben Taste benutzt (Feld vor der Figur).
 
@@ -105,6 +110,29 @@ Tag beenden 1,5 s.
 - Saatgut sorgfältig: 60 gefunden, 24 übrig, 42 von 48 Feldern am Ende bepflanzt (einjährige Felder
   schrumpfen langsam, wenn das Saatgut ausgeht – siehe G22/G25).
 
+## Steuerung im Garten
+
+| Was | Tastatur / Maus | Gamepad |
+|---|---|---|
+| Laufen | WASD / Pfeile (unverändert über `GameInput`) | linker Stick |
+| Benutzen (Werkzeug oder Objekt vor dir) | Leertaste / J / E / F / linke Maustaste; gedrückt halten = Reihe bearbeiten | X oder A |
+| Werkzeug 1–5: Hacke, Saatbeutel, Kanne, Hand, Schaufel | 1–5, Mausrad | LB / RB |
+| Saat wechseln (inkl. Kompost) | Q oder nochmal 2 | Steuerkreuz links/rechts |
+| 1×3-Kanne an/aus | R | Steuerkreuz hoch |
+| Gartenhilfe an/aus | H | Steuerkreuz runter |
+| Debug-Overlay / Nächster Tag | F1 / F2 | – |
+
+- **Zielfeld:** das Feld vor der Figur; bewegt man die Maus, zählt 2 s lang das Feld unter dem Zeiger, wenn
+  es höchstens 1,7 Einheiten entfernt ist. Warmer Rahmen = Werkzeug wirkt, blasser grauer Rahmen + ruhiger
+  Hinweis = wirkt nicht (kein Fehlerton). Bei 1×3 zeigt die Vorschau drei Felder.
+- **Objekte:** Brunnen füllt die Kanne, Laterne beendet den Tag (zweimal drücken, sanfte Abenddämmerung),
+  Samenkiste gibt einmal das Startpaket (danach Saatgut, das nicht in die Tasche passte), Komposter macht aus
+  `tea_tart` (herber Tee, IDs in den Settings) Kompost, Tor (betreten oder benutzen) führt zur Wiese.
+- **Tag:** Der Garten folgt `GameClock.TotalDays`. Nächte, die anderswo vergingen (Bett auf der Wiese), holt er
+  beim Betreten nach. Startet die Uhr neu (kein Uhr-Spielstand), vergeht keine Gartenzeit.
+- **Saatgut-Sicherung:** Das Inventar wird ohne eigenes Laden leer gestartet. Der Garten merkt sich daher das
+  getragene Saatgut und legt es zurück, wenn im Inventar *gar kein* Garten-Gegenstand ist (Annahme 7).
+
 ## Backlog
 
 | # | Punkt | Status |
@@ -116,20 +144,20 @@ Tag beenden 1,5 s.
 | A5 | Qualität | erledigt (A2–A5: 82 Tests gesamt) |
 | B6 | PlantDefinition (ScriptableObject) | erledigt |
 | B7 | Startpflanzen + Katalog-Ergänzungen | erledigt |
-| C8 | Werkzeuge (Hacke, Saatbeutel, Kanne, Hand, Schaufel) | offen |
-| C9 | Zielfeld mit Vorschau | offen |
-| C10 | Werkzeugleiste und Steuerung | offen |
-| C11 | Komfort (1×3-Kanne, Gartenhilfe) | offen |
-| D12 | Erde-Darstellung | offen |
-| D13 | Pflanzen-Darstellung | offen |
-| D14 | Klang und Partikel, `PlantationAudioSet` | offen |
-| E15 | Ernte → Inventar/Vorratsschrank mit Qualität | offen |
-| E16 | Speichern `garden_save.json` | offen |
-| E17 | Szene per Builder | offen |
+| C8 | Werkzeuge (Hacke, Saatbeutel, Kanne, Hand, Schaufel) | erledigt (Unity: ungeprüft) |
+| C9 | Zielfeld mit Vorschau | erledigt (Unity: ungeprüft) |
+| C10 | Werkzeugleiste und Steuerung | erledigt (Unity: ungeprüft) |
+| C11 | Komfort (1×3-Kanne, Gartenhilfe) | erledigt (Unity: ungeprüft) |
+| D12 | Erde-Darstellung | erledigt (Unity: ungeprüft) |
+| D13 | Pflanzen-Darstellung | erledigt (Unity: ungeprüft) |
+| D14 | Klang und Partikel, `PlantationAudioSet` | erledigt (Unity: ungeprüft) |
+| E15 | Ernte → Inventar/Vorratsschrank mit Qualität | erledigt (Unity: ungeprüft) |
+| E16 | Speichern `garden_save.json` | erledigt (Roundtrip getestet; Unity: ungeprüft) |
+| E17 | Szene per Builder | erledigt (Unity: ungeprüft) |
 | E18 | Eingang von der Wiese | offen |
 | F19 | Debug-Overlay F1 + „Nächster Tag“ | offen |
 | F20 | Telemetrie `garden_log.jsonl` | offen |
-| G21 | Kompost | offen |
+| G21 | Kompost | erledigt (Brauen muss `tea_tart` liefern – Merge-Hinweis) |
 | G22 | Saatgut aus Ernte | offen |
 | G23 | Regengeist | offen |
 | G24 | Jahreszeiten-Daten | offen |
@@ -147,3 +175,16 @@ Tag beenden 1,5 s.
 - **B6** (Daten-Assets): Konsole ohne Fehler. Rechtsklick im Project → Create → SteepingSpirits → Plantation →
   „Plant Definition“, „Garden Settings“, „Audio Set“ legen je ein Asset an; im Inspector sind alle Werte
   (Stufen-Tage, Wasser-Typ, Ertrag, Qualitätsgrenzen, Kanne, Regen, Komfort, Feedback) sichtbar.
+- **C8–E17, G21** (spielbarer Garten): Menü **SteepingSpirits → Plantation → Build Garden** → Konsole meldet
+  `Built Assets/Scenes/Teegarten.unity` plus Simulator-Zahlen; unter `Assets/_Project/Plantation/Data` liegen
+  `GardenSettings`, `PlantationAudioSet` und `Plants/*.asset` (6). Szene `Teegarten` öffnen → Play:
+  1. Figur steht links unten am Tor, HUD zeigt Werkzeugleiste (1–5), Datum, Kanne 20/20, Optionen.
+  2. Zur Samenkiste (oben rechts) → benutzen → „Samenpäckchen“, Saatbeutel zeigt Saatgut.
+  3. Vor ein Beetfeld stellen: Hacke (1) → Krümel + Klang, Erde wird braun mit Furchen. Saatbeutel (2) → Säen,
+     Kanne (3) → Erde dunkler, Tropfen, Kanne zählt runter. Auf Gras: grauer Rahmen, kein Ton.
+  4. R: 1×3-Vorschau zeigt drei Felder. H: Tropfen-Symbole über Feldern, die Wasser möchten.
+  5. Laterne (unten Mitte) zweimal benutzen → sanft dunkel → neuer Tag, Pflanzen „ploppen“ etwas größer.
+  6. Minze nach 4 gegossenen Tagen reif (Glitzern) → Hand (4) → Stücke hüpfen zur Figur, Meldung „+n Minze (erlesen)“.
+  7. Schaufel (5) auf junger Pflanze → Samen zurück. Kanne leer → Brunnen (oben links) füllt sie.
+  8. Ins Tor laufen → Wiese lädt (wenn `TestMeadow.unity` existiert). Zurück in den Garten: alles wie verlassen.
+  Ohne Musik-/Sound-Assets hört man leise Platzhalter; das Audio-Set darf leer bleiben.

@@ -70,6 +70,19 @@ namespace SteepingSpirits.Plantation.Tests
         }
 
         [Test]
+        public void CompostAction_MarksTheSoil_ForTheNextSowing()
+        {
+            Garden g = Make();
+            g.Apply(A, GardenAction.Hoe);
+            Assert.IsFalse(g.Apply(A, GardenAction.Compost).Done, "no compost carried");
+            Assert.IsTrue(g.Apply(A, GardenAction.Compost, new ToolContext { compost = 1 }).Done);
+            Assert.IsTrue(g.PlotAt(A).compost);
+            g.Apply(A, GardenAction.Sow, "frugal", 1);
+            Assert.IsTrue(g.PlotAt(A).crop.compost);
+            Assert.IsFalse(g.PlotAt(A).compost);
+        }
+
+        [Test]
         public void Thresholds_AreTunable()
         {
             var lenient = new GardenParams { fineCare = 0.1f, excellentCare = 0.2f };

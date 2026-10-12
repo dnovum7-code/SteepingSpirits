@@ -13,7 +13,8 @@ namespace SteepingSpirits.Plantation
         Lantern,
         Start,
         Gate,
-        Chest
+        Chest,
+        Compost
     }
 
     /// <summary>
@@ -23,11 +24,12 @@ namespace SteepingSpirits.Plantation
     ///   .  grass        B  bed cell (the only place to plant)    :  path
     ///   #  hedge/wall   W  well (refill the can)                 L  lantern (end the day)
     ///   P  start        G  gate (back to the meadow)             C  seed chest (start pack)
+    ///   K  compost bin (tart tea becomes compost)
     /// </code>
     /// </summary>
     public sealed class GardenLayout
     {
-        public const string Legend = ".B:#WLPGC";
+        public const string Legend = ".B:#WLPGCK";
 
         public string Name = "Teegarten";
         public string SourceText = "";
@@ -156,6 +158,7 @@ namespace SteepingSpirits.Plantation
                 case 'P': return GardenTile.Start;
                 case 'G': return GardenTile.Gate;
                 case 'C': return GardenTile.Chest;
+                case 'K': return GardenTile.Compost;
                 default: return GardenTile.Grass;
             }
         }

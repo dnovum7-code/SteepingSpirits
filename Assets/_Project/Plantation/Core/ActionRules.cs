@@ -6,7 +6,10 @@ namespace SteepingSpirits.Plantation
         Sow,
         Water,
         Harvest,
-        Shovel
+        Shovel,
+
+        /// <summary>Work compost into tilled, empty soil (chosen in the seed bag).</summary>
+        Compost
     }
 
     /// <summary>What an action would do on a cell.</summary>
@@ -22,7 +25,9 @@ namespace SteepingSpirits.Plantation
         Flatten,
 
         /// <summary>Shovel on a growing plant: the seed comes back, the soil stays tilled.</summary>
-        DigUp
+        DigUp,
+
+        Compost
     }
 
     /// <summary>Why an action does nothing here (shown calmly in the preview, no error sound).</summary>
@@ -40,7 +45,9 @@ namespace SteepingSpirits.Plantation
         CanEmpty,
         NotRipe,
         NothingHere,
-        HarvestFirst
+        HarvestFirst,
+        AlreadyComposted,
+        NoCompost
     }
 
     /// <summary>The result of checking an action on a cell.</summary>
@@ -68,6 +75,9 @@ namespace SteepingSpirits.Plantation
 
         /// <summary>Water left in the can.</summary>
         public int canWater;
+
+        /// <summary>Compost the player carries.</summary>
+        public int compost;
     }
 
     /// <summary>
@@ -116,6 +126,13 @@ namespace SteepingSpirits.Plantation
 
                     if (plot.soil == Soil.Tilled) return ActionCheck.Do(ActionEffect.Flatten);
                     return ActionCheck.No(ActionReason.NothingHere);
+
+                case GardenAction.Compost:
+                    if (plot.HasCrop) return ActionCheck.No(ActionReason.PlantGrowing);
+                    if (plot.soil != Soil.Tilled) return ActionCheck.No(ActionReason.NeedsTilling);
+                    if (plot.compost) return ActionCheck.No(ActionReason.AlreadyComposted);
+                    if (ctx.compost <= 0) return ActionCheck.No(ActionReason.NoCompost);
+                    return ActionCheck.Do(ActionEffect.Compost);
 
                 default:
                     return ActionCheck.No(ActionReason.NothingHere);

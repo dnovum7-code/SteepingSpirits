@@ -98,20 +98,32 @@ namespace SteepingSpirits.Plantation
 
         public bool IsBed(GridPos p) => plots.ContainsKey(p);
 
-        public ToolContext Context(string seedPlantId, int seedCount) =>
-            new ToolContext { seedPlantId = plants.Has(seedPlantId) ? seedPlantId : null, seedCount = seedCount, canWater = CanWater };
+        public ToolContext Context(string seedPlantId, int seedCount, int compost = 0) =>
+            new ToolContext { seedPlantId = plants.Has(seedPlantId) ? seedPlantId : null, seedCount = seedCount, canWater = CanWater, compost = compost };
 
         public ActionCheck Check(GridPos p, GardenAction action, string seedPlantId = null, int seedCount = 0) =>
-            ActionRules.Check(PlotAt(p), action, Context(seedPlantId, seedCount));
+            Check(p, action, Context(seedPlantId, seedCount));
+
+        /// <summary>Checks with what the player holds; the can level always comes from the garden.</summary>
+        public ActionCheck Check(GridPos p, GardenAction action, ToolContext ctx)
+        {
+            ctx.canWater = CanWater;
+            if (!plants.Has(ctx.seedPlantId)) ctx.seedPlantId = null;
+            return ActionRules.Check(PlotAt(p), action, ctx);
+        }
+
+        public ActionOutcome Apply(GridPos p, GardenAction action, string seedPlantId = null, int seedCount = 0) =>
+            Apply(p, action, Context(seedPlantId, seedCount));
 
         /// <summary>
-        /// Does the action (if valid). Seeds are handled by the caller: remove one on Sow,
-        /// give <see cref="ActionOutcome.seedReturned"/> back on DigUp and harvest seeds on Harvest.
+        /// Does the action (if valid). Items are handled by the caller: remove one seed on Sow and one
+        /// compost on Compost, give <see cref="ActionOutcome.seedReturned"/> back on DigUp and harvest seeds on Harvest.
         /// </summary>
-        public ActionOutcome Apply(GridPos p, GardenAction action, string seedPlantId = null, int seedCount = 0)
+        public ActionOutcome Apply(GridPos p, GardenAction action, ToolContext ctx)
         {
-            var outcome = new ActionOutcome { pos = p, check = Check(p, action, seedPlantId, seedCount) };
+            var outcome = new ActionOutcome { pos = p, check = Check(p, action, ctx) };
             if (!outcome.check.Valid) return outcome;
+            string seedPlantId = ctx.seedPlantId;
 
             Plot plot = plots[p];
             switch (outcome.check.effect)
@@ -143,6 +155,10 @@ namespace SteepingSpirits.Plantation
                     plot.idleDays = 0;
                     break;
 
+                case ActionEffect.Compost:
+                    plot.compost = true;
+                    break;
+
                 case ActionEffect.DigUp:
                     PlantParams dug = plants.Get(plot.crop.plantId);
                     outcome.seedReturned = dug != null ? dug.seedItemId : null;
@@ -153,6 +169,26 @@ namespace SteepingSpirits.Plantation
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// Puts a saved state back (see GardenSave). Saved cells that are no bed any more
+        /// (layout changed) are ignored; new beds stay untouched. Rain is not applied again –
+        /// the saved "watered" flags already contain it.
+        /// </summary>
+        public void Restore(int day, int canWater, IEnumerable<Plot> saved)
+        {
+            Day = day;
+            RainyToday = weather.IsRainy(day);
+            CanWater = Math.Max(0, Math.Min(settings.canCapacity, canWater));
+            foreach (GridPos p in beds) plots[p] = new Plot { pos = p };
+            foreach (Plot s in saved)
+            {
+                if (s == null || !plots.ContainsKey(s.pos)) continue;
+                Plot copy = s.Clone();
+                if (copy.crop != null && !plants.Has(copy.crop.plantId)) copy.crop = null;
+                plots[s.pos] = copy;
+            }
         }
 
         /// <summary>Fill the can at the well. Returns the water added.</summary>
