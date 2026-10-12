@@ -87,7 +87,7 @@ namespace SteepingSpirits.Plantation
             {
                 Preview = root.Garden.Check(Target, CurrentAction(), Context());
                 valid = Preview.Valid;
-                if (tool == GardenTool.Can && root.State.wideCan)
+                if (tool == GardenTool.Can && root.State.wideCan && Preview.effect != ActionEffect.Harvest)
                 {
                     cursorCells[1] = Target + dir;
                     cursorCells[2] = Target + dir * 2;
@@ -213,8 +213,16 @@ namespace SteepingSpirits.Plantation
 
         // ---------------- Using ----------------
 
-        private GardenAction CurrentAction() =>
-            tool == GardenTool.Seeds && selectedSeed == GardenItems.CompostItemId ? GardenAction.Compost : GardenTexts.ActionOf(tool);
+        /// <summary>
+        /// The tool's action – except on a ripe plant, where every tool harvests (nothing else would
+        /// make sense there, and switching to the hand just to pick would only slow the ritual down).
+        /// </summary>
+        private GardenAction CurrentAction()
+        {
+            Plot plot = root.Garden.PlotAt(Target);
+            if (plot != null && plot.crop != null && plot.crop.ripe) return GardenAction.Harvest;
+            return tool == GardenTool.Seeds && selectedSeed == GardenItems.CompostItemId ? GardenAction.Compost : GardenTexts.ActionOf(tool);
+        }
 
         private ToolContext Context()
         {
@@ -250,7 +258,7 @@ namespace SteepingSpirits.Plantation
                 case ActionEffect.Water:
                     fx.Drops(c);
                     fx.Play(GardenSound.Water);
-                    if (root.State.wideCan) WaterBehind(target, dir, ctx);
+                    if (root.State.wideCan && tool == GardenTool.Can) WaterBehind(target, dir, ctx);
                     break;
                 case ActionEffect.Harvest:
                     Harvest(o, c);
@@ -367,6 +375,7 @@ namespace SteepingSpirits.Plantation
 
         private string HintFor(ActionCheck check)
         {
+            if (check.Valid && check.effect == ActionEffect.Harvest) return GardenTexts.Effect(check.effect, null);
             if (check.Valid) return GardenTexts.ToolName(tool) + ": " + GardenTexts.Effect(check.effect, Context().seedPlantId);
             return check.reason == ActionReason.NotABed ? "" : GardenTexts.Reason(check.reason);
         }

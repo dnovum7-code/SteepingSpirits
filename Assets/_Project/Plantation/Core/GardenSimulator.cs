@@ -49,6 +49,7 @@ namespace SteepingSpirits.Plantation
         public int refills;
         public int actions;
         public int seedsFound;
+        public int seedsFromChest;
         public int seedsLeft;
 
         /// <summary>Plants that vanished without being harvested or dug up (must stay 0).</summary>
@@ -82,8 +83,8 @@ namespace SteepingSpirits.Plantation
 
         public override string ToString() =>
             $"{style,-10} harvests {harvests,3}  pieces {pieces,4}  q1/q2/q3 {piecesByQuality[1]}/{piecesByQuality[2]}/{piecesByQuality[3]}" +
-            $"  avgQ {QualityScore:0.00}  waterings {waterings,4}  seeds found {seedsFound,3} left {seedsLeft,3}" +
-            $"  lost {plantsLost}  round avg {AverageRound:0}s max {MaxRound:0}s";
+            $"  avgQ {QualityScore:0.00}  waterings {waterings,4}  seeds found {seedsFound,3} chest {seedsFromChest,3} left {seedsLeft,3}" +
+            $"  planted {plantsAtEnd}  lost {plantsLost}  round avg {AverageRound:0}s max {MaxRound:0}s";
     }
 
     /// <summary>
@@ -108,6 +109,9 @@ namespace SteepingSpirits.Plantation
             GridPos start = layout.All(GardenTile.Start)[0];
             List<GridPos> wells = layout.All(GardenTile.Well);
             List<GridPos> lanterns = layout.All(GardenTile.Lantern);
+            List<GridPos> chests = layout.All(GardenTile.Chest);
+            var inChest = new Dictionary<string, int>();
+            var restock = new Dictionary<string, int>();
             int seed = settings.worldSeed;
 
             for (int d = 0; d < days; d++)
@@ -120,6 +124,20 @@ namespace SteepingSpirits.Plantation
                 if (visits)
                 {
                     var round = new Round(layout, garden, cost, start);
+                    if (inChest.Count > 0 && chests.Count > 0)
+                    {
+                        round.WalkToUse(chests);
+                        foreach (KeyValuePair<string, int> kv in inChest)
+                        {
+                            string plantOf = book.BySeed(kv.Key)?.id;
+                            if (plantOf == null) continue;
+                            seeds.TryGetValue(plantOf, out int had);
+                            seeds[plantOf] = had + kv.Value;
+                            result.seedsFromChest += kv.Value;
+                        }
+
+                        inChest.Clear();
+                    }
                     foreach (GridPos b in Order(layout, garden.Beds, start))
                     {
                         Plot plot = garden.PlotAt(b);
@@ -205,6 +223,13 @@ namespace SteepingSpirits.Plantation
                 }
 
                 garden.EndDay();
+                SeedChest.Restock(garden.Day, settings, book, restock);
+                foreach (KeyValuePair<string, int> kv in restock)
+                {
+                    inChest.TryGetValue(kv.Key, out int c);
+                    inChest[kv.Key] = c + kv.Value;
+                }
+
                 foreach (KeyValuePair<GridPos, Crop> kv in before)
                 {
                     if (kv.Value != null && garden.PlotAt(kv.Key).crop == null && !removedOnPurpose.Contains(kv.Key)) result.plantsLost++;

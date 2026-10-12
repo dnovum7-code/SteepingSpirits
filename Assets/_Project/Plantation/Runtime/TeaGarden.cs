@@ -33,6 +33,7 @@ namespace SteepingSpirits.Plantation
         private static readonly Color Wood = new Color(0.52f, 0.35f, 0.20f);
 
         private readonly Dictionary<GridPos, GardenTile> objects = new Dictionary<GridPos, GardenTile>();
+        private readonly Dictionary<string, int> restock = new Dictionary<string, int>();
         private IDayClock clock;
         private int lastClockDay;
         private bool dirty;
@@ -105,6 +106,12 @@ namespace SteepingSpirits.Plantation
 
             Controller = gameObject.AddComponent<GardenController>();
             Controller.Init(this, Player.GetComponent<PlayerController2D>());
+
+            gameObject.AddComponent<GardenTelemetry>().Init(this);
+            gameObject.AddComponent<GardenDebugOverlay>().Init(this);
+            var spirit = new GameObject("Regengeist").AddComponent<RainSpirit>();
+            spirit.transform.SetParent(transform, false);
+            spirit.Init(this);
 
             RestoreSeedsIfLost();
             GameClock.OnNewDay += OnClockNewDay;
@@ -275,16 +282,23 @@ namespace SteepingSpirits.Plantation
 
             List<DayReport> reports = Garden.CatchUpTo(Garden.Day + nights);
             bool grew = false;
+            bool restocked = false;
             foreach (DayReport r in reports)
             {
                 grew |= r.grew.Count > 0;
                 NightPassed?.Invoke(r);
+                SeedChest.Restock(r.day + 1, settings.garden, Book, restock);
+                foreach (KeyValuePair<string, int> kv in restock)
+                {
+                    AddToChest(kv.Key, kv.Value);
+                    restocked = true;
+                }
             }
 
             if (reports.Count > 0) View.PlayNight(reports[reports.Count - 1]);
             else View.RefreshAll();
             if (grew) Feedback.Play(GardenSound.Grow, 0.8f);
-            Hud.Message(GardenTexts.Morning(Garden.Day, Garden.RainyToday, CountRipe()));
+            Hud.Message(GardenTexts.Morning(Garden.Day, Garden.RainyToday, CountRipe()) + (restocked ? " " + GardenTexts.ChestRestocked : ""));
             Save();
         }
 

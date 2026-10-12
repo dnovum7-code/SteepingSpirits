@@ -93,6 +93,12 @@ namespace SteepingSpirits.Plantation
             }
         }
 
+        /// <summary>One falling rain drop (the rain spirit).</summary>
+        public void RainDrop(Vector2 at)
+        {
+            Spawn(PlaceholderSprites.Circle, at + new Vector2(Random.Range(-0.3f, 0.3f), 0f), new Vector2(0f, -2.2f), 1f, 0.55f, 0.07f, new Color(0.62f, 0.8f, 1f, 0.75f));
+        }
+
         public void Sparkle(Vector2 at, Color color)
         {
             for (int i = 0; i < 5; i++)

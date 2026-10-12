@@ -71,6 +71,9 @@ namespace SteepingSpirits.Plantation
 
         public IReadOnlyList<GridPos> Beds => beds;
 
+        /// <summary>Weather of any day (debug overlay, rain spirit).</summary>
+        public bool RainyOn(int day) => weather.IsRainy(day);
+
         public Garden(IEnumerable<GridPos> bedCells, GardenParams settings, PlantBook plants, int startDay, IWeather weather = null)
         {
             this.settings = settings ?? new GardenParams();

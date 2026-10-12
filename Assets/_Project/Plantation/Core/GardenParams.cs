@@ -30,6 +30,12 @@ namespace SteepingSpirits.Plantation
         /// <summary>Compost: extra pieces on the first harvest of the sowing.</summary>
         public int compostYieldBonus = 1;
 
+        /// <summary>Every this many mornings the seed chest gets seeds of each annual plant (0 = never).</summary>
+        public int chestRestockDays = 7;
+
+        /// <summary>Seeds per annual plant in each restock.</summary>
+        public int chestRestockAmount = 4;
+
         /// <summary>Upper bound for nights caught up at once (e.g. after a long absence).</summary>
         public int maxCatchUpDays = 56;
 

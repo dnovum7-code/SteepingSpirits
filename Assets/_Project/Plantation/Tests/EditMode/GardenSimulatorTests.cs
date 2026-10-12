@@ -58,6 +58,8 @@ namespace SteepingSpirits.Plantation.Tests
             {
                 Assert.IsTrue(careful.piecesByPlant.ContainsKey(id), id + " never ripened in " + Days + " days");
             }
+
+            Assert.AreEqual(RealLayout().All(GardenTile.Bed).Count, careful.plantsAtEnd, "seed drops + chest restock keep every bed planted");
         }
 
         [Test]

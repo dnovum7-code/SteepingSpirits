@@ -96,19 +96,22 @@ Samenkiste, Block → Pflanze laut `@blocks`). Die Bots laufen über das Raster 
 stellen sich neben das Zielfeld; jede Aktion kostet 0,35 s, Werkzeugwechsel 0,15 s, Nachfüllen 0,8 s,
 Tag beenden 1,5 s.
 
-| Bot | Ernten | Stück | gut/fein/erlesen | Ø Qualität | Gießen | Pflanzen verloren | Runde Ø / max |
-|---|---|---|---|---|---|---|---|
-| sorgfältig | 218 | 534 | 0/0/534 | 3,00 | 1024 | 0 | 48 s / 82 s |
-| schlampig | 124 | 314 | 126/148/40 | 1,73 | 428 | 0 | 35 s / 65 s |
-| nie gießen | 40 | 94 | 94/0/0 | 1,00 | 0 | 0 | 8 s / 65 s |
-| sorgfältig + 1×3-Kanne | 218 | 534 | 0/0/534 | 3,00 | 1024 | 0 | 43 s / 74 s |
+| Bot | Ernten | Stück | gut/fein/erlesen | Ø Qualität | Gießen | Pflanzen verloren | Felder bepflanzt (Tag 28) | Runde Ø / max |
+|---|---|---|---|---|---|---|---|---|
+| sorgfältig | 232 | 569 | 0/0/569 | 3,00 | 1095 | 0 | 48/48 | 53 s / 83 s |
+| schlampig | 124 | 314 | 126/148/40 | 1,73 | 430 | 0 | 48/48 | 37 s / 65 s |
+| nie gießen | 40 | 94 | 94/0/0 | 1,00 | 0 | 0 | 48/48 | 9 s / 65 s |
+| sorgfältig + 1×3-Kanne | 232 | 569 | 0/0/569 | 3,00 | 1095 | 0 | 48/48 | 46 s / 76 s |
+
+(Seit G25 mit wöchentlichem Samenkisten-Nachschub; der Bot holt ihn ab, der Weg zählt mit. Vorher waren beim
+sorgfältigen Bot nach 28 Tagen nur 42 von 48 Feldern bepflanzt, weil Einjährige im Schnitt weniger als ein Samen
+pro Ernte zurückgeben. 56 Tage: sorgfältig 1354 Stück, 46/48 bepflanzt; schlampig 833 Stück.)
 
 - Sorgfältig erntet am meisten und am besten, schlampig erntet trotzdem ~60 %, nichts stirbt.
 - Ohne Gießen trägt nur der genügsame Lavendel (normale Pflanzen warten nach dem verziehenen Tag pro Stufe,
   Regen 15 % hilft langsam). Das ist gewollt: es zeigt den Wert der Wasser-Typen.
 - Rundendauer: Bot ~1 Minute, ein Mensch braucht etwa doppelt so lang → **2–3 Minuten**, im Rahmen.
-- Saatgut sorgfältig: 60 gefunden, 24 übrig, 42 von 48 Feldern am Ende bepflanzt (einjährige Felder
-  schrumpfen langsam, wenn das Saatgut ausgeht – siehe G22/G25).
+- Saatgut sorgfältig: 68 gefunden, 32 aus der Kiste, 44 übrig.
 
 ## Steuerung im Garten
 
@@ -155,13 +158,28 @@ Tag beenden 1,5 s.
 | E16 | Speichern `garden_save.json` | erledigt (Roundtrip getestet; Unity: ungeprüft) |
 | E17 | Szene per Builder | erledigt (Unity: ungeprüft) |
 | E18 | Eingang von der Wiese | erledigt (Unity: ungeprüft) |
-| F19 | Debug-Overlay F1 + „Nächster Tag“ | offen |
-| F20 | Telemetrie `garden_log.jsonl` | offen |
+| F19 | Debug-Overlay F1 + „Nächster Tag“ | erledigt (Unity: ungeprüft) |
+| F20 | Telemetrie `garden_log.jsonl` | erledigt (Zeile getestet; Unity: ungeprüft) |
 | G21 | Kompost | erledigt (Brauen muss `tea_tart` liefern – Merge-Hinweis) |
-| G22 | Saatgut aus Ernte | offen |
-| G23 | Regengeist | offen |
-| G24 | Jahreszeiten-Daten | offen |
-| G25 | Eigene Verbesserungen | offen |
+| G22 | Saatgut aus Ernte | erledigt (Saatgut-Fund pro Ernte + Kisten-Nachschub) |
+| G23 | Regengeist | erledigt (Unity: ungeprüft) |
+| G24 | Jahreszeiten-Daten | erledigt (`seasons` in den Pflanzendaten, im Debug-Overlay sichtbar, ohne Wirkung) |
+| G25 | Eigene Verbesserungen | erledigt (Liste unten) |
+
+## G25 – eigene Verbesserungen (mit Begründung)
+
+1. **Ernten mit jedem Werkzeug:** Auf einer reifen Pflanze erntet jedes Werkzeug. Auf reifen Pflanzen tut kein
+   anderes Werkzeug etwas Sinnvolles; ein Werkzeugwechsel nur zum Pflücken bremst das Ritual.
+2. **Halten = Reihe bearbeiten:** Bei gehaltener Benutzen-Taste wirkt das Werkzeug auf jedes *neue* Zielfeld
+   (nie zweimal auf dasselbe). Das spart viele Tastendrücke beim täglichen Gießen.
+3. **Samenkiste mit Nachschub:** Startpaket, Lager für Saatgut, das nicht in die Tasche passt, und alle 7 Tage
+   4 Samen je einjähriger Pflanze (`chestRestockDays/Amount`). Begründung: Simulator, siehe oben.
+4. **Saatgut-Sicherung** im Spielstand (Annahme 7).
+5. **Laterne mit zweitem Druck** und sanfter Abenddämmerung: kein versehentliches Tagesende.
+6. **Morgenmeldung:** Tag, Regen und Anzahl reifer Pflanzen – man weiß sofort, ob sich ein Rundgang lohnt.
+7. **Leises Funkeln bei „erlesen“** als kleine Belohnung für Pflege (keine Blitze).
+8. **Tuning-Hilfe im Editor:** Build Garden druckt die Simulator-Zahlen; Menü *Plantation → Simulate 28 Days*
+   rechnet mit den aktuellen Settings neu.
 
 ## Editor-Checklisten pro Commit
 
@@ -195,3 +213,13 @@ Tag beenden 1,5 s.
   „Teegarten betreten“ lädt den Garten; durchs Tor zurück → Wiese. **Achtung:** *JumpNRun → Build Levels* baut die
   Wiese neu und entfernt das Portal – danach *Plantation → Build Garden* (oder *Add Garden Entrance To Meadow*)
   erneut ausführen.
+- **F19, F20, G22–G25:** Build Garden, Play im Garten:
+  1. **F1** → Debug-Kasten links: Gartentag/Uhrtag, Regen heute/morgen, Kanne, Zielfeld mit Boden, Pflanze,
+     Fortschritt, Pflegequote, erwartete Qualität, Wasser-Verlauf (●/○), Jahreszeiten.
+  2. **F2** → kurzer Übergang, nächster Tag (nur Editor/Development-Build).
+  3. Ein paar Tage mit F2 überspringen: an einem Regentag schwebt ein kleiner Regengeist über den Beeten und
+     lässt Tropfen fallen (Debug zeigt „rain today yes“).
+  4. Nach jedem Tag eine neue Zeile in `<persistentDataPath>/garden_log.jsonl` (Aktionen, nasse Felder, Ernten,
+     Sekunden im Garten). Tage, die auf der Wiese vergingen, tragen `"caughtUp":true`.
+  5. Am 7. Tag meldet der Morgen „frisches Saatgut“ – Samenkiste öffnen gibt Minze/Kamille.
+  6. Reife Pflanze mit Hacke oder Kanne benutzen → wird geerntet.

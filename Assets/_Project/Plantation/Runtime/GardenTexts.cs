@@ -26,6 +26,7 @@ namespace SteepingSpirits.Plantation
         public const string CanFull = "Die Kanne ist schon voll.";
         public const string CanRefilled = "Die Kanne ist wieder voll.";
         public const string ChestEmpty = "Die Kiste ist leer.";
+        public const string ChestRestocked = "In der Samenkiste liegt frisches Saatgut.";
         public const string ChestStarter = "In der Kiste liegt ein Samenpäckchen für dich.";
         public const string BagFull = "Deine Tasche ist voll – der Rest bleibt in der Samenkiste.";
         public const string SeedsRestored = "Dein Saatgut aus dem Garten ist wieder da.";
