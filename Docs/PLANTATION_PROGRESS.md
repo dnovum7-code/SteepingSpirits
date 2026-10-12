@@ -6,7 +6,9 @@
 
 ## Nächster konkreter Schritt
 
-→ erster Backlog-Punkt mit Status „offen“.
+Alle Backlog-Punkte sind umgesetzt; alles, was Unity braucht, ist **ungeprüft**. Nächster Schritt: den Testplan
+im Abschlussbericht in Unity durchspielen und Befunde in `Docs/PLAYTEST_NOTES.md` (Abschnitt „Teegarten“)
+eintragen. Die nächste Sitzung arbeitet diese Notizen zuerst ab.
 
 ## Basis und Merge-Hinweis
 
@@ -223,3 +225,81 @@ pro Ernte zurückgeben. 56 Tage: sorgfältig 1354 Stück, 46/48 bepflanzt; schla
      Sekunden im Garten). Tage, die auf der Wiese vergingen, tragen `"caughtUp":true`.
   5. Am 7. Tag meldet der Morgen „frisches Saatgut“ – Samenkiste öffnen gibt Minze/Kamille.
   6. Reife Pflanze mit Hacke oder Kanne benutzen → wird geerntet.
+
+## Abschlussbericht
+
+### Gebaut
+- **Core** (`SteepingSpirits.Plantation.Core`, engine-frei): Raster/Layout-Parser, reine Aktionsregeln
+  (Wahrheitstabelle für 6 Aktionen × 7 Zustände), Garten-Simulation (Tageswechsel, Regen, Wachstum, Nachwachsen,
+  3 Wasser-Typen, Pflegepunkte → 3 Qualitätsstufen, Kompost, Saatgut-Fund, deterministisch), Spielstand
+  `garden_save.json` (versioniert), Telemetrie-Zeile, Samenkisten-Nachschub, Simulator mit 3 Bots.
+- **Daten:** `PlantDefinition` (6 Assets), `GardenSettings`, `PlantationAudioSet`, Textlayout `Teegarten.txt`.
+- **Laufzeit:** `TeaGarden` (Szene aus dem Layout), `GardenController` (5 Werkzeuge, Saatwahl, Zielfeld mit
+  Vorschau, Objekte), `GardenView` (Erde, Pflanzen pro Stufe, Wachs-„Plopp“, Glitzern, Gartenhilfe),
+  `GardenHud`, `GardenFeedback` + `GardenSynth` (Partikel und leise Platzhalter-Klänge), `GardenItems`
+  (Ernte mit Qualität → Inventar/Vorratsschrank, Saatgut, Kompost), `GardenSaveStore`, `GardenTelemetry`,
+  `GardenDebugOverlay`, `RainSpirit`, `GardenTexts` (alle Spielertexte, deutsch), `GardenInput` (eigene Tasten).
+- **Editor:** *SteepingSpirits → Plantation → Build Garden*, *Add Garden Entrance To Meadow*, *Simulate 28 Days*.
+
+### Offen / Risiken
+- **Nichts davon wurde in Unity ausgeführt** (Szene, UI-Layout, Sortierung Figur/Pflanzen, Lautstärke, Gefühl).
+- Y-Sortierung zwischen Figur und Pflanzen hängt (wie auf der Wiese) an den Projekteinstellungen.
+- `GameClock` wird nirgends gespeichert → nach Neustart beginnt die Uhr bei Tag 1; der Garten bleibt korrekt
+  (keine Rückwärtszeit), zeigt aber das Uhr-Datum an.
+- Das Brauen liefert noch keinen `tea_tart` → der Komposter bleibt bis zum Merge leer.
+
+### Annahmen und Abweichungen (Kurzfassung, Details oben)
+- Basis `feature/jumpnrun`, weil `main` den Zutaten-Katalog nicht hat.
+- Qualität als Zutaten-ID-Variante (`mint+q3`), weil Inventar und Vorratsschrank keine Qualität kennen; Stufe 1 =
+  normale ID.
+- Eigener Übergabe-Adapter statt `IngredientHandover` (Jump'n'Run-Code war nur zu lesen); gleiches Verhalten.
+- Eingang auf der Wiese als Szenen-Objekt per Builder, ohne Code-Änderung an `TestMeadow.cs`.
+- Debug-Overlay-Texte englisch (Entwickler-Text), Spielertexte deutsch in `GardenTexts`.
+- Commits gebündelt, wo Teile nur zusammen kompilieren: A2–A5, C8–E17 (+G21), F19/F20/G22–G25.
+- Startwert-Anpassung durch den Simulator: Samenkisten-Nachschub (G25), weil Einjährige sonst ausgehen.
+
+### Testergebnisse (ohne Unity)
+- `dotnet test Tests/PlantationCore.DotNet`: **108/108** grün (Regeln, Tag/Regen, Wachstum, Wasser-Typen,
+  Qualität, Kompost, Spielstand-Roundtrip und Fortsetzung, Determinismus, Telemetrie, Simulator, Rundendauer).
+- `dotnet test Tests/Ingredients.DotNet`: **12/12** (inkl. Qualitäts-IDs), `Tests/PlatformingCore.DotNet`: **137/137**.
+- Kompilieren gegen Unity-Referenzen inkl. Editor und Tests: mit `ENABLE_INPUT_SYSTEM` und mit altem Input
+  Manager **fehlerfrei, keine Warnungen**.
+- Simulator 28 Tage: siehe Tabelle oben (sorgfältig 569 Stück alle erlesen, schlampig 314 gemischt, nie gießen 94,
+  0 verlorene Pflanzen; Runde Bot Ø 53 s → Mensch geschätzt 2–3 Minuten).
+
+### Testplan für dich (≤ 10 Minuten, wichtigstes zuerst)
+1. **(2 min)** *Plantation → Build Garden*, Szene `Teegarten` öffnen, Play. Samenkiste (oben rechts) öffnen,
+   ein Feld hacken (1), säen (2), gießen (3). Auf Gras/Weg: nur blasser Rahmen, kein Ton. Fühlt es sich ruhig an?
+2. **(2 min)** Laterne zweimal benutzen → Abenddämmerung, neuer Tag. Mit **F2** bis Minze reif (4 gegossene Tage)
+   – Pflanze ploppt nachts, glitzert reif. Ernten (beliebiges Werkzeug) → Stücke hüpfen zur Figur,
+   Meldung „+n Minze (erlesen)“.
+3. **(1 min)** Durchs Tor zur Wiese (nach *JumpNRun → Build Levels* erst *Build Garden* erneut!), **I** zeigt Minze
+   und Saatgut. Über den grünen Torbogen (-17, -3) mit **E** zurück: Garten unverändert.
+4. **(1 min)** Play stoppen und neu starten → Garten, Kanne und Saatgut wie verlassen (Saatgut-Sicherung).
+5. **(1 min)** **R** (1×3-Kanne: Vorschau 3 Felder) und **H** (Tropfen über durstigen Feldern).
+6. **(1 min)** **F1**: Zielfeld-Werte prüfen; Lavendel wächst ohne Gießen, Minze nicht.
+7. **(1 min)** Mit F2 bis „rain tomorrow yes“ springen → am Regentag schwebt der Regengeist, Beete sind nass.
+8. **(1 min)** Test Runner → EditMode: `SteepingSpirits.Plantation.Tests.EditMode` und `…Ingredients…` grün.
+
+### Merge-Hinweise
+- Reihenfolge: `feature/jumpnrun` → dann `feature/plantation`. Die Brau-Branches berühren dieselben Dateien nicht.
+- **Katalog (additiv):** 5 neue IDs (`mint`, `chamomile`, `jasmine`, `lavender`, `lemon_balm`), neue Datei
+  `IngredientQuality.cs` (+ Tests); im bestehenden Katalog-Test 10 → 15.
+- **Inventar-IDs:** `ingredient_<id>` bzw. `ingredient_<id>+q2/+q3`, Tee Stufe 1 = `item_teeblatt`; Saatgut
+  `seed_<pflanze>`; Kompost `garden_compost`. Das Brauen sollte Qualitäts-IDs mit `IngredientQuality.Plain/Of`
+  lesen und für „herben“ Tee ein Item `tea_tart` ausgeben (Kompost).
+- **TestMeadow:** nur ein Szenen-Objekt `TeegartenPortal` (-17, -3) per Builder. *JumpNRun → Build Levels* baut die
+  Wiese neu und löscht es → danach *Plantation → Build Garden* erneut. Dauerhafte Lösung: beide Portale in
+  `TestMeadow.cs` oder ein gemeinsamer Wiesen-Builder.
+- `.gitignore`: eine Zeile für `Tests/PlantationCore.DotNet/PlantationCore.DotNet.csproj`.
+
+### Vorschläge für `CLAUDE.md`
+- Modul-Aufbau festschreiben: `Core` (engine-frei, `noEngineReferences`, eigene dotnet-Testprojekte unter
+  `Tests/<Modul>.DotNet`), `Runtime` (Assembly-CSharp), `Editor` (Builder als einzige Quelle für Szenen).
+- Eine **Tastenbelegungs-Tabelle** für alle Module pflegen (F1 nutzen Cheats, Jump'n'Run-Debug und Garten-Debug;
+  Leertaste ist Angriff/Sprung/Benutzen je nach Szene).
+- Einen gemeinsamen Speicherdienst planen: Inventar lädt laufzeit-registrierte Items nicht, `GameClock` wird nicht
+  gespeichert; jedes Modul hat sein eigenes JSON.
+- Ein gemeinsamer Wiesen-Builder, an den Module ihre Eingänge anmelden (statt dass Builder sich gegenseitig die
+  Szene überschreiben).
+- Regel: Qualität und Varianten von Zutaten nur über `IngredientQuality`-IDs, nie über neue Katalog-Einträge.

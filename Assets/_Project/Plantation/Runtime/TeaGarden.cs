@@ -348,10 +348,26 @@ namespace SteepingSpirits.Plantation
         public void Leave()
         {
             if (leaving) return;
+            string target = !string.IsNullOrEmpty(ScenePortal.PreviousScenePath) ? ScenePortal.PreviousScenePath : meadowScenePath;
+            if (!CanLoad(target))
+            {
+                Hud.Message(GardenTexts.NoMeadow);
+                return;
+            }
+
             Save();
             leaving = true;
-            string target = !string.IsNullOrEmpty(ScenePortal.PreviousScenePath) ? ScenePortal.PreviousScenePath : meadowScenePath;
             ScenePortal.Load(target);
+        }
+
+        private static bool CanLoad(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+#if UNITY_EDITOR
+            return System.IO.File.Exists(path);
+#else
+            return Application.CanStreamedLevelBeLoaded(System.IO.Path.GetFileNameWithoutExtension(path));
+#endif
         }
 
         public void RefillCan(GridPos well)
@@ -450,6 +466,12 @@ namespace SteepingSpirits.Plantation
                 Sprite(world, PlaceholderSprites.Circle, GrassDark, p, new Vector2(s * 1.5f, s), -99, "Grasfleck");
             }
 
+            // Invisible fence one cell outside the layout (the gate is an opening in the hedge).
+            Fence(world, new Vector2(w / 2f, -0.5f), new Vector2(w + 2f, 1f));
+            Fence(world, new Vector2(w / 2f, h + 0.5f), new Vector2(w + 2f, 1f));
+            Fence(world, new Vector2(-0.5f, h / 2f), new Vector2(1f, h + 2f));
+            Fence(world, new Vector2(w + 0.5f, h / 2f), new Vector2(1f, h + 2f));
+
             for (int y = 0; y < Layout.Height; y++)
             {
                 int runStart = -1;
@@ -498,6 +520,14 @@ namespace SteepingSpirits.Plantation
                     }
                 }
             }
+        }
+
+        private static void Fence(Transform parent, Vector2 center, Vector2 size)
+        {
+            var go = new GameObject("Zaun (unsichtbar)");
+            go.transform.SetParent(parent, false);
+            go.transform.position = center;
+            go.AddComponent<BoxCollider2D>().size = size;
         }
 
         private void Hedge(Transform parent, int x0, int x1, int y)

@@ -36,6 +36,7 @@ namespace SteepingSpirits.Plantation
         public const string HelpOn = "Gartenhilfe an: Tropfen zeigen, wer heute Wasser möchte.";
         public const string HelpOff = "Gartenhilfe aus.";
         public const string DebugNextDay = "Debug: nächster Tag";
+        public const string NoMeadow = "Der Weg zur Wiese ist noch nicht gebaut (Szene fehlt).";
         public const string SaveFailed = "Der Garten konnte nicht gespeichert werden.";
 
         public static string ToolName(GardenTool t)
