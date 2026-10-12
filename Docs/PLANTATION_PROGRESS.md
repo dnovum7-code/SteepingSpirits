@@ -114,7 +114,7 @@ Tag beenden 1,5 s.
 | A3 | Wachstum (Stufen, Nachwachsen, Determinismus) | erledigt |
 | A4 | Wasserbedarf-Typen | erledigt |
 | A5 | Qualität | erledigt (A2–A5: 82 Tests gesamt) |
-| B6 | PlantDefinition (ScriptableObject) | offen |
+| B6 | PlantDefinition (ScriptableObject) | erledigt |
 | B7 | Startpflanzen + Katalog-Ergänzungen | erledigt |
 | C8 | Werkzeuge (Hacke, Saatbeutel, Kanne, Hand, Schaufel) | offen |
 | C9 | Zielfeld mit Vorschau | offen |
@@ -144,3 +144,6 @@ Tag beenden 1,5 s.
 - **B7** (Startpflanzen, Katalog): Test Runner → `SteepingSpirits.Ingredients.Tests.EditMode` und
   `…Plantation.Tests.EditMode` grün. Im Jump'n'Run prüfen: das Seltenheitsregal zeigt weiter nur die 5
   seltenen Zutaten.
+- **B6** (Daten-Assets): Konsole ohne Fehler. Rechtsklick im Project → Create → SteepingSpirits → Plantation →
+  „Plant Definition“, „Garden Settings“, „Audio Set“ legen je ein Asset an; im Inspector sind alle Werte
+  (Stufen-Tage, Wasser-Typ, Ertrag, Qualitätsgrenzen, Kanne, Regen, Komfort, Feedback) sichtbar.
