@@ -46,13 +46,13 @@
    (Inventar, sonst Vorratsschrank). Die Qualität steckt in der Zutaten-ID-Variante `<id>+q<n>`
    (Katalog-Erweiterung `IngredientQuality`, additiv); Stufe 1 benutzt die normale ID.
 5. **Saatgut** sind Inventar-Gegenstände `seed_<pflanze>` (Kategorie Material), keine Zutaten.
+6. **Benutzen-Taste:** Leertaste / J / linke Maustaste / Pad X (wie Angriff auf der Wiese – im Garten gibt
+   es keinen Kampf). Brunnen und Laterne werden mit derselben Taste benutzt (Feld vor der Figur).
 7. **Saatgut-Sicherung** (siehe Steuerung): nötig, weil `PlayerInventory` laufzeit-registrierte Items nach
    einem Neustart nicht zurücklädt. Doppelt entstehen kann nichts: die Sicherung spiegelt immer den Stand der
    letzten Garten-Speicherung, und Saatgut verschwindet nur durch Säen.
 8. **Kompost:** Der Brau-Code kennt kein Item für „herben“ Tee. Der Garten nimmt die IDs aus
    `GardenSettings.compostInputIds` (Start: `tea_tart`); das Brauen muss beim Merge eine solche Tasse ausgeben.
-6. **Benutzen-Taste:** Leertaste / J / linke Maustaste / Pad X (wie Angriff auf der Wiese – im Garten gibt
-   es keinen Kampf). Brunnen und Laterne werden mit derselben Taste benutzt (Feld vor der Figur).
 
 ## Regeln (Core, `Garden.cs`)
 
@@ -154,7 +154,7 @@ Tag beenden 1,5 s.
 | E15 | Ernte → Inventar/Vorratsschrank mit Qualität | erledigt (Unity: ungeprüft) |
 | E16 | Speichern `garden_save.json` | erledigt (Roundtrip getestet; Unity: ungeprüft) |
 | E17 | Szene per Builder | erledigt (Unity: ungeprüft) |
-| E18 | Eingang von der Wiese | offen |
+| E18 | Eingang von der Wiese | erledigt (Unity: ungeprüft) |
 | F19 | Debug-Overlay F1 + „Nächster Tag“ | offen |
 | F20 | Telemetrie `garden_log.jsonl` | offen |
 | G21 | Kompost | erledigt (Brauen muss `tea_tart` liefern – Merge-Hinweis) |
@@ -188,3 +188,10 @@ Tag beenden 1,5 s.
   7. Schaufel (5) auf junger Pflanze → Samen zurück. Kanne leer → Brunnen (oben links) füllt sie.
   8. Ins Tor laufen → Wiese lädt (wenn `TestMeadow.unity` existiert). Zurück in den Garten: alles wie verlassen.
   Ohne Musik-/Sound-Assets hört man leise Platzhalter; das Audio-Set darf leer bleiben.
+- **E18** (Eingang von der Wiese, eigener Commit): Build Garden ergänzt in `Assets/Scenes/TestMeadow.unity` ein
+  Objekt `TeegartenPortal` bei (-17, -3) – unter dem Kletterpfad-Portal (-17, 0) und dem Lichtungs-Portal
+  (-17, 3). Sonst wird an der Wiese nichts geändert (kein Code in `TestMeadow.cs`). Prüfen: `TestMeadow` öffnen →
+  Hierarchy zeigt `TeegartenPortal`; Play → links auf der Wiese ein kleiner grüner Torbogen, **E** davor →
+  „Teegarten betreten“ lädt den Garten; durchs Tor zurück → Wiese. **Achtung:** *JumpNRun → Build Levels* baut die
+  Wiese neu und entfernt das Portal – danach *Plantation → Build Garden* (oder *Add Garden Entrance To Meadow*)
+  erneut ausführen.

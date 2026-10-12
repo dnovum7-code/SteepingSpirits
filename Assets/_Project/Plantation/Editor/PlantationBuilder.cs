@@ -21,6 +21,10 @@ namespace SteepingSpirits.Plantation.EditorTools
         public const string DataFolder = "Assets/_Project/Plantation/Data";
         public const string PlantFolder = DataFolder + "/Plants";
         public const string LayoutPath = "Assets/_Project/Plantation/Layouts/Teegarten.txt";
+        public const string MeadowPortalName = "TeegartenPortal";
+
+        /// <summary>Where the garden entrance stands on the meadow: below the climbing portal (-17, 0) and the clearing portal (-17, 3).</summary>
+        public static readonly Vector2 MeadowPortalPosition = new Vector2(-17f, -3f);
 
         [MenuItem("SteepingSpirits/Plantation/Build Garden")]
         public static void BuildGarden()
@@ -58,9 +62,52 @@ namespace SteepingSpirits.Plantation.EditorTools
             EditorSceneManager.SaveScene(scene, GardenScene);
 
             RegisterInBuildSettings(new[] { GardenScene });
+            bool entrance = AddMeadowEntrance();
+            EditorSceneManager.OpenScene(GardenScene, OpenSceneMode.Single);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[Plantation] Built " + GardenScene + "\n" + SimulatorSummary(parsed, settings));
+            Debug.Log("[Plantation] Built " + GardenScene + (entrance ? " (+ entrance on the meadow)" : "") + "\n" + SimulatorSummary(parsed, settings));
+        }
+
+        /// <summary>
+        /// The only change to the meadow: one portal object to the garden, added (or updated) in
+        /// TestMeadow.unity. The Jump'n'Run builder regenerates that scene – run Build Garden again
+        /// afterwards (or this menu) to put the entrance back.
+        /// </summary>
+        [MenuItem("SteepingSpirits/Plantation/Add Garden Entrance To Meadow")]
+        public static void AddMeadowEntranceMenu()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            if (AddMeadowEntrance()) Debug.Log("[Plantation] Garden entrance added to " + MeadowScene);
+        }
+
+        private static bool AddMeadowEntrance()
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(MeadowScene) == null)
+            {
+                Debug.LogWarning("[Plantation] " + MeadowScene + " not found – no entrance added. Build the meadow first (SteepingSpirits → JumpNRun → Build Levels).");
+                return false;
+            }
+
+            Scene meadow = EditorSceneManager.OpenScene(MeadowScene, OpenSceneMode.Single);
+            GameObject portal = null;
+            foreach (GameObject go in meadow.GetRootGameObjects())
+            {
+                if (go.name == MeadowPortalName) portal = go;
+            }
+
+            if (portal == null)
+            {
+                portal = new GameObject(MeadowPortalName);
+                portal.AddComponent<GardenPlaceholderVisual>();
+                portal.AddComponent<BoxCollider2D>().size = new Vector2(1.2f, 1.4f);
+                portal.AddComponent<SteepingSpirits.World.ScenePortal>();
+            }
+
+            portal.transform.position = MeadowPortalPosition;
+            if (portal.TryGetComponent(out SteepingSpirits.World.ScenePortal sp)) sp.Configure(GardenScene, GardenTexts.MeadowPortalLabel);
+            EditorSceneManager.SaveScene(meadow, MeadowScene);
+            return true;
         }
 
         [MenuItem("SteepingSpirits/Plantation/Simulate 28 Days")]
