@@ -42,7 +42,12 @@ namespace SteepingSpirits.Plantation
 
         /// <summary>Care in the current cycle (since sowing or the last harvest).</summary>
         public int cycleDays;
-        public int cycleGoodDays;
+
+        /// <summary>Care points this cycle: 2 per well-cared day, 1 for a forgiven dry day.</summary>
+        public int cyclePoints;
+
+        /// <summary>Sown into composted soil (bonus on the first harvest).</summary>
+        public bool compost;
 
         /// <summary>Last day's watering (for the "every second day" rule of frugal plants).</summary>
         public bool wateredYesterday;
@@ -53,7 +58,7 @@ namespace SteepingSpirits.Plantation
         public Crop Clone() => (Crop)MemberwiseClone();
 
         /// <summary>Share of well-cared days in this cycle (1 when nothing happened yet).</summary>
-        public float CareRatio => cycleDays == 0 ? 1f : cycleGoodDays / (float)cycleDays;
+        public float CareRatio => cycleDays == 0 ? 1f : cyclePoints / (2f * cycleDays);
     }
 
     /// <summary>One bed cell of the garden.</summary>

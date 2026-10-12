@@ -49,15 +49,34 @@
 6. **Benutzen-Taste:** Leertaste / J / linke Maustaste / Pad X (wie Angriff auf der Wiese – im Garten gibt
    es keinen Kampf). Brunnen und Laterne werden mit derselben Taste benutzt (Feld vor der Figur).
 
+## Regeln (Core, `Garden.cs`)
+
+- **Nacht** (`Garden.EndDay`): Für jede Pflanze zählt, ob ihr Feld heute nass war (gegossen oder Regen).
+  Danach trocknet jede Erde, der Tag springt weiter, und morgens regnet es eventuell (`IWeather`; Regen
+  macht jede gehackte Erde nass).
+- **Wasser-Typen:** *durstig* wächst nur an nassen Tagen. *normal* wächst an nassen Tagen; der erste
+  trockene Tag pro Stufe wird verziehen (wächst trotzdem), jeder weitere wartet. *genügsam* wächst immer.
+- **Pflegepunkte pro Tag** (nur solange unreif): nass = 2; *normal* verziehen = 1; *genügsam* trocken,
+  aber gestern nass = 2; sonst 0. Quote = Punkte / (2 · Tage) im aktuellen Zyklus (seit Aussaat bzw. letzter
+  Ernte). **erlesen** ab 0,9, **fein** ab 0,6, sonst **gut**. Reife Pflanzen warten ohne Malus.
+- **Boni** nur auf die erste Ernte einer Aussaat: Teestrauch „erster Austrieb“ +1 Stufe; Kompost +1 Stufe
+  und +1 Stück.
+- **Ertrag** und **Saatgut-Fund**: deterministisch aus Seed, Tag, Feld und Ernte-Nummer.
+- **Nie Tod:** Vernachlässigung kostet nur Wachstumstage und Qualität (getestet über 100 Tage).
+- Gehackte, leere Erde wird nach 3 Nächten wieder unberührt. Hacken an Regentagen ergibt nasse Erde.
+- Verpasste Nächte werden nachgeholt (trocken), höchstens 56 auf einmal.
+- A2–A5 sind ein gemeinsamer Commit, weil Tageswechsel, Wachstum, Wasser-Typen und Qualität dieselbe
+  Nachtverarbeitung sind.
+
 ## Backlog
 
 | # | Punkt | Status |
 |---|---|---|
 | A1 | Raster, Beetfelder, Aktionsgültigkeit (rein, getestet) | erledigt (44 Tests) |
-| A2 | Tageswechsel (`IDayClock`, Trocknen, Regen) | offen |
-| A3 | Wachstum (Stufen, Nachwachsen, Determinismus) | offen |
-| A4 | Wasserbedarf-Typen | offen |
-| A5 | Qualität | offen |
+| A2 | Tageswechsel (`IDayClock`, Trocknen, Regen) | erledigt |
+| A3 | Wachstum (Stufen, Nachwachsen, Determinismus) | erledigt |
+| A4 | Wasserbedarf-Typen | erledigt |
+| A5 | Qualität | erledigt (A2–A5: 82 Tests gesamt) |
 | B6 | PlantDefinition (ScriptableObject) | offen |
 | B7 | Startpflanzen + Katalog-Ergänzungen | offen |
 | C8 | Werkzeuge (Hacke, Saatbeutel, Kanne, Hand, Schaufel) | offen |
@@ -83,3 +102,5 @@
 
 - **A1** (Core-Grundlage): Unity öffnen → Konsole ohne Fehler; Test Runner → EditMode →
   `SteepingSpirits.Plantation.Tests.EditMode` grün. (Ohne Unity geprüft: `dotnet test Tests/PlantationCore.DotNet`.)
+- **A2–A5** (Garten-Simulation): wie A1, Testklassen `GardenDayTests`, `GardenGrowthTests`,
+  `GardenWaterTests`, `GardenQualityTests` grün. Noch nichts Sichtbares.
