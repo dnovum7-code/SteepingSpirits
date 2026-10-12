@@ -68,6 +68,22 @@
 - A2–A5 sind ein gemeinsamer Commit, weil Tageswechsel, Wachstum, Wasser-Typen und Qualität dieselbe
   Nachtverarbeitung sind.
 
+## Startpflanzen (Startwerte, `StarterPlants.cs` → PlantDefinition-Assets)
+
+| Pflanze | Zutat | Wasser | Art | Tage bis reif (Stufen) | Nachwachsen | Ertrag | Besonderes |
+|---|---|---|---|---|---|---|---|
+| Teestrauch | `tea_leaf` | normal | mehrjährig | 14 (3/3/4/4) | 3 | 2–3 | erste Ernte „erster Austrieb“ +1 Qualität |
+| Minze | `mint` | durstig | einjährig | 4 (1/2/1) | – | 2–3 | Saatgut-Fund 60 % |
+| Kamille | `chamomile` | normal | einjährig | 7 (2/2/3) | – | 2–4 | Saatgut-Fund 60 % |
+| Jasmin | `jasmine` | durstig | mehrjährig | 16 (3/4/4/5) | 5 | 1–2 | wertvoll |
+| Lavendel | `lavender` | genügsam | mehrjährig | 10 (3/3/4) | 4 | 2–3 | verzeiht viel |
+| Zitronenmelisse | `lemon_balm` | normal | mehrjährig | 8 (2/3/3) | 3 | 2–3 | zuverlässig |
+
+**Katalog-Ergänzungen (additiv):** `mint`, `chamomile`, `jasmine`, `lavender`, `lemon_balm` (alle
+„common“, Familien Kraut/Blüte) mit deutschen Namen/Beschreibungen, dazu `IngredientQuality` (Qualitäts-IDs
+`<id>+q2`/`+q3`). Der bestehende Test „10 Zutaten“ zählt jetzt 15 – die einzige Änderung an einem
+bestehenden Test.
+
 ## Backlog
 
 | # | Punkt | Status |
@@ -78,7 +94,7 @@
 | A4 | Wasserbedarf-Typen | erledigt |
 | A5 | Qualität | erledigt (A2–A5: 82 Tests gesamt) |
 | B6 | PlantDefinition (ScriptableObject) | offen |
-| B7 | Startpflanzen + Katalog-Ergänzungen | offen |
+| B7 | Startpflanzen + Katalog-Ergänzungen | erledigt |
 | C8 | Werkzeuge (Hacke, Saatbeutel, Kanne, Hand, Schaufel) | offen |
 | C9 | Zielfeld mit Vorschau | offen |
 | C10 | Werkzeugleiste und Steuerung | offen |
@@ -104,3 +120,6 @@
   `SteepingSpirits.Plantation.Tests.EditMode` grün. (Ohne Unity geprüft: `dotnet test Tests/PlantationCore.DotNet`.)
 - **A2–A5** (Garten-Simulation): wie A1, Testklassen `GardenDayTests`, `GardenGrowthTests`,
   `GardenWaterTests`, `GardenQualityTests` grün. Noch nichts Sichtbares.
+- **B7** (Startpflanzen, Katalog): Test Runner → `SteepingSpirits.Ingredients.Tests.EditMode` und
+  `…Plantation.Tests.EditMode` grün. Im Jump'n'Run prüfen: das Seltenheitsregal zeigt weiter nur die 5
+  seltenen Zutaten.

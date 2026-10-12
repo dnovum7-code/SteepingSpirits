@@ -6,9 +6,10 @@ namespace SteepingSpirits.Ingredients.Tests
     public class IngredientCatalogTests
     {
         [Test]
-        public void TenIngredients_FiveCommonFiveRare_UniqueIds()
+        public void FifteenIngredients_FiveRare_UniqueIds()
         {
-            Assert.AreEqual(10, IngredientCatalog.All.Count);
+            // 10 original ingredients + 5 tea garden plants (all common).
+            Assert.AreEqual(15, IngredientCatalog.All.Count);
             var ids = new HashSet<string>();
             foreach (IngredientInfo i in IngredientCatalog.All) Assert.IsTrue(ids.Add(i.Id), i.Id);
             Assert.AreEqual(5, new List<string>(IngredientCatalog.Ids(Rarity.Rare)).Count);

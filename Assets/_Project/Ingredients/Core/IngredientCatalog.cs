@@ -59,6 +59,13 @@ namespace SteepingSpirits.Ingredients
         public const string StarDew = "star_dew";
         public const string SpringCrystal = "spring_crystal";
 
+        // Grown in the tea garden (Plantation module).
+        public const string Mint = "mint";
+        public const string Chamomile = "chamomile";
+        public const string Jasmine = "jasmine";
+        public const string Lavender = "lavender";
+        public const string LemonBalm = "lemon_balm";
+
         private static readonly IngredientInfo[] all =
         {
             new IngredientInfo(TeaLeaf, Rarity.Common, IngredientFamily.Leaf, null),
@@ -70,7 +77,12 @@ namespace SteepingSpirits.Ingredients
             new IngredientInfo(MoonHerb, Rarity.Rare, IngredientFamily.Herb, Herb),
             new IngredientInfo(SpiritBlossom, Rarity.Rare, IngredientFamily.Blossom, Blossom),
             new IngredientInfo(StarDew, Rarity.Rare, IngredientFamily.Dew, MorningDew),
-            new IngredientInfo(SpringCrystal, Rarity.Rare, IngredientFamily.Water, SpringWater)
+            new IngredientInfo(SpringCrystal, Rarity.Rare, IngredientFamily.Water, SpringWater),
+            new IngredientInfo(Mint, Rarity.Common, IngredientFamily.Herb, null),
+            new IngredientInfo(Chamomile, Rarity.Common, IngredientFamily.Blossom, null),
+            new IngredientInfo(Jasmine, Rarity.Common, IngredientFamily.Blossom, null),
+            new IngredientInfo(Lavender, Rarity.Common, IngredientFamily.Blossom, null),
+            new IngredientInfo(LemonBalm, Rarity.Common, IngredientFamily.Herb, null)
         };
 
         /// <summary>
@@ -148,6 +160,11 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.SpiritBlossom: return "Geisterblüte";
                 case IngredientCatalog.StarDew: return "Sternentau";
                 case IngredientCatalog.SpringCrystal: return "Quellkristall";
+                case IngredientCatalog.Mint: return "Minze";
+                case IngredientCatalog.Chamomile: return "Kamille";
+                case IngredientCatalog.Jasmine: return "Jasmin";
+                case IngredientCatalog.Lavender: return "Lavendel";
+                case IngredientCatalog.LemonBalm: return "Zitronenmelisse";
                 default: return id ?? "";
             }
         }
@@ -166,6 +183,11 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.SpiritBlossom: return "Leuchtet schwach, wenn man an jemanden denkt.";
                 case IngredientCatalog.StarDew: return "Tau, der vom Nachthimmel gefallen ist.";
                 case IngredientCatalog.SpringCrystal: return "Ein Dank der Laternen – klingt, wenn man es schüttelt.";
+                case IngredientCatalog.Mint: return "Kühl und frisch, aus dem eigenen Garten.";
+                case IngredientCatalog.Chamomile: return "Kleine Sonnen, die nach Heu und Honig duften.";
+                case IngredientCatalog.Jasmine: return "Öffnet sich am Abend und duftet bis in die Nacht.";
+                case IngredientCatalog.Lavender: return "Beruhigt schon, wenn man daran riecht.";
+                case IngredientCatalog.LemonBalm: return "Ein Hauch Zitrone, ganz ohne Säure.";
                 default: return "";
             }
         }
