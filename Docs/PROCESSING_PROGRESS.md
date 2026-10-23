@@ -92,6 +92,19 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 | **röstig** | Röstung ≥ 0,25 (Wok zu heiß oder lange getrocknet) |
 | **zart** | erster Austrieb / Goldspitze, oder unberührter Weißtee |
 
+## Datenvertrag `ProcessedTea`
+
+- Felder: Sorte (`TeaVariety`), Oxidation, Qualitätsstufe, Noten, Menge, Herkunft (Zutat, Gartenstufe,
+  erster Austrieb), Weg (`W-R-O-F-R-D`), Oxidation beim Stoppen, aktive Sekunden.
+- **Zutaten-ID** = Katalog-ID + Eigenschaften: `tea_oolong:dark/honeyed.roasty+q3`
+  (Oolong-Stil `light`/`dark`, Noten sortiert, Qualität über `IngredientQuality`, Stufe 1 ohne Endung).
+  Gleiche Sorte + gleiche Noten + gleiche Qualität → gleiche ID → stapelt; andere Noten bleiben getrennt.
+  `ProcessedTea.TryParseId` liest eine ID zurück, `CatalogIdOf` liefert die Katalog-ID.
+- Genaue Oxidation und Herkunft sind Zusatzdaten (nicht in der ID), gespeichert im Tee-Register der Werkstatt.
+- **Katalog (additiv):** `tea_white`, `tea_green`, `tea_oolong`, `tea_black` (neue Familie `Tea`, häufig) und
+  `tea_leaf_first` („Erster Austrieb“, Familie Blatt, häufig – nicht selten, damit das Seltenheitsregal im
+  Jump'n'Run unverändert bleibt). Katalog-Test 15 → 20.
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
@@ -106,6 +119,10 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
    ersetzt nur diesen Adapter. Vorspulen: `SkippableTime.FastForward` (Debug). Läuft die Uhr rückwärts
    (Neustart, `GameClock` wird nicht gespeichert), vergeht für die Chargen keine Zeit.
 6. **Werkstatt-UI pausiert das Spiel nicht** (`GamePause` würde die Uhr anhalten und damit Welken und Oxidation).
+7. **Erster Austrieb:** Der Garten liefert ihn heute nicht erkennbar (nur +1 Qualität, gleiche ID). Die
+   Werkstatt kennt dafür die neue Zutat `tea_leaf_first` und behandelt auch `golden_tip` (Goldspitze) als
+   ersten Austrieb. Merge-Vorschlag: Der Garten gibt bei der ersten Teestrauch-Ernte `tea_leaf_first` aus
+   (eine Zeile in `GardenController.Harvest`). Das Startpaket der Werkstatt enthält einige davon.
 
 ## Backlog
 
@@ -116,7 +133,7 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 | A3 | Qualität | erledigt |
 | A4 | Charakternoten | erledigt (86 Tests gesamt) |
 | A5 | Zeit (`IGameTime`, Vorspulen) | erledigt (92 Tests gesamt) |
-| B6 | ProcessedTea-Datenvertrag + Katalog | offen |
+| B6 | ProcessedTea-Datenvertrag + Katalog | erledigt (99 Tests gesamt) |
 | B7 | Übergabe Inventar/Vorratsschrank | offen |
 | B8 | `Docs/PROCESSING_TO_BREWING.md` | offen |
 | C9 | Welkgestell | offen |
@@ -147,3 +164,5 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 - **A3** (Qualität): wie A1, `TeaQualityTests` grün.
 - **A4** (Charakternoten): wie A1, `TeaNotesTests` grün.
 - **A5** (Zeit): wie A1, `WorkshopTimeTests` grün.
+- **B6** (Datenvertrag + Katalog): wie A1, `ProcessedTeaTests` grün; `SteepingSpirits.Ingredients.Tests.EditMode`
+  grün (zählt jetzt 20 Zutaten). Im Jump'n'Run zeigt das Seltenheitsregal weiter nur die 5 seltenen Zutaten.

@@ -85,12 +85,12 @@ namespace SteepingSpirits.Processing
     /// <summary>Catalogue ids of the processed teas (added to the ingredient catalogue).</summary>
     public static class TeaIds
     {
-        public const string White = "tea_white";
-        public const string Green = "tea_green";
-        public const string Oolong = "tea_oolong";
-        public const string Black = "tea_black";
+        public const string White = SteepingSpirits.Ingredients.IngredientCatalog.WhiteTea;
+        public const string Green = SteepingSpirits.Ingredients.IngredientCatalog.GreenTea;
+        public const string Oolong = SteepingSpirits.Ingredients.IngredientCatalog.OolongTea;
+        public const string Black = SteepingSpirits.Ingredients.IngredientCatalog.BlackTea;
 
         /// <summary>Fresh leaves of the tea shrub's first harvest ("erster Austrieb").</summary>
-        public const string FirstFlushLeaf = "tea_leaf_first";
+        public const string FirstFlushLeaf = SteepingSpirits.Ingredients.IngredientCatalog.FirstFlushLeaf;
     }
 }

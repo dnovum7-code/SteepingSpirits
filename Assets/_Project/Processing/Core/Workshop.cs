@@ -94,6 +94,18 @@ namespace SteepingSpirits.Processing
             });
         }
 
+        /// <summary>Packs a dry batch as tea and removes it from the workshop.</summary>
+        public bool Finish(int id, out ProcessedTea tea)
+        {
+            Sync();
+            tea = null;
+            LeafBatch b = Get(id);
+            if (b == null || !BatchRules.Check(b, BatchAction.Finish, settings).ok) return false;
+            tea = ProcessedTea.From(b, settings);
+            batches.Remove(b);
+            return true;
+        }
+
         private bool Replace(int id, Func<LeafBatch, LeafBatch> change)
         {
             for (int i = 0; i < batches.Count; i++)

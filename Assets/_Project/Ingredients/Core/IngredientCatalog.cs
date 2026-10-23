@@ -16,7 +16,10 @@ namespace SteepingSpirits.Ingredients
         Herb,
         Blossom,
         Dew,
-        Water
+        Water,
+
+        /// <summary>Processed tea from the workshop.</summary>
+        Tea
     }
 
     /// <summary>One entry of the shared ingredient catalogue (data only, no engine types).</summary>
@@ -66,6 +69,13 @@ namespace SteepingSpirits.Ingredients
         public const string Lavender = "lavender";
         public const string LemonBalm = "lemon_balm";
 
+        // Made in the tea workshop (Processing module), plus the first-flush leaves it can use.
+        public const string WhiteTea = "tea_white";
+        public const string GreenTea = "tea_green";
+        public const string OolongTea = "tea_oolong";
+        public const string BlackTea = "tea_black";
+        public const string FirstFlushLeaf = "tea_leaf_first";
+
         private static readonly IngredientInfo[] all =
         {
             new IngredientInfo(TeaLeaf, Rarity.Common, IngredientFamily.Leaf, null),
@@ -82,7 +92,12 @@ namespace SteepingSpirits.Ingredients
             new IngredientInfo(Chamomile, Rarity.Common, IngredientFamily.Blossom, null),
             new IngredientInfo(Jasmine, Rarity.Common, IngredientFamily.Blossom, null),
             new IngredientInfo(Lavender, Rarity.Common, IngredientFamily.Blossom, null),
-            new IngredientInfo(LemonBalm, Rarity.Common, IngredientFamily.Herb, null)
+            new IngredientInfo(LemonBalm, Rarity.Common, IngredientFamily.Herb, null),
+            new IngredientInfo(WhiteTea, Rarity.Common, IngredientFamily.Tea, null),
+            new IngredientInfo(GreenTea, Rarity.Common, IngredientFamily.Tea, null),
+            new IngredientInfo(OolongTea, Rarity.Common, IngredientFamily.Tea, null),
+            new IngredientInfo(BlackTea, Rarity.Common, IngredientFamily.Tea, null),
+            new IngredientInfo(FirstFlushLeaf, Rarity.Common, IngredientFamily.Leaf, null)
         };
 
         /// <summary>
@@ -165,6 +180,11 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.Jasmine: return "Jasmin";
                 case IngredientCatalog.Lavender: return "Lavendel";
                 case IngredientCatalog.LemonBalm: return "Zitronenmelisse";
+                case IngredientCatalog.WhiteTea: return "Weißtee";
+                case IngredientCatalog.GreenTea: return "Grüntee";
+                case IngredientCatalog.OolongTea: return "Oolong";
+                case IngredientCatalog.BlackTea: return "Schwarztee";
+                case IngredientCatalog.FirstFlushLeaf: return "Erster Austrieb";
                 default: return id ?? "";
             }
         }
@@ -188,6 +208,11 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.Jasmine: return "Öffnet sich am Abend und duftet bis in die Nacht.";
                 case IngredientCatalog.Lavender: return "Beruhigt schon, wenn man daran riecht.";
                 case IngredientCatalog.LemonBalm: return "Ein Hauch Zitrone, ganz ohne Säure.";
+                case IngredientCatalog.WhiteTea: return "Nur gewelkt und getrocknet – still und hell.";
+                case IngredientCatalog.GreenTea: return "Im Wok fixiert, bevor es dunkel werden konnte.";
+                case IngredientCatalog.OolongTea: return "Halb oxidiert, zwischen Garten und Abend.";
+                case IngredientCatalog.BlackTea: return "Ganz oxidiert, warm und tief.";
+                case IngredientCatalog.FirstFlushLeaf: return "Die ersten Blätter des Teestrauchs, besonders zart.";
                 default: return "";
             }
         }
