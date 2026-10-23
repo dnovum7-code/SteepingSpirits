@@ -182,9 +182,9 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 | D17 | Klang und Partikel, `ProcessingAudioSet` | offen |
 | D18 | Oberfläche (UI-Baukasten, Gamepad) | offen |
 | D19 | Eingang | offen |
-| E20 | Speichern `workshop_save.json` | offen |
+| E20 | Speichern `workshop_save.json` | Core erledigt (Roundtrip getestet), Unity offen |
 | E21 | Debug-Overlay F1 | offen |
-| E22 | Telemetrie `processing_log.jsonl` | offen |
+| E22 | Telemetrie `processing_log.jsonl` | Zeile erledigt (getestet), Unity offen |
 | F23 | Kräuter trocknen | offen |
 | F24 | Mischtisch | offen |
 | F25 | Teeziegel (Pu-Erh-Vorbereitung) | offen |
@@ -203,3 +203,4 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
   grün (zählt jetzt 20 Zutaten). Im Jump'n'Run zeigt das Seltenheitsregal weiter nur die 5 seltenen Zutaten.
 - **Minispiel-Modelle + Simulator:** wie A1, `MinigameTests`, `WorkshopSimulatorTests` grün (Zahlen im
   Testausgabe-Log). Noch nichts Sichtbares.
+- **Spielstand/Telemetrie (Core):** wie A1, `WorkshopSaveTests` grün.
