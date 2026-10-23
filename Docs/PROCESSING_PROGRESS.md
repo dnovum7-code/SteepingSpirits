@@ -37,15 +37,35 @@
   und Uhrzeit (7 echte Sekunden pro 10 Spielminuten, fließend über `TimeOfDayHours`, Tagesende 2:00 → nächster
   Morgen 6:00), steht still, solange `GamePause` blockiert. `GameClock` wird nicht gespeichert.
 
+## Modell (Core, `BatchRules`)
+
+- **Charge** (`LeafBatch`): Menge, Herkunft (Zutat, Gartenstufe, erster Austrieb), Feuchte (frisch = 1),
+  Rollgrad + Gleichmäßigkeit, Oxidation, fixiert + Wok-Sorgfalt + Rest-Oxidation, Röstnote, Trockengrad,
+  Ort (Regal, Welkgestell, Oxidationskorb, Trockenkorb), Spielzeit, aktive Sekunden, Schritte (Weg).
+- **Übergänge** sind reine Funktionen, die eine geänderte Kopie liefern: `Place` (auflegen/abnehmen), `Roll`,
+  `Fix`, `Elapse`/`AdvanceTo` (Zeit). `Check` liefert pro Aktion und Zustand „ja“ oder einen ruhigen Grund.
+- **Welken:** exponentiell zur Untergrenze 0,45 (τ 275 Spielminuten → ~4 h bis 0,68), abseits des Gestells
+  4× langsamer. Ab Feuchte ≤ 0,85 gilt die Charge als gewelkt (rollen, fixieren, trocknen möglich).
+- **Oxidation:** 1,2 %/Spielminute bei voll gerollten Blättern (Anteil 35 % unabhängig vom Rollgrad), ungerollt
+  nur 0,8 % davon; aus dem Korb genommen (noch nicht fixiert) 15 %; nach dem Wok nur der Rest einer zu kalten
+  Fixierung (40 % je Anteil „zu kalt“); Trocknen stoppt sie bis Trockengrad 0,5 ganz.
+- **Rollen** stößt die Oxidation an (+4 % bei vollem Rollen) und presst etwas Wasser heraus. Höchstens 2× rollen.
+- **Wok:** Zeitanteile unter/im/über dem Hitzefenster → Wok-Sorgfalt, Rest-Oxidation, Röstnote (+0,6 je Anteil
+  „zu heiß“). Nie verbrannt.
+- **Trocknen:** 120 Spielminuten bis trocken (fertig ab 0,95), danach leichte Röstung bis höchstens 0,45.
+- **Zeit rückwärts** (Uhr neu gestartet) → es vergeht keine Zeit.
+
 ## Annahmen
 
-_(werden ergänzt)_
+1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
+2. **Ungerollte Blätter oxidieren kaum** (0,008 × Rate): Startwert von 0,01 gesenkt, damit Weißtee auch nach
+   14 Stunden Welken noch Weißtee ist (Test „white tea leaves stay pale over a long day“).
 
 ## Backlog
 
 | # | Punkt | Status |
 |---|---|---|
-| A1 | Blattcharge und reine Übergänge | offen |
+| A1 | Blattcharge und reine Übergänge | erledigt (46 Tests) |
 | A2 | Sortenbestimmung | offen |
 | A3 | Qualität | offen |
 | A4 | Charakternoten | offen |
@@ -75,4 +95,5 @@ _(werden ergänzt)_
 
 ## Editor-Checklisten pro Commit
 
-_(wird pro Commit ergänzt)_
+- **A1** (Core-Grundlage): Unity öffnen → Konsole ohne Fehler; Test Runner → EditMode →
+  `SteepingSpirits.Processing.Tests.EditMode` grün. Ohne Unity geprüft: `dotnet test Tests/ProcessingCore.DotNet`.

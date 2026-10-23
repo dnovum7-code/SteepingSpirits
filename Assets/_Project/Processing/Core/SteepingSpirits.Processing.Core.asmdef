@@ -1,0 +1,16 @@
+{
+    "name": "SteepingSpirits.Processing.Core",
+    "rootNamespace": "SteepingSpirits.Processing",
+    "references": [
+        "SteepingSpirits.Ingredients"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

@@ -1,0 +1,25 @@
+{
+    "name": "SteepingSpirits.Processing.Tests.EditMode",
+    "rootNamespace": "SteepingSpirits.Processing.Tests",
+    "references": [
+        "SteepingSpirits.Processing.Core",
+        "SteepingSpirits.Ingredients",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

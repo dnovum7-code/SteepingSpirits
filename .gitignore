@@ -43,3 +43,4 @@ crashlytics-build.properties
 # dotnet test projects outside Assets/
 Tests/**/bin/
 !Tests/PlantationCore.DotNet/PlantationCore.DotNet.csproj
+!Tests/ProcessingCore.DotNet/ProcessingCore.DotNet.csproj
