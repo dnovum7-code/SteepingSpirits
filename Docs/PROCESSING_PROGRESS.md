@@ -69,11 +69,26 @@ dunklere Sorte). Alle Grenzen sind tunbar (`VarietyParams`). Die Sortenfolge ist
 monoton: zu lange oxidiert heißt immer „dunkler“, nie „kaputt“. **Erreichbarkeit:** 2000 Zufallsabfolgen
 erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte und treffen alle fünf Sorten.
 
+## Qualität (`TeaQuality`)
+
+- **Sorgfalt** = Mittel der durchlaufenen Schritte: Welken (Feuchte beim ersten Bearbeiten im Fenster
+  0,60–0,72 = 1, ±0,15 daneben = 0), Rollen (Gleichmäßigkeit), Oxidation (Abstand zum Optimum der
+  entstandenen Sorte, quadratisch weich; Oolongs mit halber Bandbreite, Schwarztee ab 92 % immer 1,
+  Weiß/Grün bis 2 % immer 1), Wok (Zeitanteil im Hitzefenster).
+- **Wert** = 0,3 × Herkunft (gut 0 / fein 0,5 / erlesen 1; erster Austrieb 1) + 0,7 × Sorgfalt.
+  **fein** ab 0,5, **erlesen** ab 0,8.
+- **Obergrenze:** gewöhnliche Blätter (Gartenstufe gut/fein) höchstens **fein**; Gartenstufe erlesen und
+  **erster Austrieb** heben sie auf **erlesen**. So zählt die Pflege im Garten weiter, und der erste Austrieb
+  ist etwas Besonderes, selbst wenn er nicht erlesen ist.
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
 2. **Ungerollte Blätter oxidieren kaum** (0,008 × Rate): Startwert von 0,01 gesenkt, damit Weißtee auch nach
    14 Stunden Welken noch Weißtee ist (Test „white tea leaves stay pale over a long day“).
+3. **Qualitätsstufen** wie im Garten (1 gut, 2 fein, 3 erlesen), nicht die vier Brüh-Stufen – die
+   Verarbeitung ist eine Zutat, das Brühen bewertet die Tasse.
+4. **Obergrenze** (siehe Qualität) ist meine Lesart von „der erste Austrieb hebt die Obergrenze an“.
 
 ## Backlog
 
@@ -81,7 +96,7 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 |---|---|---|
 | A1 | Blattcharge und reine Übergänge | erledigt (46 Tests) |
 | A2 | Sortenbestimmung | erledigt (70 Tests gesamt) |
-| A3 | Qualität | offen |
+| A3 | Qualität | erledigt |
 | A4 | Charakternoten | offen |
 | A5 | Zeit (`IGameTime`, Vorspulen) | offen |
 | B6 | ProcessedTea-Datenvertrag + Katalog | offen |
@@ -112,3 +127,4 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 - **A1** (Core-Grundlage): Unity öffnen → Konsole ohne Fehler; Test Runner → EditMode →
   `SteepingSpirits.Processing.Tests.EditMode` grün. Ohne Unity geprüft: `dotnet test Tests/ProcessingCore.DotNet`.
 - **A2** (Sortenbestimmung): wie A1, zusätzlich `TeaClassifierTests` und `ReachabilityTests` grün.
+- **A3** (Qualität): wie A1, `TeaQualityTests` grün.

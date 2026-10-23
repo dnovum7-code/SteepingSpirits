@@ -173,8 +173,13 @@ namespace SteepingSpirits.Processing
         public float fineScore = 0.5f;
         public float excellentScore = 0.8f;
 
-        /// <summary>Distance from the sweet spot at which oxidation care reaches zero (oolongs).</summary>
-        public float oxidationTolerance = 0.14f;
+        /// <summary>
+        /// Distance from the sweet spot at which oxidation care reaches zero (squared fall-off, so close
+        /// is nearly perfect). Oolongs use half their band width; pale and black teas these values.
+        /// </summary>
+        public float paleTolerance = 0.08f;
+
+        public float blackTolerance = 0.12f;
 
         /// <summary>Highest tier for ordinary leaves below "erlesen" garden quality. First flush lifts it to 3.</summary>
         public int ordinaryCeiling = 2;
