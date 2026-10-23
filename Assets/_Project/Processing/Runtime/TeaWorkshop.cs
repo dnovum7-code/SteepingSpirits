@@ -42,6 +42,7 @@ namespace SteepingSpirits.Processing
         public WorkshopFeedback Feedback { get; private set; }
         public WorkshopController Controller { get; private set; }
         public BlendStation Blending { get; set; }
+        public SpiritView Spirit { get; private set; }
 
         /// <summary>Raised for every finished tea (telemetry, extras).</summary>
         public event Action<ProcessedTea> TeaFinished;
@@ -88,6 +89,10 @@ namespace SteepingSpirits.Processing
             Controller = gameObject.AddComponent<WorkshopController>();
             Controller.Init(this, player.GetComponent<PlayerController2D>());
             gameObject.AddComponent<WorkshopDebugOverlay>().Init(this);
+            Spirit = new GameObject("Werkstattgeist").AddComponent<SpiritView>();
+            Spirit.transform.SetParent(transform, false);
+            Spirit.Init(StationCenter(WorkshopTile.Shelf) + Vector2.up * 0.9f);
+            Spirit.SetAwake(SpiritAwakeNow());
 
             Model.Sync();
             RefreshViews();
@@ -101,6 +106,7 @@ namespace SteepingSpirits.Processing
             {
                 syncAt = UnityEngine.Time.unscaledTime + Mathf.Max(0.05f, settings.comfort.syncSeconds);
                 Model.Sync();
+                TendSpirit();
                 RefreshViews();
             }
 
@@ -206,15 +212,54 @@ namespace SteepingSpirits.Processing
             RefreshViews();
         }
 
+        private bool SpiritAwakeNow()
+        {
+            SpiritParams p = settings.processing.spirit;
+            return State.mastery.Wither(p) || State.mastery.Dry(p);
+        }
+
+        /// <summary>The workshop spirit takes over mastered passive steps.</summary>
+        private void TendSpirit()
+        {
+            if (!SpiritAwakeNow()) return;
+            List<SpiritDeed> deeds = WorkshopSpirit.Tend(Model, State.mastery, State.spiritWhite);
+            foreach (SpiritDeed d in deeds)
+            {
+                WorkshopTile at = d.kind == SpiritDeedKind.TookOutOfDryer ? WorkshopTile.Dryer : WorkshopTile.Rack;
+                Spirit.Visit(StationCenter(at), d.kind == SpiritDeedKind.MovedToDryer ? StationCenter(WorkshopTile.Dryer) : StationCenter(WorkshopTile.Shelf));
+                Feedback.Play(WorkshopSound.Place, 0.6f);
+                Ui.Message(ProcessingTexts.SpiritDid(d));
+            }
+
+            if (deeds.Count > 0) MarkDirty();
+        }
+
+        /// <summary>The player hands a batch on the rack to the spirit for the white-tea way.</summary>
+        public void HandToSpirit(int id)
+        {
+            if (!State.spiritWhite.Contains(id)) State.spiritWhite.Add(id);
+            MarkDirty();
+        }
+
         public void FinishBatch(int id)
         {
+            LeafBatch before = Model.Get(id);
+            CareReport care = before != null ? TeaQuality.Evaluate(BatchRules.AdvanceTo(before, Model.Now, settings.processing), settings.processing) : default;
+            bool wasAwake = SpiritAwakeNow();
             if (!Model.Finish(id, out ProcessedTea tea)) return;
+            State.mastery.Record(tea, care, settings.processing.spirit);
+            State.spiritWhite.Remove(id);
+            if (!wasAwake && SpiritAwakeNow())
+            {
+                Spirit.SetAwake(true);
+                Ui.Message(ProcessingTexts.SpiritAwake);
+            }
             WorkshopDelivery where = WorkshopItems.DeliverTea(tea);
             State.Record(tea);
             WorkshopSaveStore.Log(tea, Model.Now);
             Feedback.Play(WorkshopSound.Pack);
             Feedback.LeafBits(StationCenter(WorkshopTile.Shelf), LeafLook.TeaColor(tea.variety), 6);
-            Ui.Message(ProcessingTexts.Finished(tea) + (where == WorkshopDelivery.Pantry ? ProcessingTexts.ToPantry : ""));
+            if (wasAwake || !SpiritAwakeNow()) Ui.Message(ProcessingTexts.Finished(tea) + (where == WorkshopDelivery.Pantry ? ProcessingTexts.ToPantry : ""));
             TeaFinished?.Invoke(tea);
             RefreshViews();
             Save();
@@ -251,6 +296,13 @@ namespace SteepingSpirits.Processing
             s.showPercent = State.showPercent;
             s.evenRolling = State.evenRolling;
             foreach (KeyValuePair<string, TeaLedgerEntry> kv in State.ledger) s.ledger[kv.Key] = kv.Value;
+            s.mastery.goodWithers = State.mastery.goodWithers;
+            s.mastery.dried = State.mastery.dried;
+            s.mastery.goodWhites = State.mastery.goodWhites;
+            foreach (int i in State.spiritWhite)
+            {
+                if (Model.Get(i) != null) s.spiritWhite.Add(i);
+            }
             if (!WorkshopSaveStore.Save(s)) Ui?.Message(ProcessingTexts.SaveFailed);
         }
 

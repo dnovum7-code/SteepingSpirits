@@ -261,6 +261,17 @@ namespace SteepingSpirits.Processing
             }
 
             if (!any) text.Append(ProcessingTexts.Empty).Append("\n\n");
+            if (place == BatchPlace.WitherRack && root.State.mastery.White(P.spirit))
+            {
+                foreach (LeafBatch b in root.Model.Batches)
+                {
+                    if (b.place != BatchPlace.WitherRack) continue;
+                    int id = b.id;
+                    if (root.State.spiritWhite.Contains(id)) text.Append(ProcessingTexts.BatchTitle(b)).Append(": ").Append(ProcessingTexts.SpiritWillDry).Append('\n');
+                    else actions.Add((ProcessingTexts.Act(ProcessingTexts.SpiritHandOver, id), () => root.HandToSpirit(id)));
+                }
+            }
+
             AddShelfChoices(text, actions, putAction, putVerb, id => root.Apply(id, putAction));
         }
 

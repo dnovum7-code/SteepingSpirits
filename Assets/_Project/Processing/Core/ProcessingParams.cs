@@ -230,6 +230,25 @@ namespace SteepingSpirits.Processing
         public PuErhParams Clone() => (PuErhParams)MemberwiseClone();
     }
 
+    /// <summary>When the workshop spirit takes over passive steps the player has mastered.</summary>
+    [Serializable]
+    public sealed class SpiritParams
+    {
+        /// <summary>Finished teas withered inside the ideal window before the spirit takes leaves off the rack.</summary>
+        public int witherMasteredAfter = 3;
+
+        /// <summary>Finished batches before the spirit takes dry batches out of the drying basket.</summary>
+        public int dryMasteredAfter = 3;
+
+        /// <summary>White teas of at least "fein" before the spirit may carry a batch from the rack to the dryer.</summary>
+        public int whiteMasteredAfter = 2;
+
+        /// <summary>Wither care that counts as "mastered" for one tea.</summary>
+        public float goodWitherCare = 0.9f;
+
+        public SpiritParams Clone() => (SpiritParams)MemberwiseClone();
+    }
+
     /// <summary>All workshop tuning (lives in the ProcessingSettings asset in Unity).</summary>
     [Serializable]
     public sealed class ProcessingParams
@@ -243,6 +262,7 @@ namespace SteepingSpirits.Processing
         public TeaQualityParams quality = new TeaQualityParams();
         public NoteParams notes = new NoteParams();
         public PuErhParams puerh = new PuErhParams();
+        public SpiritParams spirit = new SpiritParams();
 
         /// <summary>Game minutes per real second of the game clock (10 per 7 s) – for time estimates only.</summary>
         public float gameMinutesPerRealSecond = 10f / 7f;
@@ -261,6 +281,7 @@ namespace SteepingSpirits.Processing
             quality = quality.Clone(),
             notes = notes.Clone(),
             puerh = puerh.Clone(),
+            spirit = spirit.Clone(),
             gameMinutesPerRealSecond = gameMinutesPerRealSecond,
             integrationStep = integrationStep
         };

@@ -178,6 +178,15 @@ Weg: welken → im Wok **sanft** fixieren (Rest-Oxidation ≥ 0,05, also absicht
 ID-Vorschlag `tea_brick:raw/<noten>+qN`, noch **kein** Katalog-Eintrag). `PuErh.CheckMaocha` nennt den Grund,
 warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vorbereitung für später.
 
+## F26 – Werkstattgeist
+
+- **Lernt durch Zuschauen** (gespeichert in `workshop_save.json`): 3 fertige Tees mit Welk-Sorgfalt ≥ 0,9 →
+  er nimmt Chargen im idealen Moment vom Welkgestell; 3 fertige Chargen → er nimmt trockene Chargen aus dem
+  Trockenkorb (bevor sie röstig werden); zusätzlich 2 Weißtees ≥ „fein“ → am Welkgestell erscheint
+  „Dem Werkstattgeist überlassen (Weißtee)“: er legt die Charge dann selbst vom Gestell in den Trockenkorb.
+- **Er entscheidet nie eine Sorte:** Rollen, Wok und das Stoppen der Oxidation bleiben beim Spieler (getestet).
+- Sichtbar als kleiner Geist über dem Regal, der zur Station und zurück schwebt; ruhige Meldung bei jedem Handgriff.
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
@@ -232,7 +241,7 @@ warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vo
 | F23 | Kräuter trocknen | erledigt (Core getestet; Unity: ungeprüft) |
 | F24 | Mischtisch | erledigt (Core getestet; Unity: ungeprüft) |
 | F25 | Teeziegel (Pu-Erh-Vorbereitung) | erledigt (nur Daten/Weg, getestet; keine UI, keine Reifung) |
-| F26 | Werkstattgeist | offen |
+| F26 | Werkstattgeist | erledigt (Core getestet; Unity: ungeprüft) |
 | F27 | Eigene Verbesserungen | offen |
 
 ## Editor-Checklisten pro Commit
@@ -281,3 +290,7 @@ warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vo
   Mitte) zeigt „Mischen: Jasmin-Grüntee (…)“ → klicken → Meldung „+2 Jasmin-Grüntee …“, Tee und Kraut je −1.
   Ohne passende Zutaten steht dort ein ruhiger Hinweis.
 - **F25** (nur Core): `PuErhTests` grün; im Spiel nichts zu sehen.
+- **F26** (Werkstattgeist): drei Weißtees machen (Welkgestell bis „weich und geschmeidig“, Trockenkorb, einpacken)
+  → beim dritten erscheint die Meldung „Der Werkstattgeist schaut dir über die Schulter …“, über dem Regal schwebt
+  ein kleiner Geist. Neue Charge aufs Gestell → „Dem Werkstattgeist überlassen (Weißtee)“ → mit F2 vorspulen:
+  der Geist schwebt zum Gestell, dann zum Trockenkorb, Meldung; später nimmt er sie trocken heraus.

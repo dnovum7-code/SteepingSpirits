@@ -33,6 +33,10 @@ namespace SteepingSpirits.Processing
         public bool evenRolling;
         public readonly List<LeafBatch> batches = new List<LeafBatch>();
         public readonly Dictionary<string, TeaLedgerEntry> ledger = new Dictionary<string, TeaLedgerEntry>();
+        public readonly SpiritMastery mastery = new SpiritMastery();
+
+        /// <summary>Batches the player handed to the spirit for the white-tea way.</summary>
+        public readonly List<int> spiritWhite = new List<int>();
 
         public static WorkshopSave From(Workshop w)
         {
@@ -71,6 +75,11 @@ namespace SteepingSpirits.Processing
             sb.Append(",\"starterGiven\":").Append(B(starterGiven));
             sb.Append(",\"showPercent\":").Append(B(showPercent));
             sb.Append(",\"evenRolling\":").Append(B(evenRolling));
+            sb.Append(",\"mastery\":{\"goodWithers\":").Append(mastery.goodWithers).Append(",\"dried\":").Append(mastery.dried)
+                .Append(",\"goodWhites\":").Append(mastery.goodWhites).Append('}');
+            sb.Append(",\"spiritWhite\":[");
+            for (int i = 0; i < spiritWhite.Count; i++) sb.Append(i > 0 ? "," : "").Append(spiritWhite[i]);
+            sb.Append(']');
             sb.Append(",\"batches\":[");
             for (int i = 0; i < batches.Count; i++)
             {
@@ -131,6 +140,20 @@ namespace SteepingSpirits.Processing
             s.starterGiven = Bool(root, "starterGiven");
             s.showPercent = Bool(root, "showPercent");
             s.evenRolling = Bool(root, "evenRolling");
+            if (root.TryGetValue("mastery", out object mo) && mo is Dictionary<string, object> md)
+            {
+                s.mastery.goodWithers = (int)Num(md, "goodWithers", 0);
+                s.mastery.dried = (int)Num(md, "dried", 0);
+                s.mastery.goodWhites = (int)Num(md, "goodWhites", 0);
+            }
+
+            if (root.TryGetValue("spiritWhite", out object so) && so is List<object> ids)
+            {
+                foreach (object o in ids)
+                {
+                    if (o is double d) s.spiritWhite.Add((int)d);
+                }
+            }
             if (root.TryGetValue("batches", out object bo) && bo is List<object> list)
             {
                 foreach (object o in list)

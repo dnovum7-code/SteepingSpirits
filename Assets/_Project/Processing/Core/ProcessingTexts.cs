@@ -236,6 +236,20 @@ namespace SteepingSpirits.Processing
         public const string RollDone = "Fertig gerollt.";
         public const string WokDone = "Die Blätter sind fixiert – die Oxidation steht.";
         public const string Stopped = "Oxidation gestoppt.";
+        public const string SpiritHandOver = "Dem Werkstattgeist überlassen (Weißtee)";
+        public const string SpiritWillDry = "Der Werkstattgeist legt sie danach in den Trockenkorb.";
+        public const string SpiritAwake = "Der Werkstattgeist schaut dir über die Schulter – er hat sich etwas abgeschaut.";
+
+        public static string SpiritDid(SpiritDeed d)
+        {
+            switch (d.kind)
+            {
+                case SpiritDeedKind.MovedToDryer: return "Der Werkstattgeist hat Charge " + d.batchId + " vom Gestell in den Trockenkorb gelegt.";
+                case SpiritDeedKind.TookOutOfDryer: return "Der Werkstattgeist hat Charge " + d.batchId + " trocken aus dem Korb genommen.";
+                default: return "Der Werkstattgeist hat Charge " + d.batchId + " rechtzeitig vom Gestell genommen.";
+            }
+        }
+
         public const string BlendSoon = "Hier entstehen Mischungen aus Tee und getrockneten Kräutern.";
         public const string BlendIntro = "Ein Teil Tee und ein Teil getrocknete Kräuter oder Blüten ergeben zwei Teile Mischung.";
         public const string BlendNothing = "Dafür braucht es fertigen Tee und getrocknete Kräuter (Trockenkorb).";
