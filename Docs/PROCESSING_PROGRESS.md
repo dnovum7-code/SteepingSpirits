@@ -81,6 +81,17 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
   **erster Austrieb** heben sie auf **erlesen**. So zählt die Pflege im Garten weiter, und der erste Austrieb
   ist etwas Besonderes, selbst wenn er nicht erlesen ist.
 
+## Charakternoten (`TeaNotes`, höchstens 3, stärkste zuerst)
+
+| Note | Entsteht durch |
+|---|---|
+| **frisch** | Oxidation ≤ 6 %, kaum Röstung, fixiert oder kurz gewelkt (Grüntee) |
+| **blumig** | gleichmäßig gerollt und 8–40 % Oxidation (heller Oolong) oder Weißtee lang gewelkt |
+| **honigsüß** | 40–90 % Oxidation mit leichter Röstung (0,08–0,25) |
+| **malzig** | ≥ 70 % Oxidation und kräftig gerollt (Schwarztee) |
+| **röstig** | Röstung ≥ 0,25 (Wok zu heiß oder lange getrocknet) |
+| **zart** | erster Austrieb / Goldspitze, oder unberührter Weißtee |
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
@@ -97,7 +108,7 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 | A1 | Blattcharge und reine Übergänge | erledigt (46 Tests) |
 | A2 | Sortenbestimmung | erledigt (70 Tests gesamt) |
 | A3 | Qualität | erledigt |
-| A4 | Charakternoten | offen |
+| A4 | Charakternoten | erledigt (86 Tests gesamt) |
 | A5 | Zeit (`IGameTime`, Vorspulen) | offen |
 | B6 | ProcessedTea-Datenvertrag + Katalog | offen |
 | B7 | Übergabe Inventar/Vorratsschrank | offen |
@@ -128,3 +139,4 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
   `SteepingSpirits.Processing.Tests.EditMode` grün. Ohne Unity geprüft: `dotnet test Tests/ProcessingCore.DotNet`.
 - **A2** (Sortenbestimmung): wie A1, zusätzlich `TeaClassifierTests` und `ReachabilityTests` grün.
 - **A3** (Qualität): wie A1, `TeaQualityTests` grün.
+- **A4** (Charakternoten): wie A1, `TeaNotesTests` grün.
