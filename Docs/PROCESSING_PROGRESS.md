@@ -55,6 +55,20 @@
 - **Trocknen:** 120 Spielminuten bis trocken (fertig ab 0,95), danach leichte Röstung bis höchstens 0,45.
 - **Zeit rückwärts** (Uhr neu gestartet) → es vergeht keine Zeit.
 
+## Sorten (`TeaClassifier`)
+
+| Oxidation | Sorte | Optimum (beste Sorgfalt) |
+|---|---|---|
+| < 10 % | **Weißtee** (nicht gerollt, nicht fixiert) oder **Grüntee** (gerollt ≥ 0,15 oder im Wok fixiert) | 2 % |
+| 10–30 % | **heller Oolong** | 20 % |
+| 30–70 % | **dunkler Oolong** | 50 % |
+| ≥ 80 % | **Schwarztee** | 92 % |
+
+Die Lücke 70–80 % geht an die nähere Sorte (bis 75 % dunkler Oolong, ab 75 % Schwarztee; Gleichstand → die
+dunklere Sorte). Alle Grenzen sind tunbar (`VarietyParams`). Die Sortenfolge ist mit wachsender Oxidation
+monoton: zu lange oxidiert heißt immer „dunkler“, nie „kaputt“. **Erreichbarkeit:** 2000 Zufallsabfolgen
+erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte und treffen alle fünf Sorten.
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
@@ -66,7 +80,7 @@
 | # | Punkt | Status |
 |---|---|---|
 | A1 | Blattcharge und reine Übergänge | erledigt (46 Tests) |
-| A2 | Sortenbestimmung | offen |
+| A2 | Sortenbestimmung | erledigt (70 Tests gesamt) |
 | A3 | Qualität | offen |
 | A4 | Charakternoten | offen |
 | A5 | Zeit (`IGameTime`, Vorspulen) | offen |
@@ -97,3 +111,4 @@
 
 - **A1** (Core-Grundlage): Unity öffnen → Konsole ohne Fehler; Test Runner → EditMode →
   `SteepingSpirits.Processing.Tests.EditMode` grün. Ohne Unity geprüft: `dotnet test Tests/ProcessingCore.DotNet`.
+- **A2** (Sortenbestimmung): wie A1, zusätzlich `TeaClassifierTests` und `ReachabilityTests` grün.
