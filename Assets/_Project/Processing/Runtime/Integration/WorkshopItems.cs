@@ -51,12 +51,17 @@ namespace SteepingSpirits.Processing
             return "ingredient_" + IngredientQuality.With(ingredientId, tier);
         }
 
-        public static List<LeafSource> AvailableLeaves()
+        public static List<LeafSource> AvailableLeaves() => Available(LeafIds);
+
+        /// <summary>Garden herbs and blossoms that can be dried.</summary>
+        public static List<LeafSource> AvailableHerbs() => Available(DriedHerb.Herbs);
+
+        private static List<LeafSource> Available(string[] ids)
         {
             var list = new List<LeafSource>();
             Pantry pantry = LoadPantry();
             PlayerInventory inv = PlayerInventory.Instance;
-            foreach (string id in LeafIds)
+            foreach (string id in ids)
             {
                 for (int tier = 3; tier >= 1; tier--)
                 {
@@ -132,6 +137,24 @@ namespace SteepingSpirits.Processing
             }
 
             AddToPantry(tea.Id, tea.amount);
+            return WorkshopDelivery.Pantry;
+        }
+
+        /// <summary>Hands dried herbs over (own ingredient, garden quality kept).</summary>
+        public static WorkshopDelivery DeliverHerb(DriedHerb h)
+        {
+            if (DryRun || h.amount <= 0) return WorkshopDelivery.Nothing;
+            PlayerInventory inv = PlayerInventory.Instance;
+            if (inv != null)
+            {
+                string itemId = "ingredient_" + h.Id;
+                Ensure(inv, itemId, IngredientQuality.DisplayName(h.Id), IngredientTexts.Description(DriedHerb.DriedId(h.herbId)), 3 + 2 * (h.tier - 1), new Color(0.55f, 0.6f, 0.4f));
+                int left = inv.AddById(itemId, h.amount);
+                if (left > 0) AddToPantry(h.Id, left);
+                return WorkshopDelivery.Inventory;
+            }
+
+            AddToPantry(h.Id, h.amount);
             return WorkshopDelivery.Pantry;
         }
 

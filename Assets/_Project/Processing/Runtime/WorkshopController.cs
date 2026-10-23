@@ -198,7 +198,8 @@ namespace SteepingSpirits.Processing
             if (FocusBatch < 0) FocusBatch = b.id;
             text.Append("<b>").Append(ProcessingTexts.BatchTitle(b)).Append("</b> – ").Append(ProcessingTexts.Place(b.place)).Append('\n');
             text.Append(ProcessingTexts.State(b, P, Numbers)).Append('\n');
-            text.Append("<i>").Append(ProcessingTexts.Heading(b, P)).Append(" · ").Append(ProcessingTexts.NotesPreview(b, P)).Append("</i>\n\n");
+            string notes = ProcessingTexts.NotesPreview(b, P);
+            text.Append("<i>").Append(ProcessingTexts.Heading(b, P)).Append(notes.Length > 0 ? " · " + notes : "").Append("</i>\n\n");
         }
 
         private void FillStore(StringBuilder text, List<(string, System.Action)> actions)
@@ -213,6 +214,16 @@ namespace SteepingSpirits.Processing
                 actions.Add((ProcessingTexts.NewBatch + ": " + n + "× " + ProcessingTexts.SourceName(src.sourceId, src.tier), () => root.StartBatch(s, n)));
             }
 
+            List<LeafSource> herbs = WorkshopItems.AvailableHerbs();
+            if (herbs.Count > 0) text.Append('\n').Append(ProcessingTexts.HerbsHeader).Append('\n');
+            foreach (LeafSource herb in herbs)
+            {
+                text.Append(ProcessingTexts.StarterLine(herb.sourceId, herb.tier, herb.Total)).Append('\n');
+                int n = Mathf.Min(Mathf.Max(1, root.Settings.comfort.batchSize), herb.Total);
+                LeafSource h = herb;
+                actions.Add((ProcessingTexts.NewHerbBatch + ": " + n + "× " + ProcessingTexts.SourceName(herb.sourceId, herb.tier), () => root.StartHerbBatch(h, n)));
+            }
+
             if (!root.State.starterGiven) actions.Add((ProcessingTexts.StarterPack, root.GiveStarterPack));
         }
 
@@ -225,7 +236,8 @@ namespace SteepingSpirits.Processing
                 if (BatchRules.Check(b, BatchAction.Finish, P).ok)
                 {
                     int id = b.id;
-                    actions.Add((ProcessingTexts.Act(ProcessingTexts.Unpack, id), () => root.FinishBatch(id)));
+                    if (b.isHerb) actions.Add((ProcessingTexts.Act(ProcessingTexts.Pack, id), () => root.FinishHerb(id)));
+                    else actions.Add((ProcessingTexts.Act(ProcessingTexts.Unpack, id), () => root.FinishBatch(id)));
                 }
             }
 

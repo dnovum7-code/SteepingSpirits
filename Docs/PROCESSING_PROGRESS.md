@@ -104,6 +104,9 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 - **Katalog (additiv):** `tea_white`, `tea_green`, `tea_oolong`, `tea_black` (neue Familie `Tea`, häufig) und
   `tea_leaf_first` („Erster Austrieb“, Familie Blatt, häufig – nicht selten, damit das Seltenheitsregal im
   Jump'n'Run unverändert bleibt). Katalog-Test 15 → 20.
+- **F23 (additiv):** getrocknete Kräuter `mint_dried`, `chamomile_dried`, `jasmine_dried`, `lavender_dried`,
+  `lemon_balm_dried` (Familien Kraut/Blüte, häufig) → Katalog-Test 20 → 25. Kräuter-Chargen (`isHerb`) dürfen nur
+  in den Trockenkorb (kein Welken nötig), behalten die Gartenqualität (`jasmine_dried+q3`).
 
 ## Minispiele (Core, `Minigames.cs`)
 
@@ -214,7 +217,7 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 | E20 | Speichern `workshop_save.json` | erledigt (Roundtrip getestet; Unity: ungeprüft) |
 | E21 | Debug-Overlay F1 | erledigt (Unity: ungeprüft) |
 | E22 | Telemetrie `processing_log.jsonl` | erledigt (Zeile getestet; Unity: ungeprüft) |
-| F23 | Kräuter trocknen | offen |
+| F23 | Kräuter trocknen | erledigt (Core getestet; Unity: ungeprüft) |
 | F24 | Mischtisch | offen |
 | F25 | Teeziegel (Pu-Erh-Vorbereitung) | offen |
 | F26 | Werkstattgeist | offen |
@@ -258,3 +261,7 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
   betreten“; E/Leertaste → Werkstatt lädt; durch die Werkstatttür (unten links) zurück in den Garten; das Gartentor
   führt weiterhin zur Wiese. **Achtung:** *Plantation → Build Garden* baut die Gartenszene neu und entfernt die Tür
   – danach *Processing → Build Workshop* (oder *Add Workshop Door To Garden*) erneut ausführen.
+- **F23** (Kräuter trocknen): Build Workshop, Play. Kräuter aus dem Garten im Inventar (oder `mint+q2` per Hand
+  in `pantry.json`) → **Vorrat** zeigt „Kräuter und Blüten zum Trocknen“ → „Trocknen: …“ → Trockenkorb → F3 →
+  Abnehmen → Regal „Einpacken“ → Meldung „+n Getrocknete Minze (fein)“. Am Rolltisch/Wok steht bei der
+  Kräuter-Charge „Kräuter und Blüten werden nur getrocknet.“

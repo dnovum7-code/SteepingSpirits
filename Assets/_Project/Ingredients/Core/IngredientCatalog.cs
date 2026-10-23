@@ -76,6 +76,13 @@ namespace SteepingSpirits.Ingredients
         public const string BlackTea = "tea_black";
         public const string FirstFlushLeaf = "tea_leaf_first";
 
+        // Garden herbs and blossoms dried in the workshop.
+        public const string MintDried = "mint_dried";
+        public const string ChamomileDried = "chamomile_dried";
+        public const string JasmineDried = "jasmine_dried";
+        public const string LavenderDried = "lavender_dried";
+        public const string LemonBalmDried = "lemon_balm_dried";
+
         private static readonly IngredientInfo[] all =
         {
             new IngredientInfo(TeaLeaf, Rarity.Common, IngredientFamily.Leaf, null),
@@ -97,7 +104,12 @@ namespace SteepingSpirits.Ingredients
             new IngredientInfo(GreenTea, Rarity.Common, IngredientFamily.Tea, null),
             new IngredientInfo(OolongTea, Rarity.Common, IngredientFamily.Tea, null),
             new IngredientInfo(BlackTea, Rarity.Common, IngredientFamily.Tea, null),
-            new IngredientInfo(FirstFlushLeaf, Rarity.Common, IngredientFamily.Leaf, null)
+            new IngredientInfo(FirstFlushLeaf, Rarity.Common, IngredientFamily.Leaf, null),
+            new IngredientInfo(MintDried, Rarity.Common, IngredientFamily.Herb, null),
+            new IngredientInfo(ChamomileDried, Rarity.Common, IngredientFamily.Blossom, null),
+            new IngredientInfo(JasmineDried, Rarity.Common, IngredientFamily.Blossom, null),
+            new IngredientInfo(LavenderDried, Rarity.Common, IngredientFamily.Blossom, null),
+            new IngredientInfo(LemonBalmDried, Rarity.Common, IngredientFamily.Herb, null)
         };
 
         /// <summary>
@@ -185,6 +197,11 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.OolongTea: return "Oolong";
                 case IngredientCatalog.BlackTea: return "Schwarztee";
                 case IngredientCatalog.FirstFlushLeaf: return "Erster Austrieb";
+                case IngredientCatalog.MintDried: return "Getrocknete Minze";
+                case IngredientCatalog.ChamomileDried: return "Getrocknete Kamille";
+                case IngredientCatalog.JasmineDried: return "Getrocknete Jasminblüten";
+                case IngredientCatalog.LavenderDried: return "Getrockneter Lavendel";
+                case IngredientCatalog.LemonBalmDried: return "Getrocknete Zitronenmelisse";
                 default: return id ?? "";
             }
         }
@@ -213,6 +230,11 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.OolongTea: return "Halb oxidiert, zwischen Garten und Abend.";
                 case IngredientCatalog.BlackTea: return "Ganz oxidiert, warm und tief.";
                 case IngredientCatalog.FirstFlushLeaf: return "Die ersten Blätter des Teestrauchs, besonders zart.";
+                case IngredientCatalog.MintDried: return "Knistert und duftet kühl – hält sich lange.";
+                case IngredientCatalog.ChamomileDried: return "Kleine getrocknete Sonnen für den Abendtee.";
+                case IngredientCatalog.JasmineDried: return "Der Duft der Nacht, in Blüten aufbewahrt.";
+                case IngredientCatalog.LavenderDried: return "Blaue Ähren, die nach Ruhe riechen.";
+                case IngredientCatalog.LemonBalmDried: return "Zitronig und sanft, ganz ohne Säure.";
                 default: return "";
             }
         }

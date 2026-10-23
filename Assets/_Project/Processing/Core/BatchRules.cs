@@ -40,7 +40,10 @@ namespace SteepingSpirits.Processing
         AlreadyFixed,
         TooDry,
         AlreadyDry,
-        NotDry
+        NotDry,
+
+        /// <summary>Herbs and blossoms are only dried.</summary>
+        HerbOnlyDries
     }
 
     public struct BatchCheck
@@ -88,6 +91,13 @@ namespace SteepingSpirits.Processing
         {
             if (action == BatchAction.TakeOut) return b.place != BatchPlace.Shelf ? BatchCheck.Yes : BatchCheck.No(BatchReason.AlreadyOnShelf);
             if (b.place != BatchPlace.Shelf) return BatchCheck.No(BatchReason.NotOnShelf);
+
+            if (b.isHerb)
+            {
+                if (action == BatchAction.Dry) return b.IsDry(p.dry) ? BatchCheck.No(BatchReason.AlreadyDry) : BatchCheck.Yes;
+                if (action == BatchAction.Finish) return b.IsDry(p.dry) ? BatchCheck.Yes : BatchCheck.No(BatchReason.NotDry);
+                return BatchCheck.No(BatchReason.HerbOnlyDries);
+            }
 
             switch (action)
             {

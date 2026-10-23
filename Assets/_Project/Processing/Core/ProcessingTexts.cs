@@ -32,7 +32,7 @@ namespace SteepingSpirits.Processing
         public const string LayOn = "Auflegen";
         public const string TakeOff = "Abnehmen";
         public const string StopOxidation = "Jetzt stoppen";
-        public const string Pack = "Als Tee einpacken";
+        public const string Pack = "Einpacken";
         public const string RollStart = "Rollen";
         public const string RollStop = "Fertig rollen";
         public const string RollHint = "Im Takt kneten: Leertaste / J / A – oder den Stick kreisen.";
@@ -181,11 +181,17 @@ namespace SteepingSpirits.Processing
         /// <summary>Where the path leads, if the player dries it now (or stops oxidation now).</summary>
         public static string Heading(LeafBatch b, ProcessingParams p)
         {
+            if (b.isHerb) return (b.IsDry(p.dry) ? "Fertig: " : "Wird zu: ") + IngredientTexts.Name(DriedHerb.DriedId(b.sourceId));
             TeaVariety t = TeaClassifier.Heading(b, p);
             return (b.IsDry(p.dry) ? "Fertig: " : "Würde jetzt zu: ") + VarietyName(t);
         }
 
-        public static string NotesPreview(LeafBatch b, ProcessingParams p) => "Noten: " + NotesLine(TeaNotes.For(b, p));
+        public static string NotesPreview(LeafBatch b, ProcessingParams p) => b.isHerb ? "" : "Noten: " + NotesLine(TeaNotes.For(b, p));
+
+        public const string HerbsHeader = "Kräuter und Blüten zum Trocknen:";
+        public const string NewHerbBatch = "Trocknen";
+
+        public static string HerbDone(DriedHerb h) => "+" + h.amount + " " + IngredientQuality.DisplayName(h.Id);
 
         public static string Reason(BatchReason r)
         {
@@ -201,6 +207,7 @@ namespace SteepingSpirits.Processing
                 case BatchReason.TooDry: return "Dafür sind die Blätter schon zu trocken.";
                 case BatchReason.AlreadyDry: return "Schon trocken.";
                 case BatchReason.NotDry: return "Noch nicht trocken.";
+                case BatchReason.HerbOnlyDries: return "Kräuter und Blüten werden nur getrocknet.";
                 default: return "";
             }
         }

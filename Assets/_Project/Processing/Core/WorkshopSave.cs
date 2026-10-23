@@ -81,6 +81,7 @@ namespace SteepingSpirits.Processing
                 sb.Append(",\"source\":").Append(MiniJson.Quote(b.sourceId));
                 sb.Append(",\"origin\":").Append(b.originTier);
                 sb.Append(",\"firstFlush\":").Append(B(b.firstFlush));
+                if (b.isHerb) sb.Append(",\"herb\":true");
                 F(sb, "moisture", b.moisture);
                 F(sb, "rolled", b.rolled);
                 F(sb, "rollEvenness", b.rollEvenness);
@@ -142,6 +143,7 @@ namespace SteepingSpirits.Processing
                         sourceId = Str(d, "source", "tea_leaf"),
                         originTier = Math.Max(1, Math.Min(3, (int)Num(d, "origin", 1))),
                         firstFlush = Bool(d, "firstFlush"),
+                        isHerb = Bool(d, "herb"),
                         moisture = (float)Num(d, "moisture", 1),
                         rolled = (float)Num(d, "rolled", 0),
                         rollEvenness = (float)Num(d, "rollEvenness", 0),

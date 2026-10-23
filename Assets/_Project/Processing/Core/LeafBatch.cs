@@ -45,6 +45,9 @@ namespace SteepingSpirits.Processing
         /// <summary>First flush ("erster Austrieb") or golden tips: lifts the quality ceiling.</summary>
         public bool firstFlush;
 
+        /// <summary>A herb or blossom from the garden: it can only be dried (becomes "&lt;herb&gt;_dried").</summary>
+        public bool isHerb;
+
         public float moisture = 1f;
 
         /// <summary>Strongest roll so far.</summary>
@@ -113,6 +116,13 @@ namespace SteepingSpirits.Processing
             }
 
             return sb.ToString();
+        }
+
+        public static LeafBatch Herb(int id, string herbId, int originTier, int amount, double nowMinutes)
+        {
+            LeafBatch b = Fresh(id, herbId, originTier, amount, false, nowMinutes);
+            b.isHerb = true;
+            return b;
         }
 
         public static LeafBatch Fresh(int id, string sourceId, int originTier, int amount, bool firstFlush, double nowMinutes) => new LeafBatch

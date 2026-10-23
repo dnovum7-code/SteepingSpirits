@@ -33,6 +33,26 @@ namespace SteepingSpirits.Processing
             return b;
         }
 
+        /// <summary>Starts a batch of fresh garden herbs or blossoms (to be dried).</summary>
+        public LeafBatch AddHerb(string herbId, int originTier, int amount)
+        {
+            LeafBatch b = LeafBatch.Herb(NextId++, herbId, originTier, amount, Now);
+            batches.Add(b);
+            return b;
+        }
+
+        /// <summary>Packs a dried herb batch and removes it. Returns false if it is no dry herb batch.</summary>
+        public bool FinishHerb(int id, out DriedHerb herb)
+        {
+            Sync();
+            herb = default;
+            LeafBatch b = Get(id);
+            if (b == null || !b.isHerb || !BatchRules.Check(b, BatchAction.Finish, settings).ok) return false;
+            herb = DriedHerb.From(b);
+            batches.Remove(b);
+            return true;
+        }
+
         /// <summary>Puts back a saved batch (keeps its own last time, so the time away is caught up).</summary>
         public void Restore(LeafBatch b)
         {
@@ -100,7 +120,7 @@ namespace SteepingSpirits.Processing
             Sync();
             tea = null;
             LeafBatch b = Get(id);
-            if (b == null || !BatchRules.Check(b, BatchAction.Finish, settings).ok) return false;
+            if (b == null || b.isHerb || !BatchRules.Check(b, BatchAction.Finish, settings).ok) return false;
             tea = ProcessedTea.From(b, settings);
             batches.Remove(b);
             return true;

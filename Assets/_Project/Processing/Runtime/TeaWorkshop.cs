@@ -147,6 +147,26 @@ namespace SteepingSpirits.Processing
             MarkDirty();
         }
 
+        public void StartHerbBatch(LeafSource source, int amount)
+        {
+            int taken = WorkshopItems.TakeLeaves(source, amount);
+            if (taken <= 0) return;
+            LeafBatch b = Model.AddHerb(source.sourceId, source.tier, taken);
+            Feedback.Play(WorkshopSound.Place);
+            Ui.Message(ProcessingTexts.BatchStarted(b.id));
+            MarkDirty();
+        }
+
+        public void FinishHerb(int id)
+        {
+            if (!Model.FinishHerb(id, out DriedHerb h)) return;
+            WorkshopDelivery where = WorkshopItems.DeliverHerb(h);
+            Feedback.Play(WorkshopSound.Pack);
+            Ui.Message(ProcessingTexts.HerbDone(h) + (where == WorkshopDelivery.Pantry ? ProcessingTexts.ToPantry : ""));
+            RefreshViews();
+            Save();
+        }
+
         public void GiveStarterPack()
         {
             if (State.starterGiven) return;
