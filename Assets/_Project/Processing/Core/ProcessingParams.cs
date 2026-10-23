@@ -211,6 +211,25 @@ namespace SteepingSpirits.Processing
         public NoteParams Clone() => (NoteParams)MemberwiseClone();
     }
 
+    /// <summary>Pu-erh preparation (data only for now – no maturation yet).</summary>
+    [Serializable]
+    public sealed class PuErhParams
+    {
+        /// <summary>Maocha must be fixed gently: at least this much oxidation left after the wok ("too cool" on purpose).</summary>
+        public float minFixResidual = 0.05f;
+
+        /// <summary>Maocha is rolled firmly.</summary>
+        public float minRolled = 0.6f;
+
+        /// <summary>Maocha stays a pale, green-ish tea.</summary>
+        public float maxOxidation = 0.30f;
+
+        /// <summary>Portions pressed into one brick.</summary>
+        public int portionsPerBrick = 4;
+
+        public PuErhParams Clone() => (PuErhParams)MemberwiseClone();
+    }
+
     /// <summary>All workshop tuning (lives in the ProcessingSettings asset in Unity).</summary>
     [Serializable]
     public sealed class ProcessingParams
@@ -223,6 +242,7 @@ namespace SteepingSpirits.Processing
         public VarietyParams variety = new VarietyParams();
         public TeaQualityParams quality = new TeaQualityParams();
         public NoteParams notes = new NoteParams();
+        public PuErhParams puerh = new PuErhParams();
 
         /// <summary>Game minutes per real second of the game clock (10 per 7 s) – for time estimates only.</summary>
         public float gameMinutesPerRealSecond = 10f / 7f;
@@ -240,6 +260,7 @@ namespace SteepingSpirits.Processing
             variety = variety.Clone(),
             quality = quality.Clone(),
             notes = notes.Clone(),
+            puerh = puerh.Clone(),
             gameMinutesPerRealSecond = gameMinutesPerRealSecond,
             integrationStep = integrationStep
         };

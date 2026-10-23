@@ -171,6 +171,13 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 - **Debug:** F1 Overlay (alle Werte der gewählten Charge, Sorgfalt je Schritt, Stufe, Noten, ID), F2 +30 min,
   F3 +4 h (nur Editor/Development-Build).
 
+## F25 – Teeziegel (Pu-Erh-Vorbereitung, nur Daten)
+
+Weg: welken → im Wok **sanft** fixieren (Rest-Oxidation ≥ 0,05, also absichtlich etwas zu kühl) → fest rollen
+(≥ 0,6) → trocknen = **Maocha** (Oxidation ≤ 30 %) → pressen zu `TeaBrick` (Pressdatum, `maturationDays = 0`,
+ID-Vorschlag `tea_brick:raw/<noten>+qN`, noch **kein** Katalog-Eintrag). `PuErh.CheckMaocha` nennt den Grund,
+warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vorbereitung für später.
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
@@ -224,7 +231,7 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 | E22 | Telemetrie `processing_log.jsonl` | erledigt (Zeile getestet; Unity: ungeprüft) |
 | F23 | Kräuter trocknen | erledigt (Core getestet; Unity: ungeprüft) |
 | F24 | Mischtisch | erledigt (Core getestet; Unity: ungeprüft) |
-| F25 | Teeziegel (Pu-Erh-Vorbereitung) | offen |
+| F25 | Teeziegel (Pu-Erh-Vorbereitung) | erledigt (nur Daten/Weg, getestet; keine UI, keine Reifung) |
 | F26 | Werkstattgeist | offen |
 | F27 | Eigene Verbesserungen | offen |
 
@@ -273,3 +280,4 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 - **F24** (Mischtisch): mit einem fertigen Tee und einem getrockneten Kraut im Inventar → **Mischtisch** (unten
   Mitte) zeigt „Mischen: Jasmin-Grüntee (…)“ → klicken → Meldung „+2 Jasmin-Grüntee …“, Tee und Kraut je −1.
   Ohne passende Zutaten steht dort ein ruhiger Hinweis.
+- **F25** (nur Core): `PuErhTests` grün; im Spiel nichts zu sehen.
