@@ -6,7 +6,9 @@
 
 ## Nächster konkreter Schritt
 
-→ erster Backlog-Punkt mit Status „offen“.
+Alle Backlog-Punkte sind umgesetzt; alles, was Unity braucht, ist **ungeprüft**. Nächster Schritt: den Testplan
+im Abschlussbericht in Unity durchspielen und Befunde in `Docs/PLAYTEST_NOTES.md` (Abschnitt „Werkstatt“)
+eintragen. Die nächste Sitzung arbeitet diese Notizen zuerst ab.
 
 ## Basis und Merge-Hinweis
 
@@ -312,3 +314,79 @@ warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vo
 - **F27:** Charge im Oxidationskorb, Fenster offen: kurz vor dem Wechsel erscheint „Die Farbe ist kurz davor zu
   kippen.“, beim Wechsel ein leiser Klang und „Charge n kippt: jetzt …“. Gestell/Trockenkorb melden sich einmal,
   wenn die Charge bereit ist (auch bei geschlossenem Fenster). `OxidationForecastTests` grün.
+
+## Abschlussbericht
+
+### Gebaut
+- **Core** (`SteepingSpirits.Processing.Core`, engine-frei): Blattcharge mit reinen Übergängen, Sortenbestimmung
+  (Bänder, Lücken → nächste Sorte), Qualität (Herkunft + Sorgfalt, Obergrenze), Charakternoten, Spielzeit
+  (`IGameTime`, Vorspulen), Datenvertrag `ProcessedTea` mit sprechender ID, Minispiel-Modelle Rollen/Wok,
+  Spielstand `workshop_save.json` + Tee-Register, Telemetrie-Zeile, Werkstatt-Simulator, deutsche Textklasse,
+  Raumlayout, Kräuter trocknen, Mischungen, Pu-Erh-Vorbereitung, Werkstattgeist, Oxidations-Vorhersage.
+- **Laufzeit:** begehbare Werkstatt (`TeaWorkshop`), Stationsfenster mit Gamepad-Navigation
+  (`WorkshopController`, `WorkshopUi`), Blatt-Darstellung (`LeafLook`, `StationView`), Klang/Partikel
+  (`ProcessingSynth`, `WorkshopFeedback`, `ProcessingAudioSet`), Übergabe (`WorkshopItems`), Speichern,
+  Telemetrie, Debug-Overlay, Werkstattgeist (`SpiritView`), Mischtisch (`BlendStation`), Gartentür (`WorkshopDoor`).
+- **Editor:** *SteepingSpirits → Processing → Build Workshop*, *Add Workshop Door To Garden*, *Simulate 100 Batches*.
+- **Doku:** `Docs/PROCESSING_TO_BREWING.md` (Vorschlag zur Brüh-Anbindung).
+
+### Offen / Risiken
+- **Nichts davon lief in Unity** (Fenster-Layout, Gamepad-Navigation, Sortierung, Klang, Gefühl der Minispiele).
+- Inventar lädt laufzeit-registrierte Gegenstände nach einem Neustart nicht (bekannt aus dem Garten) – Tees und
+  Blätter im Inventar sind dann weg; der Vorratsschrank bleibt. Gemeinsamer Speicherdienst nötig.
+- Der Garten liefert den „ersten Austrieb“ noch nicht als eigene Zutat (Merge-Vorschlag, Annahme 7).
+- Pu-Erh: nur Daten, keine Station, keine Reifung (bewusst, F25).
+
+### Testergebnisse (ohne Unity)
+- `dotnet test Tests/ProcessingCore.DotNet`: **142/142** (Übergänge-Wahrheitstabelle, Sorten inkl. Grenzwerte,
+  2000 Zufallsabfolgen → immer gültige Sorte, Qualität, Noten, Zeit, Datenvertrag/IDs, Minispiele, Speichern als
+  Rundreise und Fortsetzung, Determinismus, Simulator, Kräuter, Mischungen, Pu-Erh, Geist, Vorhersage, Texte).
+- `Tests/Ingredients.DotNet` **12/12**, `Tests/PlantationCore.DotNet` **108/108**, `Tests/PlatformingCore.DotNet` **137/137**.
+- Kompilieren gegen Unity-Referenzen inkl. Editor und Tests: neues Input System und alter Input Manager
+  **fehlerfrei, keine Warnungen**.
+- Werkstatt-Simulator (je 100 Chargen): siehe Tabelle oben – sorgfältig 100 % Treffer, Ø Stufe 2,49, nie „gut“;
+  nachlässig 55 % Treffer, Ø 2,02, 0 unbrauchbar; zufällig 19 %, 0 unbrauchbar. Aktive Zeit sorgfältig:
+  dunkler Oolong max 76 s, heller Oolong 50 s, Weißtee 5 s.
+
+### Testplan für dich (≤ 10 Minuten, wichtigstes zuerst)
+1. **(2 min)** *Processing → Build Workshop*, Szene `Teewerkstatt`, Play. Vorrat → Startpaket → neue Charge →
+   Welkgestell → F2 ein paar Mal bis „weich und geschmeidig“ → abnehmen. Lesen sich Farbe/Duft/Gefühl gut?
+2. **(2 min)** Rolltisch: im Takt kneten, nach halber Zeit Esc → Oxidationskorb → Fenster offen lassen und
+   zusehen, wie Farbe und Duft wandern; bei „heller Oolong“ stoppen. Fühlt sich das Beobachten gut an?
+3. **(1 min)** Wok: 12 s Hitze im hellen Band halten (Leertaste halten/loslassen). Zu ruhig, zu hektisch?
+4. **(1 min)** Rolltisch erneut, Trockenkorb, F3, abnehmen, Regal → „Als Tee einpacken“ → Meldung mit Sorte, Noten,
+   Qualität; Inventar (I).
+5. **(1 min)** Zweite Charge im Korb absichtlich zu lange liegen lassen → wird dunkler Oolong/Schwarztee, kein
+   Fehlschlag.
+6. **(1 min)** Gamepad: Fenster mit Steuerkreuz/A bedienen, B schließt; Rollen per Stick-Kreisen.
+7. **(1 min)** Stop/Play: Chargen in Arbeit sind noch da. Garten bauen (*Plantation → Build Garden*), dann
+   *Build Workshop* erneut → im Garten am Ostende des Wegs die Werkstatttür; hin und zurück; das Gartentor führt
+   weiter zur Wiese.
+8. **(1 min)** F1-Overlay ansehen; Test Runner → EditMode `SteepingSpirits.Processing.Tests.EditMode` grün.
+
+### Merge-Hinweise
+- **Basis:** `feature/plantation` (e7dee0e). Reihenfolge: `feature/jumpnrun` → `feature/plantation` →
+  `feature/processing`.
+- **Katalog (additiv):** `tea_white`, `tea_green`, `tea_oolong`, `tea_black`, `tea_blend` (neue Familie `Tea`),
+  `tea_leaf_first`, `mint_dried`, `chamomile_dried`, `jasmine_dried`, `lavender_dried`, `lemon_balm_dried`;
+  Katalog-Test 15 → 26. Alle „häufig“ – das Seltenheitsregal im Jump'n'Run bleibt unverändert.
+- **IDs:** Tees `tea_oolong:dark/honeyed.roasty+q3`, Mischungen `tea_blend:green~jasmine/fresh.floral+q2`,
+  getrocknete Kräuter `mint_dried+q2`; im Inventar mit Präfix `ingredient_`.
+- **Eingang:** genau ein Objekt `TeewerkstattTuer` in `Teegarten.unity` per Builder. *Plantation → Build Garden*
+  baut die Gartenszene neu und entfernt es → danach *Processing → Build Workshop* erneut.
+- **Garten (Vorschlag):** erste Teestrauch-Ernte als `tea_leaf_first` ausgeben.
+- **Brühen:** siehe `Docs/PROCESSING_TO_BREWING.md` – Basis-Preset je Sorte + kleine Verschiebungen durch
+  Oxidation (Oolong-Fenster wandert mit), Qualität (Kapazität/Toleranz) und Noten; Teewahl aus Inventar/Vorrat
+  (Familie `Tea`); eine „herbe“ Tasse sollte `tea_tart` ausgeben (Kompost im Garten).
+
+### Vorschläge für `CLAUDE.md`
+- Modulaufbau festschreiben (`Core` engine-frei mit `Tests/<Modul>.DotNet`, `Runtime`, `Editor`-Builder als einzige
+  Quelle für Szenen) und die ID-Grammatik für Zutaten-Varianten (`:stil`, `/noten`, `~kraut`, `+qN`) als
+  Projektregel – neue Varianten nie als neue Katalog-Einträge.
+- **Szenenwechsel-Regel:** `ScenePortal.Load` nur für „echte“ Ortswechsel mit Rückweg über `PreviousScenePath`;
+  Unterorte (Werkstatt im Garten) mit eigenem Lader, sonst verbiegt sich der Rückweg.
+- **Uhr-Regel:** UI, die Zeit beobachten lässt, darf `GamePause` nicht setzen (die Uhr steht sonst still).
+- Gemeinsamer Speicherdienst (Inventar mit Laufzeit-Items, `GameClock`) und eine Tastenbelegungs-Tabelle für alle
+  Module (F1 ist überall Debug, F2/F3 vorspulen).
+- Builder, die fremde Szenen ergänzen (Wiese ← Garten, Garten ← Werkstatt), brauchen eine gemeinsame Lösung,
+  z. B. einen Szenen-Builder, bei dem Module ihre Eingänge anmelden.
