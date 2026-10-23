@@ -1,0 +1,18 @@
+// Teewerkstatt – read by SteepingSpirits → Processing → Build Workshop.
+// Legend:  .  floor   #  wall   P  start   G  door to the garden
+//          S  shelf (batches in work)   V  store (fresh leaves, new batch)
+//          R  wither rack   T  rolling table   O  oxidation basket   K  wok   D  drying basket over embers
+//          M  blending table
+// Top row is the north wall. 1 character = 1 Unity unit.
+@name Teewerkstatt
+// Starter pack for testing (source:count:garden tier).
+@starter tea_leaf:8:3 tea_leaf:6:2 tea_leaf:6:1 tea_leaf_first:4:3
+###############
+#V.S...R..R...#
+#.............#
+#.............#
+#..T...O...K..#
+#.............#
+#.............#
+#G.P....M...D.#
+###############

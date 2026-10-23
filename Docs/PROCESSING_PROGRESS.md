@@ -140,6 +140,29 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
   die Noten wurden eintönig; jetzt erst nach ~2,8 Spielstunden zu lang im Korb).
 - „Honigsüß“ bis **100 %** Oxidation statt 90 % (sonst kam die Note bei Schwarztee nie vor).
 
+## Werkstatt im Spiel
+
+- **Raum** aus `Layouts/Werkstatt.txt` (15×9): Vorrat (V), Regal (S), zwei Welkgestelle (R), Rolltisch (T),
+  Oxidationskorb (O), Wok (K), Trockenkorb über der Glut (D), Mischtisch (M), Tür zum Garten (G). Top-down wie
+  Wiese und Garten; die Figur läuft mit `PlayerController2D`.
+- **Benutzen** (Leertaste/J/E/F, Pad A/X) vor einer Station öffnet ihr Fenster (UI-Baukasten, Maus, Tastatur,
+  Gamepad-Navigation; Esc/B schließt). Das Fenster pausiert das Spiel **nicht** – nur die Figur steht.
+  Jedes Fenster beschreibt die Chargen dort über **Farbe, Duft, Gefühl**, sagt „Würde jetzt zu: …“ und welche
+  Noten sich abzeichnen. Zahlen nur mit „Zahlen an“ (Regal).
+- **Vorrat:** neue Charge (4 Blätter) aus Inventar/Vorratsschrank, nach Quelle und Gartenstufe getrennt; einmal
+  das Startpaket (8× erlesen, 6× fein, 6× gut, 4× erster Austrieb).
+- **Gestell / Korb / Trockenkorb:** auflegen, abnehmen; im Korb heißt Abnehmen „Jetzt stoppen“ (sanfter Klang,
+  Meldung mit der Sorte). Gründe, warum eine Charge nicht passt, stehen ruhig darunter.
+- **Rolltisch:** Charge wählen → Kneten im Takt (pulsierender Ring zeigt den Takt, das Blattbündel wird runder),
+  Esc/B = fertig rollen. „Gleichmäßig rollen“: Halten statt Takt.
+- **Wok:** 12 s Hitze im hellen Band halten (Halten = anfachen), Zischen folgt der Hitze, Dampf steigt.
+- **Regal:** alle Chargen im Überblick; trockene „Als Tee einpacken“ → Inventar (sonst Vorratsschrank), Register,
+  Telemetrie.
+- **Speichern:** nach jeder Änderung (gebündelt, 1 s), beim Verlassen und Beenden; laufende passive Schritte
+  laufen auf Spielzeit weiter.
+- **Debug:** F1 Overlay (alle Werte der gewählten Charge, Sorgfalt je Schritt, Stufe, Noten, ID), F2 +30 min,
+  F3 +4 h (nur Editor/Development-Build).
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
@@ -158,6 +181,12 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
    Werkstatt kennt dafür die neue Zutat `tea_leaf_first` und behandelt auch `golden_tip` (Goldspitze) als
    ersten Austrieb. Merge-Vorschlag: Der Garten gibt bei der ersten Teestrauch-Ernte `tea_leaf_first` aus
    (eine Zeile in `GardenController.Harvest`). Das Startpaket der Werkstatt enthält einige davon.
+8. **Szenenwechsel Garten ↔ Werkstatt ohne `ScenePortal`:** `ScenePortal.Load` merkt sich die vorige Szene,
+   und das Gartentor geht dorthin zurück. Über die Werkstatt würde das Gartentor sonst in die Werkstatt statt
+   zur Wiese führen. Eigener Lader `WorkshopSceneLoader` (gleicher Mechanismus, ohne Merken).
+9. **Inventar-IDs** wie Garten/Jump'n'Run: `item_teeblatt` (Teeblatt gut), sonst `ingredient_<id>`; Tees
+   `ingredient_<ProcessedTea-ID>`. Das Inventar lädt laufzeit-registrierte Gegenstände nach einem Neustart nicht
+   (bekannt aus dem Garten) – das betrifft Blätter und Tees im Inventar gleichermaßen; der Vorratsschrank ist dauerhaft.
 
 ## Backlog
 
@@ -169,22 +198,22 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 | A4 | Charakternoten | erledigt (86 Tests gesamt) |
 | A5 | Zeit (`IGameTime`, Vorspulen) | erledigt (92 Tests gesamt) |
 | B6 | ProcessedTea-Datenvertrag + Katalog | erledigt (99 Tests gesamt) |
-| B7 | Übergabe Inventar/Vorratsschrank | offen |
+| B7 | Übergabe Inventar/Vorratsschrank | erledigt (Unity: ungeprüft) |
 | B8 | `Docs/PROCESSING_TO_BREWING.md` | erledigt |
-| C9 | Welkgestell | offen |
-| C10 | Rolltisch | Modell erledigt (`RollSession`), Station offen |
-| C11 | Oxidationskorb | offen |
-| C12 | Wok | Modell erledigt (`WokSession`), Station offen |
-| C13 | Trockenkorb | offen |
-| C14 | Vorschau an jeder Station | offen |
-| D15 | Werkstatt-Szene per Builder | offen |
-| D16 | Blatt-Darstellung | offen |
-| D17 | Klang und Partikel, `ProcessingAudioSet` | offen |
-| D18 | Oberfläche (UI-Baukasten, Gamepad) | offen |
+| C9 | Welkgestell | erledigt (Unity: ungeprüft) |
+| C10 | Rolltisch | erledigt (Unity: ungeprüft) |
+| C11 | Oxidationskorb | erledigt (Unity: ungeprüft) |
+| C12 | Wok | erledigt (Unity: ungeprüft) |
+| C13 | Trockenkorb | erledigt (Unity: ungeprüft) |
+| C14 | Vorschau an jeder Station | erledigt (Unity: ungeprüft) |
+| D15 | Werkstatt-Szene per Builder | erledigt (Unity: ungeprüft) |
+| D16 | Blatt-Darstellung | erledigt (Unity: ungeprüft) |
+| D17 | Klang und Partikel, `ProcessingAudioSet` | erledigt (Unity: ungeprüft) |
+| D18 | Oberfläche (UI-Baukasten, Gamepad) | erledigt (Unity: ungeprüft) |
 | D19 | Eingang | offen |
-| E20 | Speichern `workshop_save.json` | Core erledigt (Roundtrip getestet), Unity offen |
-| E21 | Debug-Overlay F1 | offen |
-| E22 | Telemetrie `processing_log.jsonl` | Zeile erledigt (getestet), Unity offen |
+| E20 | Speichern `workshop_save.json` | erledigt (Roundtrip getestet; Unity: ungeprüft) |
+| E21 | Debug-Overlay F1 | erledigt (Unity: ungeprüft) |
+| E22 | Telemetrie `processing_log.jsonl` | erledigt (Zeile getestet; Unity: ungeprüft) |
 | F23 | Kräuter trocknen | offen |
 | F24 | Mischtisch | offen |
 | F25 | Teeziegel (Pu-Erh-Vorbereitung) | offen |
@@ -205,3 +234,20 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
   Testausgabe-Log). Noch nichts Sichtbares.
 - **Spielstand/Telemetrie (Core):** wie A1, `WorkshopSaveTests` grün.
 - **B8** (nur Doku): `Docs/PROCESSING_TO_BREWING.md` lesen – nichts im Editor zu prüfen.
+- **B7, C9–C14, D15–D18, E20–E22** (spielbare Werkstatt, ein Commit, weil die Teile nur zusammen kompilieren):
+  Menü **SteepingSpirits → Processing → Build Workshop** → Konsole meldet `Built Assets/Scenes/Teewerkstatt.unity`
+  und die Simulator-Zahlen; unter `Assets/_Project/Processing/Data` liegen `ProcessingSettings` und
+  `ProcessingAudioSet`. Szene `Teewerkstatt` öffnen → Play:
+  1. Raum mit Möbeln, Figur unten links neben der Tür. Vor einer Station steht ihr Name unten am Rand.
+  2. **Vorrat** (oben links) → „Startpaket nehmen“ → dann „Neue Charge …“ → Regal zeigt die Charge (grünes Häufchen).
+  3. **Welkgestell** → „Auflegen“; F2 mehrmals (je +30 min) → Text wechselt von „prall und frisch“ zu „weich und
+     geschmeidig“, das Häufchen wird kleiner/dunkler. „Abnehmen“.
+  4. **Rolltisch** → Charge wählen → Leertaste im Takt (Ring pulsiert, dumpfes Kneten) → Esc nach halber Zeit
+     → „leicht gedreht – gut für Oolong“.
+  5. **Oxidationskorb** → „In den Korb“ → Fenster offen lassen: Farbe wandert von grün zu kupfer, Duft von grasig
+     über blumig zu fruchtig, „Würde jetzt zu“ wechselt → „Jetzt stoppen“.
+  6. **Wok** → 12 s Hitze im hellen Band halten (Zischen, Dampf). Danach **Rolltisch** erneut (fest rollen).
+  7. **Trockenkorb** → „Über die Glut“ (Glut glimmt, leises Knistern, Funken) → F3 → „Abnehmen“.
+  8. **Regal** → „Als Tee einpacken“ → Meldung „+4 Oolong (hell; blumig; …)“; Inventar (I) zeigt den Tee.
+  9. F1 zeigt alle Werte. Stop und Play: Chargen in Arbeit sind noch da (auch mitten im Welken).
+  Ohne Sound-Assets sind leise Platzhalter zu hören; das Audio-Set darf leer bleiben.
