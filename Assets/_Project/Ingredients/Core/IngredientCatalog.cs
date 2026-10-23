@@ -83,6 +83,9 @@ namespace SteepingSpirits.Ingredients
         public const string LavenderDried = "lavender_dried";
         public const string LemonBalmDried = "lemon_balm_dried";
 
+        /// <summary>Tea blended with a dried herb or blossom at the workshop's blending table.</summary>
+        public const string TeaBlend = "tea_blend";
+
         private static readonly IngredientInfo[] all =
         {
             new IngredientInfo(TeaLeaf, Rarity.Common, IngredientFamily.Leaf, null),
@@ -109,7 +112,8 @@ namespace SteepingSpirits.Ingredients
             new IngredientInfo(ChamomileDried, Rarity.Common, IngredientFamily.Blossom, null),
             new IngredientInfo(JasmineDried, Rarity.Common, IngredientFamily.Blossom, null),
             new IngredientInfo(LavenderDried, Rarity.Common, IngredientFamily.Blossom, null),
-            new IngredientInfo(LemonBalmDried, Rarity.Common, IngredientFamily.Herb, null)
+            new IngredientInfo(LemonBalmDried, Rarity.Common, IngredientFamily.Herb, null),
+            new IngredientInfo(TeaBlend, Rarity.Common, IngredientFamily.Tea, null)
         };
 
         /// <summary>
@@ -202,6 +206,7 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.JasmineDried: return "Getrocknete Jasminblüten";
                 case IngredientCatalog.LavenderDried: return "Getrockneter Lavendel";
                 case IngredientCatalog.LemonBalmDried: return "Getrocknete Zitronenmelisse";
+                case IngredientCatalog.TeaBlend: return "Teemischung";
                 default: return id ?? "";
             }
         }
@@ -235,6 +240,7 @@ namespace SteepingSpirits.Ingredients
                 case IngredientCatalog.JasmineDried: return "Der Duft der Nacht, in Blüten aufbewahrt.";
                 case IngredientCatalog.LavenderDried: return "Blaue Ähren, die nach Ruhe riechen.";
                 case IngredientCatalog.LemonBalmDried: return "Zitronig und sanft, ganz ohne Säure.";
+                case IngredientCatalog.TeaBlend: return "Tee und getrocknete Kräuter, am Mischtisch vereint.";
                 default: return "";
             }
         }

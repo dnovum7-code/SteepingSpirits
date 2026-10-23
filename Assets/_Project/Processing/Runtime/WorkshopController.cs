@@ -117,7 +117,7 @@ namespace SteepingSpirits.Processing
                 case WorkshopTile.Basket: return ProcessingTexts.BasketName;
                 case WorkshopTile.Wok: return ProcessingTexts.WokName;
                 case WorkshopTile.Dryer: return ProcessingTexts.DryerName;
-                case WorkshopTile.BlendTable: return ProcessingTexts.BlendName;
+                case WorkshopTile.BlendTable: return ProcessingTexts.BlendTableName;
                 case WorkshopTile.Door: return ProcessingTexts.ExitLabel;
                 default: return "";
             }

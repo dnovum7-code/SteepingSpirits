@@ -20,7 +20,7 @@ namespace SteepingSpirits.Processing
         public const string BasketName = "Oxidationskorb";
         public const string WokName = "Wok";
         public const string DryerName = "Trockenkorb über der Glut";
-        public const string BlendName = "Mischtisch";
+        public const string BlendTableName = "Mischtisch";
 
         public const string Close = "Schließen";
         public const string NewBatch = "Neue Charge anlegen";
@@ -237,6 +237,31 @@ namespace SteepingSpirits.Processing
         public const string WokDone = "Die Blätter sind fixiert – die Oxidation steht.";
         public const string Stopped = "Oxidation gestoppt.";
         public const string BlendSoon = "Hier entstehen Mischungen aus Tee und getrockneten Kräutern.";
+        public const string BlendIntro = "Ein Teil Tee und ein Teil getrocknete Kräuter oder Blüten ergeben zwei Teile Mischung.";
+        public const string BlendNothing = "Dafür braucht es fertigen Tee und getrocknete Kräuter (Trockenkorb).";
+        public const string BlendVerb = "Mischen";
+
+        /// <summary>"Jasmin-Grüntee (blumig, frisch; fein)".</summary>
+        public static string BlendName(TeaBlend b)
+        {
+            string prefix;
+            switch (b.herbId)
+            {
+                case "mint": prefix = "Minz"; break;
+                case "chamomile": prefix = "Kamillen"; break;
+                case "jasmine": prefix = "Jasmin"; break;
+                case "lavender": prefix = "Lavendel"; break;
+                default: prefix = "Melissen"; break;
+            }
+
+            string tea = b.tea == TeaVariety.LightOolong || b.tea == TeaVariety.DarkOolong ? "Oolong" : VarietyName(b.tea);
+            var parts = new List<string>();
+            if (b.notes.Count > 0) parts.Add(NotesLine(b.notes));
+            if (b.tier > 1) parts.Add(QualityName(b.tier));
+            return prefix + "-" + tea + (parts.Count > 0 ? " (" + string.Join("; ", parts) + ")" : "");
+        }
+
+        public static string BlendDone(TeaBlend b, int n) => "+" + n + " " + BlendName(b);
 
         public static string BatchStarted(int id) => "Charge " + id + " liegt im Regal.";
         public static string Act(string verb, int id) => verb + ": Charge " + id;

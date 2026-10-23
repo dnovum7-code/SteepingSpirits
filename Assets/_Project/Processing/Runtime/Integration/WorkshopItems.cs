@@ -158,6 +158,81 @@ namespace SteepingSpirits.Processing
             return WorkshopDelivery.Pantry;
         }
 
+        /// <summary>Ingredient ids (without the "ingredient_" prefix) and counts held in inventory and pantry that match.</summary>
+        public static List<KeyValuePair<string, int>> Holding(Predicate<string> match)
+        {
+            var counts = new Dictionary<string, int>();
+            PlayerInventory inv = PlayerInventory.Instance;
+            if (inv != null)
+            {
+                foreach (ItemStack slot in inv.Slots)
+                {
+                    if (slot == null || slot.Item == null || !slot.Item.itemID.StartsWith("ingredient_", StringComparison.Ordinal)) continue;
+                    string id = slot.Item.itemID.Substring("ingredient_".Length);
+                    if (!match(id)) continue;
+                    counts.TryGetValue(id, out int n);
+                    counts[id] = n + slot.Amount;
+                }
+            }
+
+            foreach (KeyValuePair<string, int> kv in LoadPantry().Items)
+            {
+                if (!match(kv.Key)) continue;
+                counts.TryGetValue(kv.Key, out int n);
+                counts[kv.Key] = n + kv.Value;
+            }
+
+            var list = new List<KeyValuePair<string, int>>(counts);
+            list.Sort((a, b) => string.CompareOrdinal(a.Key, b.Key));
+            return list;
+        }
+
+        /// <summary>Takes one portion of an ingredient (inventory first, then pantry).</summary>
+        public static bool TakeOne(string ingredientId)
+        {
+            if (DryRun) return true;
+            PlayerInventory inv = PlayerInventory.Instance;
+            if (inv != null && inv.Remove("ingredient_" + ingredientId, 1) > 0) return true;
+            try
+            {
+                Pantry pantry = LoadPantry();
+                if (pantry.Take(ingredientId, 1) <= 0) return false;
+                File.WriteAllText(PantryPath, pantry.ToJson());
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[Processing] Pantry not written: " + e.Message);
+                return false;
+            }
+        }
+
+        /// <summary>Gives one portion of a tea id back (a blend that could not be finished).</summary>
+        public static void DeliverTeaById(string teaId)
+        {
+            if (DryRun) return;
+            PlayerInventory inv = PlayerInventory.Instance;
+            if (inv != null && inv.Resolve("ingredient_" + teaId) != null && inv.AddById("ingredient_" + teaId, 1) == 0) return;
+            AddToPantry(teaId, 1);
+        }
+
+        public static WorkshopDelivery DeliverBlend(TeaBlend blend, int amount)
+        {
+            if (DryRun || blend == null || amount <= 0) return WorkshopDelivery.Nothing;
+            PlayerInventory inv = PlayerInventory.Instance;
+            if (inv != null)
+            {
+                string itemId = "ingredient_" + blend.Id;
+                Ensure(inv, itemId, ProcessingTexts.BlendName(blend), IngredientTexts.Description(IngredientCatalog.TeaBlend), 6 + 3 * (blend.tier - 1), LeafLook.TeaColor(blend.tea));
+                int left = inv.AddById(itemId, amount);
+                if (left > 0) AddToPantry(blend.Id, left);
+                return WorkshopDelivery.Inventory;
+            }
+
+            AddToPantry(blend.Id, amount);
+            return WorkshopDelivery.Pantry;
+        }
+
         private static void Ensure(PlayerInventory inv, string itemId, string name, string description, int gold, Color tint)
         {
             if (inv.Resolve(itemId) != null) return;

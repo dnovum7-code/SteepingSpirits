@@ -107,6 +107,11 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 - **F23 (additiv):** getrocknete Kräuter `mint_dried`, `chamomile_dried`, `jasmine_dried`, `lavender_dried`,
   `lemon_balm_dried` (Familien Kraut/Blüte, häufig) → Katalog-Test 20 → 25. Kräuter-Chargen (`isHerb`) dürfen nur
   in den Trockenkorb (kein Welken nötig), behalten die Gartenqualität (`jasmine_dried+q3`).
+- **F24 (additiv):** `tea_blend` (Familie Tee) → Katalog-Test 25 → 26. Mischung = 1 Teil Werkstatt-Tee + 1 Teil
+  getrocknetes Kraut → **2 Teile** (beide Zutaten gehen hinein; ich wollte das Mischen spürbar belohnen).
+  ID `tea_blend:green~jasmine/fresh.floral+q2`: Grundtee, Kraut, Noten, Qualität = die niedrigere der beiden.
+  Das Kraut bringt seine Note mit (Blüten blumig, Minze/Melisse frisch) und bleibt beim Kürzen auf 3 Noten
+  immer erhalten. Name z. B. „Jasmin-Grüntee (frisch, blumig; fein)“.
 
 ## Minispiele (Core, `Minigames.cs`)
 
@@ -218,7 +223,7 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 | E21 | Debug-Overlay F1 | erledigt (Unity: ungeprüft) |
 | E22 | Telemetrie `processing_log.jsonl` | erledigt (Zeile getestet; Unity: ungeprüft) |
 | F23 | Kräuter trocknen | erledigt (Core getestet; Unity: ungeprüft) |
-| F24 | Mischtisch | offen |
+| F24 | Mischtisch | erledigt (Core getestet; Unity: ungeprüft) |
 | F25 | Teeziegel (Pu-Erh-Vorbereitung) | offen |
 | F26 | Werkstattgeist | offen |
 | F27 | Eigene Verbesserungen | offen |
@@ -265,3 +270,6 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
   in `pantry.json`) → **Vorrat** zeigt „Kräuter und Blüten zum Trocknen“ → „Trocknen: …“ → Trockenkorb → F3 →
   Abnehmen → Regal „Einpacken“ → Meldung „+n Getrocknete Minze (fein)“. Am Rolltisch/Wok steht bei der
   Kräuter-Charge „Kräuter und Blüten werden nur getrocknet.“
+- **F24** (Mischtisch): mit einem fertigen Tee und einem getrockneten Kraut im Inventar → **Mischtisch** (unten
+  Mitte) zeigt „Mischen: Jasmin-Grüntee (…)“ → klicken → Meldung „+2 Jasmin-Grüntee …“, Tee und Kraut je −1.
+  Ohne passende Zutaten steht dort ein ruhiger Hinweis.
