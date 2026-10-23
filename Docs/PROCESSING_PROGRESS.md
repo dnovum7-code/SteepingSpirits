@@ -187,6 +187,21 @@ warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vo
 - **Er entscheidet nie eine Sorte:** Rollen, Wok und das Stoppen der Oxidation bleiben beim Spieler (getestet).
 - Sichtbar als kleiner Geist über dem Regal, der zur Station und zurück schwebt; ruhige Meldung bei jedem Handgriff.
 
+## F27 – eigene Verbesserungen (mit Begründung)
+
+1. **„Die Farbe ist kurz davor zu kippen“** im Korb-Fenster (≤ 5 Spielminuten bis zur nächsten Sorte, reine
+   Funktion `OxidationForecast`, getestet) und ein leiser Klang + Meldung, wenn die Sorte tatsächlich wechselt.
+   Begründung: „lesen statt ablesen“ – man lernt die Farben, ohne eine Prozentzahl zu brauchen.
+2. **Passive Schritte rufen einmal zurück:** „Charge n ist auf dem Gestell schön geschmeidig geworden“ /
+   „… ist im Trockenkorb trocken“ (leises Rascheln bzw. Klang). Begründung: „starten und später zurückkommen“
+   wie im Garten, ohne ständig nachsehen zu müssen.
+3. **„Würde jetzt zu: …“** an jeder Station und in jeder Zeile (C14) – die Sorte wird nicht gewählt, aber man sieht
+   immer, wohin der Weg führt.
+4. **Ruhige Gründe statt gesperrter Knöpfe:** Chargen, die an eine Station nicht passen, stehen mit einem Satz
+   darunter („Die Blätter sind noch zu frisch – erst welken lassen.“).
+5. **Startpaket mit erstem Austrieb**, damit die angehobene Qualitätsgrenze sofort erlebbar ist.
+6. **Tuning-Hilfe im Editor:** Build Workshop druckt die Simulator-Zahlen; Menü *Processing → Simulate 100 Batches*.
+
 ## Annahmen
 
 1. **Basis** `feature/plantation`, weil `main` weder Katalog noch Garten enthält.
@@ -242,7 +257,7 @@ warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vo
 | F24 | Mischtisch | erledigt (Core getestet; Unity: ungeprüft) |
 | F25 | Teeziegel (Pu-Erh-Vorbereitung) | erledigt (nur Daten/Weg, getestet; keine UI, keine Reifung) |
 | F26 | Werkstattgeist | erledigt (Core getestet; Unity: ungeprüft) |
-| F27 | Eigene Verbesserungen | offen |
+| F27 | Eigene Verbesserungen | erledigt (Liste unten) |
 
 ## Editor-Checklisten pro Commit
 
@@ -294,3 +309,6 @@ warum eine Charge (noch) kein Maocha ist. Keine Station und keine Reifung – Vo
   → beim dritten erscheint die Meldung „Der Werkstattgeist schaut dir über die Schulter …“, über dem Regal schwebt
   ein kleiner Geist. Neue Charge aufs Gestell → „Dem Werkstattgeist überlassen (Weißtee)“ → mit F2 vorspulen:
   der Geist schwebt zum Gestell, dann zum Trockenkorb, Meldung; später nimmt er sie trocken heraus.
+- **F27:** Charge im Oxidationskorb, Fenster offen: kurz vor dem Wechsel erscheint „Die Farbe ist kurz davor zu
+  kippen.“, beim Wechsel ein leiser Klang und „Charge n kippt: jetzt …“. Gestell/Trockenkorb melden sich einmal,
+  wenn die Charge bereit ist (auch bei geschlossenem Fenster). `OxidationForecastTests` grün.

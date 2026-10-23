@@ -236,6 +236,14 @@ namespace SteepingSpirits.Processing
         public const string RollDone = "Fertig gerollt.";
         public const string WokDone = "Die Blätter sind fixiert – die Oxidation steht.";
         public const string Stopped = "Oxidation gestoppt.";
+        public const string AboutToTurn = "Die Farbe ist kurz davor zu kippen.";
+
+        public static string Turned(LeafBatch b, TeaVariety now) => "Charge " + b.id + " kippt: jetzt " + VarietyName(now) + ".";
+
+        public static string WitherReady(LeafBatch b) => "Charge " + b.id + " ist auf dem Gestell schön geschmeidig geworden.";
+
+        public static string DryReady(LeafBatch b) => "Charge " + b.id + " ist im Trockenkorb trocken.";
+
         public const string SpiritHandOver = "Dem Werkstattgeist überlassen (Weißtee)";
         public const string SpiritWillDry = "Der Werkstattgeist legt sie danach in den Trockenkorb.";
         public const string SpiritAwake = "Der Werkstattgeist schaut dir über die Schulter – er hat sich etwas abgeschaut.";

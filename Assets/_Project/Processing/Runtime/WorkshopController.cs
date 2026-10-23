@@ -198,6 +198,7 @@ namespace SteepingSpirits.Processing
             if (FocusBatch < 0) FocusBatch = b.id;
             text.Append("<b>").Append(ProcessingTexts.BatchTitle(b)).Append("</b> – ").Append(ProcessingTexts.Place(b.place)).Append('\n');
             text.Append(ProcessingTexts.State(b, P, Numbers)).Append('\n');
+            if (OxidationForecast.MinutesUntilChange(b, P) <= 5.0) text.Append(ProcessingTexts.AboutToTurn).Append('\n');
             string notes = ProcessingTexts.NotesPreview(b, P);
             text.Append("<i>").Append(ProcessingTexts.Heading(b, P)).Append(notes.Length > 0 ? " · " + notes : "").Append("</i>\n\n");
         }

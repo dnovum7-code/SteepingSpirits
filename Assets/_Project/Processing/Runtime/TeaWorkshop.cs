@@ -32,6 +32,9 @@ namespace SteepingSpirits.Processing
         private bool leaving;
         private bool quitting;
         private int wokSeed;
+        private readonly Dictionary<int, TeaVariety> lastHeading = new Dictionary<int, TeaVariety>();
+        private readonly HashSet<int> toldWithered = new HashSet<int>();
+        private readonly HashSet<int> toldDry = new HashSet<int>();
 
         public WorkshopLayout Layout { get; private set; }
         public ProcessingSettings Settings => settings;
@@ -107,6 +110,7 @@ namespace SteepingSpirits.Processing
                 syncAt = UnityEngine.Time.unscaledTime + Mathf.Max(0.05f, settings.comfort.syncSeconds);
                 Model.Sync();
                 TendSpirit();
+                Notice();
                 RefreshViews();
             }
 
@@ -232,6 +236,45 @@ namespace SteepingSpirits.Processing
             }
 
             if (deeds.Count > 0) MarkDirty();
+        }
+
+        /// <summary>
+        /// Passive steps call the player back once (leaves supple on the rack, tea dry in the basket),
+        /// and an oxidizing batch says softly when its colour turns into the next tea.
+        /// </summary>
+        private void Notice()
+        {
+            ProcessingParams p = settings.processing;
+            foreach (LeafBatch b in Model.Batches)
+            {
+                if (b.place == BatchPlace.OxidationBasket)
+                {
+                    TeaVariety now = TeaClassifier.Classify(b, p.variety);
+                    if (lastHeading.TryGetValue(b.id, out TeaVariety was) && was != now)
+                    {
+                        Feedback.Play(WorkshopSound.Chime, 0.45f);
+                        Ui.Message(ProcessingTexts.Turned(b, now));
+                    }
+
+                    lastHeading[b.id] = now;
+                }
+                else
+                {
+                    lastHeading.Remove(b.id);
+                }
+
+                if (b.place == BatchPlace.WitherRack && b.moisture <= p.wither.idealMax && toldWithered.Add(b.id))
+                {
+                    Feedback.Play(WorkshopSound.Rustle, 0.5f);
+                    Ui.Message(ProcessingTexts.WitherReady(b));
+                }
+
+                if (b.place == BatchPlace.DryBasket && b.IsDry(p.dry) && toldDry.Add(b.id))
+                {
+                    Feedback.Play(WorkshopSound.Chime, 0.4f);
+                    Ui.Message(ProcessingTexts.DryReady(b));
+                }
+            }
         }
 
         /// <summary>The player hands a batch on the rack to the spirit for the white-tea way.</summary>
