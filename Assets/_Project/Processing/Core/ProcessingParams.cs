@@ -130,7 +130,7 @@ namespace SteepingSpirits.Processing
         public float doneAt = 0.95f;
 
         /// <summary>Roast per game minute once fully dry ("a little longer gives a light roast").</summary>
-        public float overDryRoastPerMinute = 0.0025f;
+        public float overDryRoastPerMinute = 0.0015f;
 
         /// <summary>Most roast over-drying can add.</summary>
         public float overDryRoastCap = 0.45f;
@@ -201,7 +201,7 @@ namespace SteepingSpirits.Processing
         public float freshOxMax = 0.06f;
         public float freshMoistureFrom = 0.68f;
         public float honeyedOxMin = 0.40f;
-        public float honeyedOxMax = 0.90f;
+        public float honeyedOxMax = 1.00f;
 
         /// <summary>White tea withered this dry (long wither) turns floral.</summary>
         public float longWitherMoisture = 0.60f;
