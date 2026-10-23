@@ -170,7 +170,7 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 | A5 | Zeit (`IGameTime`, Vorspulen) | erledigt (92 Tests gesamt) |
 | B6 | ProcessedTea-Datenvertrag + Katalog | erledigt (99 Tests gesamt) |
 | B7 | Übergabe Inventar/Vorratsschrank | offen |
-| B8 | `Docs/PROCESSING_TO_BREWING.md` | offen |
+| B8 | `Docs/PROCESSING_TO_BREWING.md` | erledigt |
 | C9 | Welkgestell | offen |
 | C10 | Rolltisch | Modell erledigt (`RollSession`), Station offen |
 | C11 | Oxidationskorb | offen |
@@ -204,3 +204,4 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 - **Minispiel-Modelle + Simulator:** wie A1, `MinigameTests`, `WorkshopSimulatorTests` grün (Zahlen im
   Testausgabe-Log). Noch nichts Sichtbares.
 - **Spielstand/Telemetrie (Core):** wie A1, `WorkshopSaveTests` grün.
+- **B8** (nur Doku): `Docs/PROCESSING_TO_BREWING.md` lesen – nichts im Editor zu prüfen.
