@@ -18,6 +18,13 @@ namespace SteepingSpirits.Processing.EditorTools
         public const string GardenScene = SceneFolder + "/Teegarten.unity";
         public const string DataFolder = "Assets/_Project/Processing/Data";
         public const string LayoutPath = "Assets/_Project/Processing/Layouts/Werkstatt.txt";
+        public const string GardenDoorName = "TeewerkstattTuer";
+
+        /// <summary>
+        /// Where the door stands in the garden: on the hedge at the east end of the long path
+        /// (garden layout cell 21,6); the player reaches it from the path cell next to it.
+        /// </summary>
+        public static readonly Vector2 GardenDoorPosition = new Vector2(21.5f, 6.5f);
 
         [MenuItem("SteepingSpirits/Processing/Build Workshop")]
         public static void BuildWorkshop()
@@ -50,9 +57,49 @@ namespace SteepingSpirits.Processing.EditorTools
             new GameObject("TeaWorkshop").AddComponent<TeaWorkshop>().Configure(layout, settings, audio, GardenScene);
             EditorSceneManager.SaveScene(scene, WorkshopScene);
             RegisterInBuildSettings(WorkshopScene);
+            bool door = AddGardenDoor();
+            EditorSceneManager.OpenScene(WorkshopScene, OpenSceneMode.Single);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[Processing] Built " + WorkshopScene + "\n" + SimulatorSummary(settings.processing));
+            Debug.Log("[Processing] Built " + WorkshopScene + (door ? " (+ door in the garden)" : "") + "\n" + SimulatorSummary(settings.processing));
+        }
+
+        /// <summary>
+        /// The only change to the garden: one door object in Teegarten.unity (added or moved). The
+        /// garden builder regenerates that scene – run Build Workshop again afterwards (or this menu).
+        /// </summary>
+        [MenuItem("SteepingSpirits/Processing/Add Workshop Door To Garden")]
+        public static void AddGardenDoorMenu()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            if (AddGardenDoor()) Debug.Log("[Processing] Workshop door added to " + GardenScene);
+        }
+
+        private static bool AddGardenDoor()
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(GardenScene) == null)
+            {
+                Debug.LogWarning("[Processing] " + GardenScene + " not found – no door added. Build the garden first (SteepingSpirits → Plantation → Build Garden).");
+                return false;
+            }
+
+            Scene garden = EditorSceneManager.OpenScene(GardenScene, OpenSceneMode.Single);
+            GameObject door = null;
+            foreach (GameObject go in garden.GetRootGameObjects())
+            {
+                if (go.name == GardenDoorName) door = go;
+            }
+
+            if (door == null)
+            {
+                door = new GameObject(GardenDoorName);
+                door.AddComponent<WorkshopDoor>();
+            }
+
+            door.transform.position = GardenDoorPosition;
+            if (door.TryGetComponent(out WorkshopDoor d)) d.Configure(WorkshopScene);
+            EditorSceneManager.SaveScene(garden, GardenScene);
+            return true;
         }
 
         [MenuItem("SteepingSpirits/Processing/Simulate 100 Batches")]

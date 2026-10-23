@@ -210,7 +210,7 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
 | D16 | Blatt-Darstellung | erledigt (Unity: ungeprüft) |
 | D17 | Klang und Partikel, `ProcessingAudioSet` | erledigt (Unity: ungeprüft) |
 | D18 | Oberfläche (UI-Baukasten, Gamepad) | erledigt (Unity: ungeprüft) |
-| D19 | Eingang | offen |
+| D19 | Eingang | erledigt (Unity: ungeprüft) |
 | E20 | Speichern `workshop_save.json` | erledigt (Roundtrip getestet; Unity: ungeprüft) |
 | E21 | Debug-Overlay F1 | erledigt (Unity: ungeprüft) |
 | E22 | Telemetrie `processing_log.jsonl` | erledigt (Zeile getestet; Unity: ungeprüft) |
@@ -251,3 +251,10 @@ Ziel erfüllt: Oolong ≤ 90 s, Weißtee wenige Sekunden. (Nachlässig dunkler O
   8. **Regal** → „Als Tee einpacken“ → Meldung „+4 Oolong (hell; blumig; …)“; Inventar (I) zeigt den Tee.
   9. F1 zeigt alle Werte. Stop und Play: Chargen in Arbeit sind noch da (auch mitten im Welken).
   Ohne Sound-Assets sind leise Platzhalter zu hören; das Audio-Set darf leer bleiben.
+- **D19** (Eingang vom Garten, eigener Commit): Build Workshop setzt in `Assets/Scenes/Teegarten.unity` genau ein
+  Objekt `TeewerkstattTuer` (Komponente `WorkshopDoor`) auf die Hecke am Ostende des langen Gartenwegs (21,5 | 6,5).
+  Sonst ändert sich am Garten nichts (kein Garten-Code, kein Layout). Prüfen: `Teegarten` öffnen → Hierarchy zeigt
+  `TeewerkstattTuer`; Play → den Mittelweg nach rechts gehen: Tür mit warmem Schein und Schild „Teewerkstatt
+  betreten“; E/Leertaste → Werkstatt lädt; durch die Werkstatttür (unten links) zurück in den Garten; das Gartentor
+  führt weiterhin zur Wiese. **Achtung:** *Plantation → Build Garden* baut die Gartenszene neu und entfernt die Tür
+  – danach *Processing → Build Workshop* (oder *Add Workshop Door To Garden*) erneut ausführen.
