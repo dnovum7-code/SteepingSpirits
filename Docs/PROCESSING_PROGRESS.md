@@ -100,6 +100,12 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 3. **Qualitätsstufen** wie im Garten (1 gut, 2 fein, 3 erlesen), nicht die vier Brüh-Stufen – die
    Verarbeitung ist eine Zutat, das Brühen bewertet die Tasse.
 4. **Obergrenze** (siehe Qualität) ist meine Lesart von „der erste Austrieb hebt die Obergrenze an“.
+5. **Zeit:** `IGameTime` liefert Spielminuten. `IDayClock` aus dem Garten kennt nur Tage; die Werkstatt dockt
+   in Unity an: Tage aus `IDayClock` (`GameClockDays` des Gartens) + Minute des Tages aus `GameClock`
+   (`DayAndMinuteTime`). Der Core hängt dadurch nicht vom Garten-Core ab; ein späteres Teehaus-Tagessystem
+   ersetzt nur diesen Adapter. Vorspulen: `SkippableTime.FastForward` (Debug). Läuft die Uhr rückwärts
+   (Neustart, `GameClock` wird nicht gespeichert), vergeht für die Chargen keine Zeit.
+6. **Werkstatt-UI pausiert das Spiel nicht** (`GamePause` würde die Uhr anhalten und damit Welken und Oxidation).
 
 ## Backlog
 
@@ -109,7 +115,7 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 | A2 | Sortenbestimmung | erledigt (70 Tests gesamt) |
 | A3 | Qualität | erledigt |
 | A4 | Charakternoten | erledigt (86 Tests gesamt) |
-| A5 | Zeit (`IGameTime`, Vorspulen) | offen |
+| A5 | Zeit (`IGameTime`, Vorspulen) | erledigt (92 Tests gesamt) |
 | B6 | ProcessedTea-Datenvertrag + Katalog | offen |
 | B7 | Übergabe Inventar/Vorratsschrank | offen |
 | B8 | `Docs/PROCESSING_TO_BREWING.md` | offen |
@@ -140,3 +146,4 @@ erlaubter Schritte (mit Zufallswartezeiten) enden alle in einer gültigen Sorte 
 - **A2** (Sortenbestimmung): wie A1, zusätzlich `TeaClassifierTests` und `ReachabilityTests` grün.
 - **A3** (Qualität): wie A1, `TeaQualityTests` grün.
 - **A4** (Charakternoten): wie A1, `TeaNotesTests` grün.
+- **A5** (Zeit): wie A1, `WorkshopTimeTests` grün.
