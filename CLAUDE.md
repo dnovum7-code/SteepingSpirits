@@ -14,7 +14,7 @@ Module: Wiese/Grundsysteme, Jump'n'Run (`Platformer`), Teegarten (`Plantation`),
 - **Zuerst lesen:** Progress-Datei, dann `Docs/PLAYTEST_NOTES.md` – Befunde dort haben Vorrang und werden je
   ein eigener Backlog-Punkt.
 - **Ohne Unity prüfen:** Core-Tests `dotnet test Tests/<Modul>.DotNet` (BrewingCore, Ingredients,
-  PlantationCore, PlatformingCore, ProcessingCore); alles kompiliert gegen die Unity-Referenzen mit neuem
+  PlantationCore, PlatformingCore, ProcessingCore, SaveGame, TeaLoop = modulübergreifend); alles kompiliert gegen die Unity-Referenzen mit neuem
   Input System **und** altem Input Manager, ohne Fehler und ohne Warnungen. Was nur in Unity sichtbar ist,
   als **„ungeprüft“** markieren.
 - **Sprache:** Code und Kommentare Englisch; Spielertexte Deutsch, zentral in einer Textklasse pro Modul

@@ -2,7 +2,8 @@
 
 ## Nächster konkreter Schritt
 
-→ erster Backlog-Punkt mit Status „offen“ (Reihenfolge = Priorität; D erst nach B4).
+→ Alle Punkte A1–F13 erledigt. Als Nächstes: Testplan unten (≤ 10 min) in Unity durchgehen, Befunde in
+`Docs/PLAYTEST_NOTES.md` eintragen; offene Entscheidungen (Mischverhältnis, Optionen O2/B/C) siehe E12.
 
 > **Neue Sitzung?** Zuerst diese Datei lesen, dann `Docs/PLAYTEST_NOTES.md` (Befunde haben Vorrang, jeder als
 > eigener Backlog-Punkt), dann `CLAUDE.md`. Branch `feature/tea-loop` (Worktree `../SteepingSpirits-tealoop`).
@@ -31,7 +32,7 @@
 | D10 | Ergebnis: Noten, `tea_tart` | erledigt (TeaLoop 7 Tests; Unity: ungeprüft) |
 | D11 | Brühen aus der Welt erreichbar | erledigt (TeaLoop 8 Tests; Unity: ungeprüft) |
 | E12 | Simulator-Auswertung | erledigt (nur Auswertung, keine Werte geändert; Werkstatt 145, TeaLoop 9 Tests) |
-| F13 | Abschlussbericht | offen |
+| F13 | Abschlussbericht | erledigt (siehe unten) |
 
 ## Speicherdienst (B4, Modul `SaveGame`)
 
@@ -271,3 +272,97 @@ für normale Spieler als zu selten melden: zuerst **O2** (ein Wert in `Processin
   `SaveService` unter DontDestroyOnLoad.
 - **A3** (nur Doku): `CLAUDE.md` im Repo-Wurzelverzeichnis lesen.
 - **A2** (nur Doku): `Docs/PLAYTEST_NOTES.md` hat die Abschnitte Werkstatt, Brühen, Garten, Jump'n'Run mit Vorlage.
+
+## Abschlussbericht (F13)
+
+### Gebaut
+
+- **A – Fundament:** `feature/brewing-phase2` eingemergt (Merge-Commit 68d4c81 getrennt), `PLAYTEST_NOTES.md`
+  (Vorlage, keine Befunde vorhanden), `CLAUDE.md` (Arbeitsregeln, Modulaufbau, ID-Grammatik, Szenen-/Uhr-Regel,
+  Speicherdienst, feste Entscheidungen, Tastentabelle).
+- **B – Festigen:** Speicherdienst `SaveGame` (Inventar inkl. Laufzeit-Items aus der ID-Grammatik, `GameClock`,
+  versioniert, altes `inventory_save.json` wird übernommen, unbekannte IDs warten in `pending`); Builder ersetzen
+  nur ihre eigenen Wurzelobjekte (`OwnedSceneObjects`, Besitzer-Tabelle B5); Tastentabelle aller Module, eine
+  Kollision behoben (Pad A = Springen und Tür in Jump'n'Run).
+- **C – Garten:** Erste Teestrauch-Ernte liefert `tea_leaf_first` („Erster Austrieb“), ohne Extra-Stufe.
+- **D – Brühen angebunden:** `ProcessedBrewing.ForProcessedTea` + `ProcessedBrewParams` (rein, getestet, Grundtees
+  unverändert); Teewahl aus Inventar und Vorratsschrank, eine Portion pro Kanne; Ergebnis nennt die Noten, herbe
+  Tasse → `tea_tart` für den Komposter; Brühtisch in der Werkstatt öffnet das Brühen und führt zurück.
+- **E – Auswertung:** Simulator nach Herkunft/Sorte/Schritt, Optionen, Mischverhältnis (siehe E12).
+
+**Offen / bewusst nicht gemacht:** Teeladen (später), eigene Teehaus-Szene (die Sandbox ist der Brühplatz),
+Teewahl am Tisch selbst (Annahme 3), Rückkehr direkt an den Tisch statt an den Werkstatt-Eingang.
+
+### Tests (dotnet, alle grün)
+
+| Suite | Tests | neu/geändert in diesem Auftrag |
+|---|---|---|
+| BrewingCore | 92 | +15: `ProcessedBrewingTests` (unverändertes Preset, Regression der vier Grundtees mit Goldwerten, Oxidation monoton, Stufen, Noten, Deckel, „Vollendet“ in > 500 Kombinationen erreichbar, späte Aufgüsse dunkler Oolong erreichbar), `UseTea` |
+| Ingredients | 12 | – |
+| PlantationCore | 109 | +1 erster Austrieb, Teestrauch-Erwartungen angepasst |
+| PlatformingCore | 137 | – |
+| ProcessingCore | 145 | +3 `WorkshopEvaluationTests` |
+| SaveGame | 15 | neu: Rundreise dynamischer IDs, Migration alter Speicherstand, unbekannte ID bleibt erhalten, Uhr, Versionen |
+| TeaLoop | 9 | neu (modulübergreifend): Werkstatt-Tee → Brühparameter, heller ↔ dunkler Oolong, `tea_tart` ↔ Komposter, Brühtisch-Zelle, Mischverhältnis |
+
+Kompiliert gegen die Unity-Referenzen (Runtime, Editor, EditMode-Tests) mit neuem Input System und altem Input
+Manager: 0 Fehler, 0 Warnungen. In Unity selbst ist alles **ungeprüft**.
+
+### Simulator (Werkstatt, 100 Chargen, gemischte Blätter – unverändert)
+
+sorgfältig 100 % Wunschsorte, 0/51/49 (Ø 2,49) · nachlässig 55 %, 18/62/20 (Ø 2,02) · zufällig 19 %, 15/53/32
+(Ø 2,17). Aufschlüsselung, Pflege-Einfluss, Optionen und Mischverhältnis: Abschnitt E12.
+
+### Geänderte Startwerte
+
+| Wert | vorher | jetzt | Grund |
+|---|---|---|---|
+| Teestrauch `firstHarvestBonus` | 1 | 0 | Doppelzählung: der Austrieb hebt in der Werkstatt schon Herkunft und Obergrenze; der Bonus hätte die Gartenpflege verdeckt (C7). `Build Garden` setzt alte Assets einmalig um. |
+| Teestrauch `firstHarvestIngredientId` | – | `tea_leaf_first` | feste Entscheidung (C7) |
+| `BrewingTuning.processed` | – | neu (Oolong 16 °C je Oxidation um 0,35, max ± 6 °C; Stufen ±; Noten max ± 4 °C; `reachableTop` 97 °C) | D8, Vorschläge aus `PROCESSING_TO_BREWING.md` |
+
+### Annahmen und Abweichungen
+
+- Annahmen 1–4 oben (Inventar in jeder Szene; `tea_tart` nur aus eigenen Tees; Teewahl am Brühplatz; Sandbox =
+  Brühplatz). Lesart „gewöhnliche Blätter“ = Gartenstufe gut/fein (E12).
+- Eine Portion pro **Kanne** (erstes Aufgießen), weitere Aufgüsse derselben Blätter kosten nichts (D9).
+- **Abweichung D8:** `reachableTop` (97 °C) begrenzt die Fenstermitte – sonst wäre der beste Aufguss eines sehr
+  dunklen Oolongs (~99 °C) mit vorgewärmtem Gefäß nicht erreichbar. Steht auch in `PROCESSING_TO_BREWING.md`.
+- Brühtisch per Menü-Name aus *Build Workshop* aufgerufen statt einer Modul-Referenz (D11).
+
+### Editor-Checklisten
+
+Pro Commit im Abschnitt „Editor-Checklisten pro Commit“ (neueste zuerst).
+
+### Testplan (≤ 10 Minuten, wichtigstes zuerst)
+
+1. **Bauen (1 min):** *Processing → Build Workshop*, dann *Plantation → Build Garden*, dann *Brewing → Build
+   Sandbox*. `Teegarten` hat `TeaGarden` + `TeewerkstattTuer`; `Teewerkstatt` hat `TeaWorkshop` + `Bruehtisch`.
+   Danach in umgekehrter Reihenfolge noch einmal (*Build Garden* → *Build Workshop*): wieder alles da, nichts
+   doppelt. Konsole ohne Fehler.
+2. **Speichern (1,5 min):** Play in `Teewerkstatt` → Startpaket nehmen, Weißtee machen (welken, mit F2/F3
+   vorspulen, trocknen, einpacken) → Inventar (I) zeigt ihn. **Stop → Play:** Tee ist noch im Inventar,
+   Uhrzeit/Tag wie vorher.
+3. **Voller Kreislauf (4 min):** Play in `Teegarten` → Werkstatttür (E) → Tee machen oder den aus 2. nehmen →
+   Brühtisch oben rechts (E) → Brühen zeigt „Deine Tees“, Grundtees gesperrt → Leertaste → absichtlich zu lange
+   ziehen lassen → Karte: „Im Tee: …“, „Ein herber Nachklang. Den Rest gießt du …“ → **Esc** → Werkstatt (eine
+   Portion weniger, „Herber Tee“ im Inventar) → Tür G → Garten → am Komposter abgeben (wird angenommen) →
+   **Gartentor führt zur Wiese**, nicht in die Werkstatt.
+4. **Heller ↔ dunkler Oolong (2,5 min):** In der Werkstatt einen hellen (früh aus dem Korb) und einen dunklen
+   Oolong (spät) machen, mit F2/F3. Am Brühtisch nacheinander wählen (←/→), **F1** zeigt Fenster und Optimum:
+   der dunkle liegt mehrere °C höher (Tests: > 4 °C), die Ziehzeit unterscheidet sich; der Aufguss fühlt sich
+   anders an.
+5. **Grundtees (1 min):** `BrewingSandbox` direkt starten → Tasten 1–4 brühen wie bisher; ohne eigenen Tee
+   steht der Hinweis „Noch keine eigenen Tees …“.
+
+### Merge-Hinweise
+
+- `feature/tea-loop` enthält `main` (5629997), `feature/jumpnrun`, `feature/plantation`, `feature/processing` und
+  `feature/brewing-phase2` vollständig. **`main` kann in einem Schritt nachziehen** (Fast-Forward oder ein
+  Merge-Commit ohne Konflikte): `git checkout main && git merge --ff-only origin/feature/tea-loop`.
+- Die anderen Feature-Branches danach nicht mehr einzeln mergen (sie sind enthalten).
+- `Packages/manifest.json` bekommt `com.unity.test-framework` (EditMode-Tests). Nach dem Merge in Unity einmal die
+  Builder laufen lassen (Testplan 1) – Szenen entstehen nur per Builder; neu in den Build Settings:
+  `BrewingSandbox`.
+- `.gitignore`: Ausnahmen für die `.csproj` von `SaveGame.DotNet` und `TeaLoop.DotNet` sowie deren Testdateien.
+
