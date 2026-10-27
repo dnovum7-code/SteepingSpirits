@@ -24,7 +24,7 @@
 | A3 | `CLAUDE.md` | erledigt (Tastentabelle folgt in B6, Speicherdienst in B4) |
 | B4 | Gemeinsamer Speicherdienst (Inventar + Uhr) | erledigt (15 Tests; Unity: ungeprüft) |
 | B5 | Builder zerstören sich nicht mehr gegenseitig | erledigt (Unity: ungeprüft) |
-| B6 | Tastentabelle, Kollisionen | offen |
+| B6 | Tastentabelle, Kollisionen | erledigt (1 Kollision behoben; Unity: ungeprüft) |
 | C7 | Erste Teestrauch-Ernte = `tea_leaf_first` | offen |
 | D8 | `ForProcessedTea` + `ProcessedBrewParams` | offen |
 | D9 | Teewahl aus Inventar/Vorratsschrank | offen |
@@ -76,6 +76,8 @@
 
 - **A1** (Merge): Unity öffnen → Konsole ohne Fehler. Menü *SteepingSpirits → Brewing → Build Sandbox* ist da und
   baut die Sandbox; Play → Brühen wie bisher. Test Runner → EditMode: alle Module grün.
+- **B6** (Tasten): Tabelle in `CLAUDE.md`. Jump'n'Run-Lichtung mit Gamepad: vor einer Leveltür A drücken →
+  Figur springt, Tür öffnet sich **nicht**; Stick/Steuerkreuz hoch → Tür lädt das Level. Tastatur E/F/W wie bisher.
 - **B5** (Builder): Reihenfolge testen: *Processing → Build Workshop*, dann *Plantation → Build Garden* →
   `Teegarten` öffnen: Hierarchy hat `TeaGarden` **und** `TeewerkstattTuer`. Dann *JumpNRun → Build Levels* →
   `TestMeadow` hat `TestMeadow`, `HubPortal` **und** `TeegartenPortal`. Jeden Builder zweimal laufen lassen:

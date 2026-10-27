@@ -47,13 +47,15 @@ namespace SteepingSpirits.Platformer.JumpNRun
                 return;
             }
 
-            if ((upPressed || GameInput.InteractPressed) && !IsOpen)
+            // Gamepad A is both "interact" and "jump" here: a jump in front of a door must not enter it.
+            bool interact = GameInput.InteractPressed && !GameInput.JumpPressed;
+            if ((upPressed || interact) && !IsOpen)
             {
                 JumpNRunSounds.Play(JumpNRunSound.Land, 0.1f);
                 return;
             }
 
-            if (upPressed || GameInput.InteractPressed)
+            if (upPressed || interact)
             {
                 JumpNRunSounds.Play(JumpNRunSound.Lantern, 0.15f);
                 ScenePortal.Load(targetScenePath);

@@ -81,10 +81,6 @@ tea_leaf  ·  tea_leaf+q3  ·  tea_oolong:dark/honeyed.roasty+q3  ·  tea_blend:
 - Module behalten ihre eigenen JSON-Dateien (`garden_save.json`, `workshop_save.json`, `jumpnrun_save.json`,
   `pantry.json`). Neue Laufzeit-Items brauchen eine Zutaten-ID (dann automatisch) oder einen Resolver.
 
-## Tastentabelle
-
-Siehe Abschnitt „Tasten“ unten (vollständig ab B6).
-
 ## Feste Entscheidungen
 
 - Qualitäts-Obergrenze in der Werkstatt: gewöhnliche Blätter höchstens „fein“; erster Austrieb
@@ -93,6 +89,20 @@ Siehe Abschnitt „Tasten“ unten (vollständig ab B6).
 - Die vier Grundtees (Weiß, Grün, Oolong, Schwarz) brühen sich unverändert – Regressionstests sichern das.
 - Mischverhältnis vorerst 1 Teil Tee + 1 Teil Kraut = 2 Teile Mischung (in Auswertung).
 
-## Tasten
+## Tastentabelle
 
-_(wird in B6 vervollständigt)_
+Regel: Eine Taste darf in **derselben Szene** nur eine Bedeutung haben (Szenen laufen einzeln). Bewegung kommt
+überall aus `GameInput` (WASD/Pfeile, linker Stick/Steuerkreuz). Neue Belegungen hier eintragen und gegen die
+Zeile der eigenen Szene prüfen. Debug ist überall **F1**, Zeit vorspulen **F2/F3**.
+
+| Szene | Tastatur | Gamepad |
+|---|---|---|
+| **Wiese** (`GameInput`) | Angriff Leertaste/J/Maus · Ansprechen E/F · Dialog weiter E/F/Leertaste/Enter · Inventar I · Questlog B · Abbrechen Esc · Cheats F1/^ · Hilfe N | Angriff X · Ansprechen A · Dialog A · Inventar Y · Questlog Select · Abbrechen B |
+| **Jump'n'Run / Lichtung** (`JumpNRunKeys`, frei belegbar) | Springen Leertaste/C · Dash Shift/X · Festhalten K/Strg · Tür: hoch oder E/F · Debug F1/^ · Hilfe N · Aufnahme F5/F6 | Springen A · Dash X · Festhalten LB/RB/RT · Tür: hoch (A springt nur) |
+| **Teegarten** (`GardenInput`) | Benutzen Leertaste/J/E/F/Maus · Werkzeug 1–5/Mausrad · Saat Q · 1×3-Kanne R · Gartenhilfe H · Debug F1 · nächster Tag F2 · Werkstatttür E/Leertaste | Benutzen A/X · Werkzeug LB/RB · Saat ←/→ · Kanne ↑ · Hilfe ↓ |
+| **Teewerkstatt** (`WorkshopInput`) | Benutzen Leertaste/J/E/F · Kneten/Anfachen Leertaste/J/Maus · Schließen/fertig Esc · Debug F1 · Vorspulen F2/F3 | Benutzen A/X · Kneten A/X oder Stick-Kreis · Anfachen A/X/RT · Schließen B · Fensterwahl Steuerkreuz |
+| **Brühen** (`BrewInput`) | Tee 1–4 · Feuer F · Zurückschöpfen S · Vorwärmen W · Aufgießen/Herausheben Leertaste · Thermometer T · Funke E · Wasser Q · Neu R · Debug F1 | Tee Steuerkreuz · Feuer X · Schöpfen Y · Vorwärmen LB · Aufgießen A · Funke RB · Wasser Select · Neu Start |
+
+Behobene Kollision (B6): In Jump'n'Run-Szenen war Pad A zugleich „Springen“ und „Tür betreten“ (`LevelDoor`).
+Jetzt betritt man Türen mit „hoch“ oder E/F; A springt nur. Brühen nutzt W/S – unkritisch, die Brüh-Szene hat
+keine laufende Figur.
