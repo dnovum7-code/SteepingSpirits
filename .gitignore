@@ -44,3 +44,5 @@ crashlytics-build.properties
 Tests/**/bin/
 !Tests/PlantationCore.DotNet/PlantationCore.DotNet.csproj
 !Tests/ProcessingCore.DotNet/ProcessingCore.DotNet.csproj
+Tests/**/obj/
+!Tests/BrewingCore.DotNet/BrewingCore.DotNet.csproj
