@@ -47,8 +47,37 @@ namespace SteepingSpirits.Plantation.Tests
             Assert.Less(chamomile.DaysToFirstHarvest, tea.DaysToFirstHarvest, "tea slow to the first harvest");
             Assert.GreaterOrEqual(jasmine.DaysToFirstHarvest, tea.DaysToFirstHarvest, "jasmine slow");
             Assert.Less(tea.regrowDays, tea.DaysToFirstHarvest / 3, "then tea gives leaves every few days");
-            Assert.AreEqual(1, tea.firstHarvestQualityBonus, "erster Austrieb");
+            Assert.AreEqual(IngredientCatalog.FirstFlushLeaf, tea.firstHarvestIngredientId, "erster Austrieb");
+            Assert.AreEqual(0, tea.firstHarvestQualityBonus, "no extra tier – the first flush is its own ingredient");
             Assert.Greater(jasmine.regrowDays, balm.regrowDays, "jasmine valuable: slow to regrow");
+        }
+
+        [Test]
+        public void TeaShrub_FirstHarvestIsTheFirstFlush_ThenOrdinaryLeaves()
+        {
+            var g = new Garden(new[] { new GridPos(0, 0) }, new GardenParams(), StarterPlants.Book(), 1, new FixedWeather());
+            var p = new GridPos(0, 0);
+            g.Apply(p, GardenAction.Hoe);
+            g.Apply(p, GardenAction.Sow, StarterPlants.Tea, 1);
+            for (int i = 0; i < 40 && !g.PlotAt(p).crop.ripe; i++)
+            {
+                g.Refill();
+                g.Apply(p, GardenAction.Water);
+                g.EndDay();
+            }
+
+            HarvestResult first = g.Apply(p, GardenAction.Harvest).harvest;
+            Assert.AreEqual(IngredientCatalog.FirstFlushLeaf, first.ingredientId);
+            Assert.AreEqual(HarvestQuality.Excellent, first.quality, "careful work, no bonus needed");
+            for (int i = 0; i < 40 && !g.PlotAt(p).crop.ripe; i++)
+            {
+                g.Refill();
+                g.Apply(p, GardenAction.Water);
+                g.EndDay();
+            }
+
+            Assert.AreEqual(IngredientCatalog.TeaLeaf, g.Apply(p, GardenAction.Harvest).harvest.ingredientId);
+            Assert.AreEqual("Erster Austrieb (erlesen)", IngredientQuality.DisplayName(IngredientQuality.With(first.ingredientId, (int)first.quality)));
         }
 
         [Test]

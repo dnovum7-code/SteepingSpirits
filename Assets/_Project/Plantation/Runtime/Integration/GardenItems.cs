@@ -143,8 +143,11 @@ namespace SteepingSpirits.Plantation
             inventory.RegisterItem(item);
         }
 
-        private static string PlantIdOf(string ingredientId) =>
-            IngredientCatalog.Normalize(ingredientId) == IngredientCatalog.TeaLeaf ? StarterPlants.Tea : ingredientId;
+        private static string PlantIdOf(string ingredientId)
+        {
+            string id = IngredientCatalog.Normalize(ingredientId);
+            return id == IngredientCatalog.TeaLeaf || id == IngredientCatalog.FirstFlushLeaf ? StarterPlants.Tea : ingredientId;
+        }
 
         private static void AddToPantry(string id, int amount)
         {

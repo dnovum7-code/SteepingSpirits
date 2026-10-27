@@ -25,7 +25,7 @@
 | B4 | Gemeinsamer Speicherdienst (Inventar + Uhr) | erledigt (15 Tests; Unity: ungeprüft) |
 | B5 | Builder zerstören sich nicht mehr gegenseitig | erledigt (Unity: ungeprüft) |
 | B6 | Tastentabelle, Kollisionen | erledigt (1 Kollision behoben; Unity: ungeprüft) |
-| C7 | Erste Teestrauch-Ernte = `tea_leaf_first` | offen |
+| C7 | Erste Teestrauch-Ernte = `tea_leaf_first` | erledigt (Garten 109 Tests; Unity: ungeprüft) |
 | D8 | `ForProcessedTea` + `ProcessedBrewParams` | offen |
 | D9 | Teewahl aus Inventar/Vorratsschrank | offen |
 | D10 | Ergebnis: Noten, `tea_tart` | offen |
@@ -66,6 +66,20 @@
 - Folge: *Build Garden* nach *Build Workshop* lässt die Werkstatttür stehen; *Build Levels* nach *Build Garden*
   lässt den Garten-Eingang auf der Wiese stehen. Die Hinweise „danach nochmal bauen“ entfallen.
 
+## Erster Austrieb (C7)
+
+- `PlantParams.firstHarvestIngredientId` (neu, Standard leer): Teestrauch = `tea_leaf_first`. Die erste Ernte
+  gibt diese Zutat, alle späteren `tea_leaf`. Meldung und Inventar heißen „Erster Austrieb (…)“.
+- **Zählt der alte +1-Bonus doppelt?** In der Werkstatt nicht – dort zählt ein erster Austrieb unabhängig von
+  seiner Gartenstufe als beste Herkunft und hebt die Obergrenze auf „erlesen“. Der Bonus wäre also wirkungslos für
+  den Tee, würde aber die Gartenpflege verschleiern (ein vernachlässigter Austrieb hieße „fein“ statt „gut“) und
+  den Verkaufswert erhöhen. **Entscheidung:** Bonus für den Teestrauch 0 – das Besondere ist die eigene Zutat,
+  die Stufe zeigt ehrlich die Pflege. Der allgemeine Mechanismus `firstHarvestQualityBonus` bleibt für spätere
+  Pflanzen erhalten.
+- **Bestehende Assets:** Builder überschreiben Tuning nie. *Build Garden* migriert deshalb nur dieses neue Feld:
+  ist `firstHarvestIngredientId` leer und gibt der Startwert eines vor, wird er gesetzt und ein alter Bonus von
+  genau 1 auf 0 gestellt (Konsolenmeldung). Andere Werte bleiben.
+
 ## Annahmen
 
 1. **Speicherdienst legt Inventar und Uhr in jeder Szene an.** Folge: Auch eine direkt gestartete
@@ -76,6 +90,10 @@
 
 - **A1** (Merge): Unity öffnen → Konsole ohne Fehler. Menü *SteepingSpirits → Brewing → Build Sandbox* ist da und
   baut die Sandbox; Play → Brühen wie bisher. Test Runner → EditMode: alle Module grün.
+- **C7** (Erster Austrieb): *Plantation → Build Garden* (bei altem `tea.asset` erscheint „tea: first harvest now
+  gives tea_leaf_first“). Garten: Teestrauch säen, mit F2 bis reif → ernten → Meldung „+n Erster Austrieb (…)“,
+  Inventar zeigt „Erster Austrieb“; nächste Ernte wieder „Teeblatt“. In der Werkstatt erscheint der Austrieb im
+  Vorrat als eigene Quelle.
 - **B6** (Tasten): Tabelle in `CLAUDE.md`. Jump'n'Run-Lichtung mit Gamepad: vor einer Leveltür A drücken →
   Figur springt, Tür öffnet sich **nicht**; Stick/Steuerkreuz hoch → Tür lädt das Level. Tastatur E/F/W wie bisher.
 - **B5** (Builder): Reihenfolge testen: *Processing → Build Workshop*, dann *Plantation → Build Garden* →

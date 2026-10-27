@@ -151,6 +151,10 @@ namespace SteepingSpirits.Plantation.EditorTools
                     def.ripeColor = PlantPalette.Ripe(id);
                     AssetDatabase.CreateAsset(def, path);
                 }
+                else
+                {
+                    MigrateFirstFlush(def);
+                }
 
                 plants.Add(def);
             }
@@ -178,6 +182,21 @@ namespace SteepingSpirits.Plantation.EditorTools
             }
 
             return settings;
+        }
+
+        /// <summary>
+        /// Data migration for plant assets created before the tea shrub gave the first flush as its own
+        /// ingredient: only touches the new field (and the old +1 first-harvest bonus that it replaces).
+        /// Other tuned values stay as they are.
+        /// </summary>
+        private static void MigrateFirstFlush(PlantDefinition def)
+        {
+            PlantParams start = StarterPlants.Create(def.plant.id);
+            if (start == null || string.IsNullOrEmpty(start.firstHarvestIngredientId) || !string.IsNullOrEmpty(def.plant.firstHarvestIngredientId)) return;
+            def.plant.firstHarvestIngredientId = start.firstHarvestIngredientId;
+            if (def.plant.firstHarvestQualityBonus == 1) def.plant.firstHarvestQualityBonus = start.firstHarvestQualityBonus;
+            EditorUtility.SetDirty(def);
+            Debug.Log("[Plantation] " + def.name + ": first harvest now gives " + start.firstHarvestIngredientId + ".");
         }
 
         public static void EnsureFolder(string folder)

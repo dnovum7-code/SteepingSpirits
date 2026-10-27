@@ -25,8 +25,12 @@ namespace SteepingSpirits.Plantation
             switch (plantId)
             {
                 case Tea:
-                    // Slow to the first harvest ("erster Austrieb", +1 quality), then leaves every 3 days.
-                    return Make(Tea, IngredientCatalog.TeaLeaf, WaterNeed.Normal, true, new[] { 3, 3, 4, 4 }, 3, 2, 3, 1, 0.1f, "Fruehling", "Sommer");
+                    // Slow to the first harvest, which gives the first flush ("erster Austrieb", tea_leaf_first),
+                    // then leaves every 3 days. No extra quality tier: the first flush is special as its own
+                    // ingredient (the workshop lifts its quality ceiling), the tier shows the garden care.
+                    PlantParams tea = Make(Tea, IngredientCatalog.TeaLeaf, WaterNeed.Normal, true, new[] { 3, 3, 4, 4 }, 3, 2, 3, 0, 0.1f, "Fruehling", "Sommer");
+                    tea.firstHarvestIngredientId = IngredientCatalog.FirstFlushLeaf;
+                    return tea;
                 case Mint:
                     // Thirsty and fast: the quick reward of the first days.
                     return Make(Mint, IngredientCatalog.Mint, WaterNeed.Thirsty, false, new[] { 1, 2, 1 }, 0, 2, 3, 0, 0.6f, "Fruehling", "Sommer");

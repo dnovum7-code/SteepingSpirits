@@ -374,7 +374,7 @@ namespace SteepingSpirits.Plantation
             if (pp != null)
             {
                 int seed = settings.worldSeed;
-                result.ingredientId = pp.ingredientId;
+                result.ingredientId = c.harvests == 0 && !string.IsNullOrEmpty(pp.firstHarvestIngredientId) ? pp.firstHarvestIngredientId : pp.ingredientId;
                 result.count = GardenRandom.Range(pp.yieldMin, pp.yieldMax, seed ^ SaltYield, Day, plot.pos.x, plot.pos.y, c.harvests);
                 if (c.harvests == 0 && c.compost) result.count += settings.compostYieldBonus;
                 result.seedItemId = pp.seedItemId;

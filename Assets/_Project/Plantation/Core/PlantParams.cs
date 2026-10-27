@@ -41,8 +41,14 @@ namespace SteepingSpirits.Plantation
         public int yieldMin = 1;
         public int yieldMax = 2;
 
-        /// <summary>Quality tiers added to the very first harvest (tea: "erster Austrieb").</summary>
+        /// <summary>Quality tiers added to the very first harvest (0 for all starter plants).</summary>
         public int firstHarvestQualityBonus;
+
+        /// <summary>
+        /// Ingredient of the very first harvest, if it differs ("" = <see cref="ingredientId"/>).
+        /// Tea shrub: "tea_leaf_first" – the first flush ("erster Austrieb").
+        /// </summary>
+        public string firstHarvestIngredientId = "";
 
         /// <summary>Chance per harvest to also get one seed back.</summary>
         public float seedDropChance = 0.3f;
