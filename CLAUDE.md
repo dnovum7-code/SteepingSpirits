@@ -69,9 +69,14 @@ tea_leaf  ·  tea_leaf+q3  ·  tea_oolong:dark/honeyed.roasty+q3  ·  tea_blend:
 
 ## Speicherdienst
 
-Siehe Abschnitt in `Docs/TEALOOP_PROGRESS.md` (B4): Inventar inklusive zur Laufzeit angelegter Gegenstände
-und `GameClock` werden versioniert gespeichert; Module behalten ihre eigenen JSON-Dateien
-(`garden_save.json`, `workshop_save.json`, `jumpnrun_save.json`, `pantry.json`).
+- `SaveService` (Modul `SaveGame`, startet automatisch vor allen `Start()`): Inventar **inklusive** zur Laufzeit
+  angelegter Gegenstände und `GameClock` in `game_save.json` (versioniert, altes `inventory_save.json` wird
+  übernommen). Gespeichert wird bei Szenenwechsel, neuem Tag, alle 20 s und beim Beenden.
+- Laufzeit-Gegenstände werden beim Laden aus ihrer ID neu gebaut (`ItemRecipes`: ID-Grammatik + Katalog).
+  Module mit eigenen Laufzeit-Items melden einen Resolver an (`ItemRecipes.Register`, z. B. Garten-Saatgut).
+- Unbekannte IDs gehen nie verloren: sie warten in `pending` und kommen zurück, sobald eine Szene sie registriert.
+- Module behalten ihre eigenen JSON-Dateien (`garden_save.json`, `workshop_save.json`, `jumpnrun_save.json`,
+  `pantry.json`). Neue Laufzeit-Items brauchen eine Zutaten-ID (dann automatisch) oder einen Resolver.
 
 ## Tastentabelle
 

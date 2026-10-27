@@ -46,3 +46,4 @@ Tests/**/bin/
 !Tests/ProcessingCore.DotNet/ProcessingCore.DotNet.csproj
 Tests/**/obj/
 !Tests/BrewingCore.DotNet/BrewingCore.DotNet.csproj
+!Tests/SaveGame.DotNet/SaveGame.DotNet.csproj
