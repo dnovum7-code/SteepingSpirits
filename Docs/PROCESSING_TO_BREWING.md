@@ -1,5 +1,8 @@
 # Vorschlag: Werkstatt-Tee → Brühen
 
+> **Umgesetzt** auf `feature/tea-loop` (D8–D10, siehe `Docs/TEALOOP_PROGRESS.md`). Abweichung: zusätzlich
+> `reachableTop` (97 °C), damit jede Fenstermitte mit vorgewärmtem Gefäß erreichbar bleibt.
+
 Stand: Werkstatt auf `feature/processing`, Brühen auf `feature/brewing-phase2`. **Der Brüh-Code bleibt bis
 zum Merge unverändert**; dieses Dokument beschreibt, wie die Anbindung danach aussehen könnte.
 

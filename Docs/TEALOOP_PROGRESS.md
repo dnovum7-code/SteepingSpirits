@@ -26,7 +26,7 @@
 | B5 | Builder zerstören sich nicht mehr gegenseitig | erledigt (Unity: ungeprüft) |
 | B6 | Tastentabelle, Kollisionen | erledigt (1 Kollision behoben; Unity: ungeprüft) |
 | C7 | Erste Teestrauch-Ernte = `tea_leaf_first` | erledigt (Garten 109 Tests; Unity: ungeprüft) |
-| D8 | `ForProcessedTea` + `ProcessedBrewParams` | offen |
+| D8 | `ForProcessedTea` + `ProcessedBrewParams` | erledigt (Brühen 90 Tests) |
 | D9 | Teewahl aus Inventar/Vorratsschrank | offen |
 | D10 | Ergebnis: Noten, `tea_tart` | offen |
 | D11 | Brühen aus der Welt erreichbar | offen |
@@ -80,6 +80,26 @@
   ist `firstHarvestIngredientId` leer und gibt der Startwert eines vor, wird er gesetzt und ein alter Bonus von
   genau 1 auf 0 gestellt (Konsolenmeldung). Andere Werte bleiben.
 
+## Brüh-Anbindung, Kern (D8)
+
+- `ProcessedBrewing.ForProcessedTea(preset, info, k)` im Brüh-Core: reine Funktion, liefert eine angepasste Kopie.
+  Der Brüh-Core kennt die Werkstatt nicht; er bekommt `ProcessedTeaInfo` (Grundtee, Oxidation, Stufe, Noten als
+  Flags). Die Übersetzung aus der Werkstatt-ID ist ein Adapter in D9.
+- Werte wie im Vorschlag (`PROCESSING_TO_BREWING.md`), alle in `ProcessedBrewParams` (Feld `processed` im
+  `BrewingTuning`): Oolong-Fenster 16 °C je Oxidation um 35 % (± 6 °C), Hitzeempfindlichkeit hell 1,2 → dunkel 0,8
+  (relativ zum Neutralpunkt); Schwarztee unter 85 % −0,5 s bis bitter; Stufe → Kapazität 0,9/1,0/1,15, Toleranz
+  ±0/+0,03/+0,06 (relativ zu „fein“), Aroma-Rate 0,95/1,0/1,05; Noten wie vorgeschlagen, zusammen höchstens ±4 °C.
+- **Abweichung vom Vorschlag – Erreichbarkeit:** Das heißeste erreichbare Wasser im Gefäß ist 100 °C − 3 °C
+  (vorgewärmt) = 97 °C. Ein dunkler Oolong hätte mit der Fensterwanderung der späteren Aufgüsse (+6 °C) seinen
+  besten Aufguss nicht mehr erreicht. Neuer Parameter `reachableTop` (97 °C): Grundfenster und Wanderung werden so
+  begrenzt, dass jede Fenstermitte erreichbar bleibt. Dunkler bleibt heißer (getestet), nur steigen die späten
+  Aufgüsse weniger. Das Fenster endet nie über 100 °C und bleibt mindestens 4 °C breit.
+- Tests: Preset unverändert bei Stufe 2/ohne Noten/neutraler Oxidation (alle vier Grundtees), Eingaben werden nie
+  verändert, dunkler Oolong monoton heißer (hell 20 % ↔ dunkel 50 %: > 4 °C Unterschied), keine Notenkombination
+  > ±4 °C, Stufe wirkt, Noten wirken, Schwarztee unteroxidiert früher bitter, **„Vollendet“ erreichbar** für über
+  500 Kombinationen (jede Fenstermitte ≤ 97 °C), **Regression:** Kalibrierwerte der vier Grundtees exakt wie vorher
+  (Qref und beste Ziehzeit als feste Zahlen).
+
 ## Annahmen
 
 1. **Speicherdienst legt Inventar und Uhr in jeder Szene an.** Folge: Auch eine direkt gestartete
@@ -90,6 +110,8 @@
 
 - **A1** (Merge): Unity öffnen → Konsole ohne Fehler. Menü *SteepingSpirits → Brewing → Build Sandbox* ist da und
   baut die Sandbox; Play → Brühen wie bisher. Test Runner → EditMode: alle Module grün.
+- **D8** (nur Core): Test Runner → `SteepingSpirits.Brewing.Tests.EditMode` grün (90). `BrewingTuning`-Asset im
+  Inspector: neuer Abschnitt `Processed` mit allen Faktoren. Brühen in der Sandbox unverändert.
 - **C7** (Erster Austrieb): *Plantation → Build Garden* (bei altem `tea.asset` erscheint „tea: first harvest now
   gives tea_leaf_first“). Garten: Teestrauch säen, mit F2 bis reif → ernten → Meldung „+n Erster Austrieb (…)“,
   Inventar zeigt „Erster Austrieb“; nächste Ernte wieder „Teeblatt“. In der Werkstatt erscheint der Austrieb im

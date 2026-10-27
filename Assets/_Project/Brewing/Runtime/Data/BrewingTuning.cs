@@ -85,5 +85,8 @@ namespace SteepingSpirits.Brewing.Data
 
         [Tooltip("Feedback: particles, sound, colours, result")]
         public PresentationParams presentation = new PresentationParams();
+
+        [Tooltip("Workshop teas: how oxidation, quality tier and notes shift the base tea (see Docs/PROCESSING_TO_BREWING.md)")]
+        public ProcessedBrewParams processed = new ProcessedBrewParams();
     }
 }
