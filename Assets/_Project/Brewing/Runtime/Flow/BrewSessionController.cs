@@ -245,12 +245,21 @@ namespace SteepingSpirits.Brewing.Flow
             }
         }
 
+        /// <summary>The last cup was tart and left a "tea_tart" for the compost (own teas only – base teas are practice).</summary>
+        public bool LastTartGiven { get; private set; }
+
+        /// <summary>The notes of the tea in the cup ("blumig, röstig"), empty for base teas.</summary>
+        public string CurrentNotes => CurrentOwn != null && CurrentOwn.notes.Count > 0 ? SteepingSpirits.Processing.ProcessingTexts.NotesLine(CurrentOwn.notes) : "";
+
         private void HandleFinished(BrewResult result)
         {
             if (writeTelemetry)
             {
                 BrewTelemetry.Append(result);
             }
+
+            LastTartGiven = result.IsTart && CurrentOwn != null;
+            if (LastTartGiven) OwnTeaShelf.GiveTart();
 
             if (result.Tier == QualityTier.Perfect)
             {

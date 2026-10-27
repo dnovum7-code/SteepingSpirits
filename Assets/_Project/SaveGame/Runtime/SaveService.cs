@@ -245,6 +245,24 @@ namespace SteepingSpirits.SaveGame
         private static void RegisterModuleRecipes()
         {
             ItemRecipes.Register(GardenRecipe);
+            ItemRecipes.Register(BrewingRecipe);
+        }
+
+        /// <summary>A tart cup from brewing (taken by the garden compost bin).</summary>
+        private static ItemRecipe? BrewingRecipe(string id)
+        {
+            if (id != SteepingSpirits.Brewing.Integration.OwnTeaShelf.TartTeaItemId) return null;
+            return new ItemRecipe
+            {
+                itemId = id,
+                displayName = SteepingSpirits.Brewing.Presentation.BrewTexts.TartItemName,
+                description = SteepingSpirits.Brewing.Presentation.BrewTexts.TartItemDescription,
+                goldValue = 0,
+                maxStack = 99,
+                kind = ItemKind.Other,
+                baseId = id,
+                tier = 1
+            };
         }
 
         private static ItemRecipe? GardenRecipe(string id)

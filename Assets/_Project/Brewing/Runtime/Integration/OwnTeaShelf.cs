@@ -67,6 +67,46 @@ namespace SteepingSpirits.Brewing.Integration
             }
         }
 
+        /// <summary>Inventory item of a tart cup ("herb"); the garden compost bin takes it (GardenSettings.compostInputIds).</summary>
+        public const string TartTeaItemId = OwnTeaInfo.TartItemId;
+
+        /// <summary>A tart cup leaves something for the compost: one "tea_tart" into the inventory (else the pantry).</summary>
+        public static void GiveTart()
+        {
+            PlayerInventory inv = PlayerInventory.Instance;
+            if (inv != null)
+            {
+                EnsureTartItem(inv);
+                if (inv.AddById(TartTeaItemId, 1) == 0) return;
+            }
+
+            try
+            {
+                Pantry pantry = LoadPantry();
+                pantry.Add(TartTeaItemId, 1);
+                File.WriteAllText(PantryPath, pantry.ToJson());
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[Brewing] Pantry not written: " + e.Message);
+            }
+        }
+
+        public static void EnsureTartItem(PlayerInventory inv)
+        {
+            if (inv.Resolve(TartTeaItemId) != null) return;
+            var item = ScriptableObject.CreateInstance<ItemData>();
+            item.name = TartTeaItemId;
+            item.itemID = TartTeaItemId;
+            item.displayName = SteepingSpirits.Brewing.Presentation.BrewTexts.TartItemName;
+            item.description = SteepingSpirits.Brewing.Presentation.BrewTexts.TartItemDescription;
+            item.category = ItemCategory.Material;
+            item.maxStack = 99;
+            item.goldValue = 0;
+            item.tint = new Color(0.45f, 0.30f, 0.18f);
+            inv.RegisterItem(item);
+        }
+
         private static void Add(Dictionary<string, int> counts, string id, int n)
         {
             counts.TryGetValue(id, out int have);

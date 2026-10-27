@@ -25,6 +25,11 @@ namespace SteepingSpirits.Brewing.Presentation
         public const string Prewarmed = "Gefäß vorgewärmt";
         public const string StaleWater = "Das Wasser hat lange gekocht und schmeckt flach.";
         public const string Tart = "Ein herber Nachklang.";
+        public const string TartGiven = "Den Rest gießt du in den Krug für den Komposter im Teegarten.";
+        public const string TartItemName = "Herber Tee";
+        public const string TartItemDescription = "Zu lange gezogen – im Teegarten wird daraus Kompost.";
+
+        public static string NotesInCup(string notes) => "Im Tee: " + notes + ".";
         public const string ThermometerHint = "[T] Thermometer";
         public const string OwnTeasHeader = "Deine Tees:";
         public const string NoOwnTeas = "Noch keine eigenen Tees – in der Teewerkstatt herstellen.";

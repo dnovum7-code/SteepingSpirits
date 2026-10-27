@@ -23,6 +23,9 @@ namespace SteepingSpirits.Brewing.Integration
     /// </summary>
     public static class OwnTeaInfo
     {
+        /// <summary>Item a tart cup leaves behind; the garden compost bin takes it (GardenSettings.compostInputIds).</summary>
+        public const string TartItemId = "tea_tart";
+
         public static BrewBase BaseOf(TeaVariety v)
         {
             switch (v)

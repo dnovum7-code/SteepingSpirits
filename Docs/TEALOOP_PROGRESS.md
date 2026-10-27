@@ -28,7 +28,7 @@
 | C7 | Erste Teestrauch-Ernte = `tea_leaf_first` | erledigt (Garten 109 Tests; Unity: ungeprüft) |
 | D8 | `ForProcessedTea` + `ProcessedBrewParams` | erledigt (Brühen 90 Tests) |
 | D9 | Teewahl aus Inventar/Vorratsschrank | erledigt (Brühen 92, TeaLoop 6 Tests; Unity: ungeprüft) |
-| D10 | Ergebnis: Noten, `tea_tart` | offen |
+| D10 | Ergebnis: Noten, `tea_tart` | erledigt (TeaLoop 7 Tests; Unity: ungeprüft) |
 | D11 | Brühen aus der Welt erreichbar | offen |
 | E12 | Simulator-Auswertung | offen |
 | F13 | Abschlussbericht | offen |
@@ -117,14 +117,30 @@
   mit ihren Noten, fremde IDs, **heller ↔ dunkler Oolong: Fenstermitte > 4 °C auseinander und andere Ziehzeit**,
   jede Werkstatt-ID wird brühbar. Brüh-Core: eigene Kalibrier-ID je Tee, `UseTea` behält Grundtee-Plätze.
 
+## Ergebnis der Tasse (D10)
+
+- Die Ergebniskarte nennt bei eigenen Tees die Noten: „Im Tee: blumig, honigsüß.“ (Texte aus `ProcessingTexts`,
+  also dieselben Wörter wie in der Werkstatt). Grundtees haben keine Noten → keine Zeile.
+- **Herbe Tasse → `tea_tart`:** Ist das Ergebnis herb (`BrewResult.IsTart`), kommt ein „Herber Tee“ (`tea_tart`,
+  schlichte Item-ID wie in `GardenSettings.compostInputIds`) ins Inventar, sonst in den Vorratsschrank; die Karte
+  sagt „Den Rest gießt du in den Krug für den Komposter im Teegarten.“ Pro herbem Aufguss eins.
+- Nur bei **eigenen Tees** (Annahme 2). Der Speicherdienst kennt `tea_tart` über einen Resolver und baut ihn nach
+  dem Neustart wieder auf.
+- Test: Vertrag Brühen ↔ Garten (`TartCompostTests`): die herbe Item-ID steht in der Standardliste des Komposters.
+
 ## Annahmen
 
 1. **Speicherdienst legt Inventar und Uhr in jeder Szene an.** Folge: Auch eine direkt gestartete
    Jump'n'Run-Szene hat jetzt ein Inventar; die Übergabe dort geht ins Inventar statt in den Vorratsschrank
    (beides bleibt gespeichert, nichts geht verloren).
+2. **`tea_tart` nur aus eigenen Tees.** Die Grundtees der Sandbox sind Übung und kosten nichts; gäben sie
+   Kompost-Futter, ließe sich der Komposter beliebig füllen.
 
 ## Editor-Checklisten pro Commit
 
+- **D10** (Ergebnis): Sandbox, eigenen Tee mit Noten brühen → Ergebniskarte zeigt „Im Tee: …“. Absichtlich zu
+  lange ziehen (herb) → Karte sagt „Ein herber Nachklang. Den Rest gießt du in den Krug …“, Inventar hat
+  „Herber Tee“. Im Teegarten am Komposter abgeben → wird angenommen. Grundtee herb → kein `tea_tart`.
 - **A1** (Merge): Unity öffnen → Konsole ohne Fehler. Menü *SteepingSpirits → Brewing → Build Sandbox* ist da und
   baut die Sandbox; Play → Brühen wie bisher. Test Runner → EditMode: alle Module grün.
 - **D9** (Teewahl): Sandbox bauen (*Brewing → Build Sandbox*), in der Werkstatt einen Tee einpacken, dann
