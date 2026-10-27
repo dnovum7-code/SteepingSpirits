@@ -27,7 +27,7 @@
 | B6 | Tastentabelle, Kollisionen | erledigt (1 Kollision behoben; Unity: ungeprüft) |
 | C7 | Erste Teestrauch-Ernte = `tea_leaf_first` | erledigt (Garten 109 Tests; Unity: ungeprüft) |
 | D8 | `ForProcessedTea` + `ProcessedBrewParams` | erledigt (Brühen 90 Tests) |
-| D9 | Teewahl aus Inventar/Vorratsschrank | offen |
+| D9 | Teewahl aus Inventar/Vorratsschrank | erledigt (Brühen 92, TeaLoop 6 Tests; Unity: ungeprüft) |
 | D10 | Ergebnis: Noten, `tea_tart` | offen |
 | D11 | Brühen aus der Welt erreichbar | offen |
 | E12 | Simulator-Auswertung | offen |
@@ -100,6 +100,23 @@
   500 Kombinationen (jede Fenstermitte ≤ 97 °C), **Regression:** Kalibrierwerte der vier Grundtees exakt wie vorher
   (Qref und beste Ziehzeit als feste Zahlen).
 
+## Teewahl (D9)
+
+- **Eigene Tees** = Werkstatt-Tees und Mischungen (Familie `Tea`) aus Inventar **und** Vorratsschrank, mit genauer
+  Oxidation aus dem Tee-Register der Werkstatt (`workshop_save.json`), sonst dem Optimum der Sorte. Übersetzung im
+  engine-freien Adapter `OwnTeaInfo` (Brühen/Runtime/Integration), Laden/Verbrauchen in `OwnTeaShelf`.
+- Gebrüht wird das Grund-Preset (`TeaDefinition`, liefert auch die Farben) angepasst durch `ForProcessedTea`, mit
+  eigener Kalibrier-ID `own:<zutaten-id>`; `BrewSession.UseTea` nimmt ihn in die Auswahl auf (Grundtees behalten
+  ihre Plätze 1–4).
+- **Eine Portion pro Kanne:** Die Portion wird beim **ersten Aufgießen** der gewählten Blätter genommen (Inventar
+  zuerst, dann Vorratsschrank); weitere Aufgüsse derselben Blätter (Phase 2) kosten nichts. Wählen allein kostet
+  nichts. Das ist meine Lesart von „ein Aufguss verbraucht eine Portion“ – Blätter tragen mehrere Aufgüsse.
+- **Grundtees** 1–4 frei in der Sandbox (direkt gestartet); aus der Welt geöffnet nur mit offenem Debug (F1).
+- Tests (dotnet `Tests/TeaLoop.DotNet`, weil der Adapter Brühen und Werkstatt verbindet und Unity-Testassemblies
+  Assembly-CSharp nicht referenzieren können): Register-Oxidation, Optimum ohne Register, Mischungen als Grundtee
+  mit ihren Noten, fremde IDs, **heller ↔ dunkler Oolong: Fenstermitte > 4 °C auseinander und andere Ziehzeit**,
+  jede Werkstatt-ID wird brühbar. Brüh-Core: eigene Kalibrier-ID je Tee, `UseTea` behält Grundtee-Plätze.
+
 ## Annahmen
 
 1. **Speicherdienst legt Inventar und Uhr in jeder Szene an.** Folge: Auch eine direkt gestartete
@@ -110,6 +127,11 @@
 
 - **A1** (Merge): Unity öffnen → Konsole ohne Fehler. Menü *SteepingSpirits → Brewing → Build Sandbox* ist da und
   baut die Sandbox; Play → Brühen wie bisher. Test Runner → EditMode: alle Module grün.
+- **D9** (Teewahl): Sandbox bauen (*Brewing → Build Sandbox*), in der Werkstatt einen Tee einpacken, dann
+  Sandbox → Play: unten „Deine Tees: ◂ Oolong (hell; …) ×4 ▸ [←/→] Tee wählen [Leertaste] brühen“, darunter die
+  Grundtees 1–4. Eigenen Tee wählen → Titel zeigt seinen Namen, Farben wie der Grundtee. Aufgießen → Inventar hat
+  eine Portion weniger; Leertaste im Ergebnis (nochmal aufgießen) kostet nichts. Ohne eigenen Tee: Hinweis
+  „Noch keine eigenen Tees …“, Grundtees funktionieren wie bisher.
 - **D8** (nur Core): Test Runner → `SteepingSpirits.Brewing.Tests.EditMode` grün (90). `BrewingTuning`-Asset im
   Inspector: neuer Abschnitt `Processed` mit allen Faktoren. Brühen in der Sandbox unverändert.
 - **C7** (Erster Austrieb): *Plantation → Build Garden* (bei altem `tea.asset` erscheint „tea: first harvest now

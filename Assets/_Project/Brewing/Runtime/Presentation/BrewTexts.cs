@@ -26,6 +26,15 @@ namespace SteepingSpirits.Brewing.Presentation
         public const string StaleWater = "Das Wasser hat lange gekocht und schmeckt flach.";
         public const string Tart = "Ein herber Nachklang.";
         public const string ThermometerHint = "[T] Thermometer";
+        public const string OwnTeasHeader = "Deine Tees:";
+        public const string NoOwnTeas = "Noch keine eigenen Tees – in der Teewerkstatt herstellen.";
+        public const string OwnTeaKeys = "[←/→] Tee wählen   [Leertaste] brühen";
+        public const string BaseTeasHeader = "Grundtees (Sandbox/Debug):";
+        public const string BackKey = "[Esc] zurück in die Werkstatt";
+        public const string ResultPromptOwn = "[←/→] anderer Tee   ·   [R] neu beginnen";
+
+        public static string OwnTeaLine(string name, int count, int index, int total) =>
+            "◂ " + name + "  ×" + count + (total > 1 ? "   (" + (index + 1) + "/" + total + ")" : "") + " ▸";
 
         public static string Infusion(int index) => $"{index + 1}. Aufguss";
 

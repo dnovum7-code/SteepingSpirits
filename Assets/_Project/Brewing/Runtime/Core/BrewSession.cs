@@ -149,6 +149,22 @@ namespace SteepingSpirits.Brewing.Core
         // Commands
         // ---------------------------------------------------------------
 
+        /// <summary>
+        /// Makes a tea choosable (e.g. a workshop tea adjusted by ProcessedBrewing) and returns its index.
+        /// A tea with the same id is reused; the teas given at construction keep their indices.
+        /// </summary>
+        public int UseTea(TeaParams tea)
+        {
+            if (tea == null) throw new ArgumentNullException(nameof(tea));
+            for (int i = 0; i < teas.Count; i++)
+            {
+                if (teas[i].id == tea.id) return i;
+            }
+
+            teas.Add(tea);
+            return teas.Count - 1;
+        }
+
         /// <summary>Choose a tea (SelectTea, or directly from Result for the next cup).</summary>
         public bool SelectTea(int index)
         {

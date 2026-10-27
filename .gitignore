@@ -47,3 +47,5 @@ Tests/**/bin/
 Tests/**/obj/
 !Tests/BrewingCore.DotNet/BrewingCore.DotNet.csproj
 !Tests/SaveGame.DotNet/SaveGame.DotNet.csproj
+!Tests/TeaLoop.DotNet/TeaLoop.DotNet.csproj
+!Tests/TeaLoop.DotNet/*.cs

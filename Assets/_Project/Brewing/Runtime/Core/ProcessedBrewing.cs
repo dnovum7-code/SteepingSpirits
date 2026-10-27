@@ -162,6 +162,9 @@ namespace SteepingSpirits.Brewing.Core
             }
 
             KeepReachable(t, k.reachableTop);
+
+            // Own calibration key: the session caches calibrations by tea id.
+            t.id = preset.id + "#o" + (int)Math.Round(ox * 1000f) + "q" + (i + 1) + "n" + (int)info.notes;
             t.heatSensitivity *= heat;
             t.bitterOnsetSeconds = Math.Max(1f, t.bitterOnsetSeconds);
             return t;

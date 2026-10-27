@@ -51,6 +51,34 @@ namespace SteepingSpirits.Brewing.Tests
         }
 
         [Test]
+        public void EachWorkshopTea_GetsItsOwnCalibrationKey()
+        {
+            TeaParams a = ProcessedBrewing.ForProcessedTea(TeaPresets.Oolong(), Info(BrewBase.Oolong, 0.2f, 3, BrewNotes.Floral), K);
+            TeaParams b = ProcessedBrewing.ForProcessedTea(TeaPresets.Oolong(), Info(BrewBase.Oolong, 0.5f, 3, BrewNotes.Floral), K);
+            TeaParams c = ProcessedBrewing.ForProcessedTea(TeaPresets.Oolong(), Info(BrewBase.Oolong, 0.2f, 3, BrewNotes.Floral), K);
+            Assert.AreNotEqual(a.id, b.id);
+            Assert.AreEqual(a.id, c.id);
+            Assert.AreNotEqual("oolong", a.id, "never shares the base tea's cached calibration");
+            StringAssert.StartsWith("oolong#", a.id);
+        }
+
+        [Test]
+        public void Session_UseTea_AddsAWorkshopTea_BaseTeasKeepTheirIndices()
+        {
+            var config = new BrewConfig();
+            var session = new BrewSession(config, AllTeasWithOolong());
+            TeaParams own = ProcessedBrewing.ForProcessedTea(TeaPresets.Oolong(), Info(BrewBase.Oolong, 0.6f, 3, BrewNotes.Roasty), K);
+            int index = session.UseTea(own);
+            Assert.AreEqual(4, index);
+            Assert.AreEqual(4, session.UseTea(ProcessedBrewing.ForProcessedTea(TeaPresets.Oolong(), Info(BrewBase.Oolong, 0.6f, 3, BrewNotes.Roasty), K)), "same tea, same slot");
+            Assert.AreEqual("black", session.Teas[0].id);
+            Assert.IsTrue(session.SelectTea(index));
+            Assert.AreSame(own, session.Tea);
+            Assert.Greater(session.Series.QReference, 0.3f);
+            Assert.AreNotEqual(session.SeriesFor(TeaPresets.Oolong()).QReference, session.Series.QReference, "own calibration");
+        }
+
+        [Test]
         public void ThePresetItself_IsNeverChanged()
         {
             TeaParams preset = TeaPresets.Oolong();

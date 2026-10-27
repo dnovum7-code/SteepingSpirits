@@ -54,7 +54,7 @@ namespace SteepingSpirits.Brewing.Presentation
                 default:
                     title = "";
                     prompt = (s.CanInfuseAgain ? BrewTexts.NextInfusionPrompt : BrewTexts.LeavesSpent)
-                             + "\n" + BrewTexts.ResultPrompt;
+                             + "\n" + (controller.BaseTeasAllowed ? BrewTexts.ResultPrompt : BrewTexts.ResultPromptOwn);
                     break;
             }
 
@@ -69,8 +69,8 @@ namespace SteepingSpirits.Brewing.Presentation
 
         private string TeaName()
         {
-            TeaDefinition tea = controller.CurrentTea;
-            return tea != null ? tea.displayName + "  ·  " + BrewTexts.Infusion(Session.InfusionIndex) : "";
+            string name = controller.CurrentTeaName;
+            return name.Length > 0 ? name + "  ·  " + BrewTexts.Infusion(Session.InfusionIndex) : "";
         }
 
         private static string SparkLine(BrewSession s)
@@ -87,12 +87,27 @@ namespace SteepingSpirits.Brewing.Presentation
         private string TeaChoices()
         {
             var sb = new System.Text.StringBuilder(BrewTexts.ChooseTea).Append('\n');
-            for (int i = 0; i < controller.Teas.Count; i++)
+            if (controller.OwnTeas.Count == 0)
             {
-                if (i > 0) sb.Append("     ");
-                sb.Append('[').Append(i + 1).Append("] ").Append(controller.Teas[i].displayName);
+                sb.Append(BrewTexts.NoOwnTeas);
+            }
+            else
+            {
+                var own = controller.OwnTeas[controller.OwnIndex];
+                sb.Append(BrewTexts.OwnTeaLine(own.displayName, own.count, controller.OwnIndex, controller.OwnTeas.Count)).Append("   ").Append(BrewTexts.OwnTeaKeys);
             }
 
+            if (controller.BaseTeasAllowed)
+            {
+                sb.Append('\n').Append(BrewTexts.BaseTeasHeader).Append(' ');
+                for (int i = 0; i < controller.Teas.Count; i++)
+                {
+                    if (i > 0) sb.Append("   ");
+                    sb.Append('[').Append(i + 1).Append("] ").Append(controller.Teas[i].displayName);
+                }
+            }
+
+            if (SteepingSpirits.Brewing.Integration.BrewHandoff.FromWorld) sb.Append("   ").Append(BrewTexts.BackKey);
             return sb.ToString();
         }
     }

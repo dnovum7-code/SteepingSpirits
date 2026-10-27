@@ -63,6 +63,9 @@ namespace SteepingSpirits.Brewing.Flow
         public static bool RestartPressed => KeyDown(UnityEngine.InputSystem.Key.R) || Pad(g => g.startButton);
         public static bool CatchSparkPressed => KeyDown(UnityEngine.InputSystem.Key.E) || Pad(g => g.rightShoulder);
         public static bool RefillPressed => KeyDown(UnityEngine.InputSystem.Key.Q) || Pad(g => g.selectButton);
+        public static int OwnTeaStep => KeyDown(UnityEngine.InputSystem.Key.LeftArrow) || Pad(g => g.leftShoulder) ? -1
+            : KeyDown(UnityEngine.InputSystem.Key.RightArrow) || Pad(g => g.rightShoulder) ? 1 : 0;
+        public static bool BackPressed => KeyDown(UnityEngine.InputSystem.Key.Escape) || Pad(g => g.buttonEast);
 #else
         public static bool FirePressed => Input.GetKeyDown(KeyCode.F);
         public static bool LadlePressed => Input.GetKeyDown(KeyCode.S);
@@ -73,6 +76,8 @@ namespace SteepingSpirits.Brewing.Flow
         public static bool RestartPressed => Input.GetKeyDown(KeyCode.R);
         public static bool CatchSparkPressed => Input.GetKeyDown(KeyCode.E);
         public static bool RefillPressed => Input.GetKeyDown(KeyCode.Q);
+        public static int OwnTeaStep => Input.GetKeyDown(KeyCode.LeftArrow) ? -1 : Input.GetKeyDown(KeyCode.RightArrow) ? 1 : 0;
+        public static bool BackPressed => Input.GetKeyDown(KeyCode.Escape);
 #endif
     }
 }
