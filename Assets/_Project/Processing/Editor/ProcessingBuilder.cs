@@ -123,6 +123,7 @@ namespace SteepingSpirits.Processing.EditorTools
             {
                 WorkshopSimResult r = WorkshopSimulator.Run(p, bot, 100);
                 sb.Append(r).Append('\n').Append(r.DurationLine()).Append('\n');
+                sb.Append(r.OriginLine()).Append('\n').Append(r.VarietyLine()).Append('\n');
             }
 
             return sb.ToString();

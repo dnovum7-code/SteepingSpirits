@@ -16,6 +16,7 @@
   <ItemGroup>
     <Compile Include="../../Assets/_Project/Ingredients/Core/**/*.cs" />
     <Compile Include="../../Assets/_Project/Processing/Core/**/*.cs" />
+    <Compile Include="../../Assets/_Project/Plantation/Core/**/*.cs" />
     <Compile Include="../../Assets/_Project/Brewing/Runtime/Core/**/*.cs" />
     <Compile Include="../../Assets/_Project/Brewing/Runtime/Integration/OwnTeaInfo.cs" />
     <Compile Include="*.cs" />

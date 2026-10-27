@@ -32,7 +32,64 @@ namespace SteepingSpirits.Processing
         public readonly int[] countByWanted = new int[5];
         public readonly float[] maxActiveByWanted = new float[5];
 
+        /// <summary>Leaf origin × tier: origin 0..2 = garden tier gut/fein/erlesen, 3 = first flush (premium).</summary>
+        public readonly int[,] byOriginTier = new int[4, 4];
+
+        /// <summary>Resulting variety × tier.</summary>
+        public readonly int[,] byVarietyTier = new int[5, 4];
+
+        /// <summary>Workshop care (0..1) summed per resulting variety, and per step (wither, roll, oxidation, wok).</summary>
+        public readonly float[] careByVariety = new float[5];
+        public readonly float[] stepCare = new float[4];
+        public readonly int[] stepCount = new int[4];
+
+        /// <summary>Teas that hit the "erlesen" score but were held at the ceiling of ordinary leaves.</summary>
+        public int heldByCeiling;
+
+        /// <summary>Tiers if only first flush/golden tip lifted the ceiling (garden "erlesen" capped too) – for comparison.</summary>
+        public readonly int[] byTierPremiumOnly = new int[4];
+
         public float HitRate => batches == 0 ? 0f : hits / (float)batches;
+
+        public static readonly string[] OriginNames = { "gut", "fein", "erlesen", "Austrieb" };
+        public static readonly string[] StepNames = { "welken", "rollen", "oxid.", "wok" };
+
+        public float AverageCare(TeaVariety v)
+        {
+            int n = byVarietyTier[(int)v, 1] + byVarietyTier[(int)v, 2] + byVarietyTier[(int)v, 3];
+            return n == 0 ? 0f : careByVariety[(int)v] / n;
+        }
+
+        public float AverageStepCare(int step) => stepCount[step] == 0 ? -1f : stepCare[step] / stepCount[step];
+
+        /// <summary>Tiers per leaf origin: "gut 3/12/0 · fein …" (gut/fein/erlesen counts).</summary>
+        public string OriginLine()
+        {
+            var sb = new StringBuilder($"{bot,-8} by origin (gut/fein/erlesen)");
+            for (int o = 0; o < 4; o++)
+            {
+                if (byOriginTier[o, 1] + byOriginTier[o, 2] + byOriginTier[o, 3] == 0) continue;
+                sb.Append($"  {OriginNames[o]} {byOriginTier[o, 1]}/{byOriginTier[o, 2]}/{byOriginTier[o, 3]}");
+            }
+
+            return sb.Append($"  held by ceiling {heldByCeiling}").ToString();
+        }
+
+        /// <summary>Tiers and average workshop care per resulting variety, and the average care per step.</summary>
+        public string VarietyLine()
+        {
+            var sb = new StringBuilder($"{bot,-8} by tea (gut/fein/erlesen, care)");
+            foreach (TeaVariety v in (TeaVariety[])Enum.GetValues(typeof(TeaVariety)))
+            {
+                int i = (int)v;
+                if (byVariety[i] == 0) continue;
+                sb.Append($"  {v} {byVarietyTier[i, 1]}/{byVarietyTier[i, 2]}/{byVarietyTier[i, 3]} c{AverageCare(v):0.00}");
+            }
+
+            sb.Append("  steps");
+            for (int k = 0; k < 4; k++) sb.Append($" {StepNames[k]} {AverageStepCare(k):0.00}/{stepCount[k]}");
+            return sb.ToString();
+        }
 
         public float AverageTier
         {
@@ -79,7 +136,12 @@ namespace SteepingSpirits.Processing
         /// <summary>Seconds one station interaction costs (lay on, take off, pack).</summary>
         public const float InteractionSeconds = 1f;
 
-        public static WorkshopSimResult Run(ProcessingParams p, WorkshopBot bot, int batches, int seed = 1)
+        /// <summary>
+        /// Mixed leaves like a real garden: 50 % erlesen / 30 % fein / 20 % gut, 5 % first flush.
+        /// <paramref name="fixedOrigin"/> 0..2 forces garden tier gut/fein/erlesen, 3 the first flush (same random
+        /// sequence otherwise, so bots and wishes stay comparable).
+        /// </summary>
+        public static WorkshopSimResult Run(ProcessingParams p, WorkshopBot bot, int batches, int seed = 1, int fixedOrigin = -1)
         {
             var rng = new Random(seed * 7919 + (int)bot);
             var result = new WorkshopSimResult { bot = bot, batches = batches };
@@ -89,6 +151,12 @@ namespace SteepingSpirits.Processing
                 double roll = rng.NextDouble();
                 int tier = roll < 0.5 ? 3 : roll < 0.8 ? 2 : 1;
                 bool first = rng.NextDouble() < 0.05;
+                if (fixedOrigin >= 0)
+                {
+                    first = fixedOrigin == 3;
+                    tier = first ? 3 : fixedOrigin + 1;
+                }
+
                 LeafBatch b = LeafBatch.Fresh(i + 1, first ? TeaIds.FirstFlushLeaf : "tea_leaf", tier, 4, first, 0);
                 float interactions = 0f;
 
@@ -102,6 +170,20 @@ namespace SteepingSpirits.Processing
                 ProcessedTea tea = ProcessedTea.From(b, p);
                 result.byVariety[(int)tea.variety]++;
                 result.byTier[tea.tier]++;
+                CareReport care = TeaQuality.Evaluate(b, p);
+                result.byOriginTier[first ? 3 : tier - 1, tea.tier]++;
+                result.byVarietyTier[(int)tea.variety, tea.tier]++;
+                result.careByVariety[(int)tea.variety] += care.care;
+                if (care.score >= p.quality.excellentScore && care.tier < 3) result.heldByCeiling++;
+                result.byTierPremiumOnly[first ? care.tier : Math.Min(care.tier, Math.Max(1, p.quality.ordinaryCeiling))]++;
+                float[] steps = { care.wither, care.roll, care.oxidation, care.wok };
+                for (int k = 0; k < 4; k++)
+                {
+                    if (steps[k] < 0f) continue;
+                    result.stepCare[k] += steps[k];
+                    result.stepCount[k]++;
+                }
+
                 foreach (TeaNote n in tea.notes) result.byNote[(int)n]++;
                 if (tea.variety == wanted) result.hits++;
                 float active = b.activeSeconds + interactions + InteractionSeconds; // + packing

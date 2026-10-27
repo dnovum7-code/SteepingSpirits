@@ -30,7 +30,7 @@
 | D9 | Teewahl aus Inventar/Vorratsschrank | erledigt (Brühen 92, TeaLoop 6 Tests; Unity: ungeprüft) |
 | D10 | Ergebnis: Noten, `tea_tart` | erledigt (TeaLoop 7 Tests; Unity: ungeprüft) |
 | D11 | Brühen aus der Welt erreichbar | erledigt (TeaLoop 8 Tests; Unity: ungeprüft) |
-| E12 | Simulator-Auswertung | offen |
+| E12 | Simulator-Auswertung | erledigt (nur Auswertung, keine Werte geändert; Werkstatt 145, TeaLoop 9 Tests) |
 | F13 | Abschlussbericht | offen |
 
 ## Speicherdienst (B4, Modul `SaveGame`)
@@ -146,6 +146,81 @@
   kommt nur eine Warnung.
 - Der Teeladen kommt später; bis dahin ist der Werkstatt-Tisch der einzige Weg aus der Welt.
 
+## Simulator-Auswertung (E12)
+
+Nur ausgewertet, **nichts geändert**. Der Werkstatt-Simulator zählt jetzt zusätzlich nach Blattherkunft, nach
+entstandener Sorte (mit Ø Sorgfalt) und die Sorgfalt je Schritt; Menü *Processing → Simulate 100 Batches* gibt das
+mit aus. Tabellen: `WorkshopEvaluationTests.Evaluation_Tables` (Werkstatt) und `BlendRatioTests` (TeaLoop).
+Die bisherigen Zahlen bleiben gleich (gleiche Zufallsfolge).
+
+**1. Nach Blattherkunft** (je 200 Chargen, nur diese Herkunft; gut / fein / erlesen, Ø Stufe):
+
+| Bot | Gartenstufe gut | Gartenstufe fein | Gartenstufe erlesen | erster Austrieb |
+|---|---|---|---|---|
+| sorgfältig | 0/200/0 (2,00) | 0/200/0 (2,00) | 0/0/200 (3,00) | 0/0/200 (3,00) |
+| nachlässig | 110/90/0 (1,45) | 18/182/0 (1,91) | 0/110/90 (2,45) | 0/110/90 (2,45) |
+| zufällig | 69/131/0 (1,66) | 13/187/0 (1,94) | 3/66/131 (2,64) | 3/66/131 (2,64) |
+
+- Gewöhnliche Blätter (Gartenstufe gut/fein) erreichen nie „erlesen“; Spitzenblätter (Gartenstufe erlesen, erster
+  Austrieb, Goldspitze) bei sorgfältiger Arbeit immer. Austrieb und erlesenes Blatt rechnen identisch (Herkunft 1,
+  Obergrenze 3) – der Austrieb ist das *sichere* Spitzenblatt der ersten Ernte.
+- **Lesart der festen Entscheidung:** „gewöhnliche Blätter“ = Gartenstufe gut/fein, wie in
+  `PROCESSING_PROGRESS.md` definiert und im Code umgesetzt. Die strengere Lesart (nur Austrieb/Goldspitze) steht
+  unten als Option B zum Vergleich.
+
+**2. Gemischte Blätter** (50 % erlesen / 30 % fein / 20 % gut, 5 % Austrieb; 100 Chargen), erlesen-Anteil je Sorte
+und Ø Sorgfalt je Schritt:
+
+| Bot | gut/fein/erlesen | Weiß | Grün | hell. Oolong | dunk. Oolong | Schwarz | welken | rollen | Oxidation | Wok |
+|---|---|---|---|---|---|---|---|---|---|---|
+| sorgfältig | 0/51/49 | 6/13 | 10/20 | 8/19 | 10/21 | 15/27 | 1,00 | 1,00 (87×) | 0,99 | 0,97 (60×) |
+| nachlässig | 18/62/20 | 7/21 | 0/6 | 3/20 | 4/28 | 6/25 | 0,78 | 0,76 (79×) | 0,66 | 0,35 (64×) |
+| zufällig | 15/53/32 | 12/31 | 1/15 | 2/13 | 1/14 | 16/27 | 0,81 | 0,77 (54×) | 0,79 | 0,34 (53×) |
+
+**3. Wie stark die Pflege (Gartenstufe) zählt:** Wert = 0,3 × Herkunft + 0,7 × Sorgfalt. Für sorgfältige Spieler
+entscheidet allein die Gartenstufe zwischen „fein“ und „erlesen“ (die Obergrenze greift, 31 von 100 Chargen
+hätten sonst „erlesen“). Für ungenaue Spieler bringt jede Gartenstufe etwa eine halbe Qualitätsstufe
+(nachlässig Ø 1,45 → 1,91 → 2,45). Die Pflege zählt also deutlich, ohne die Werkstatt zu entwerten.
+
+**4. Warum „nachlässig“ weniger „erlesen“ hat als „zufällig“ (20 gegen 32):** Sorgfalt ist das Mittel der
+*durchlaufenen* Schritte. Der Zufalls-Bot überspringt oft Rollen und Wok – die Schritte, die man verpatzen kann
+(Wok-Sorgfalt nur 0,34) – und landet so oft bei Weiß- und Schwarztee (58 % gegen 46 %), deren Oxidation fast
+immer 1 zählt (Weiß unter, Schwarz über dem Optimum). Am deutlichsten beim Schwarztee: zufällig 16 von 27
+erlesen (oft ungerollt, lange liegen gelassen), nachlässig 6 von 25 (immer gerollt, ungleichmäßig). Der
+nachlässige Bot geht dagegen jeden Weg vollständig und stoppt systematisch zu spät (Oxidation 0,66).
+
+**5. Optionen** (Zahlen: gut/fein/erlesen bei gemischten Blättern):
+
+| Option | sorgfältig | nachlässig | zufällig | Vorteile | Nachteile |
+|---|---|---|---|---|---|
+| **A – so lassen** | 0/51/49 | 18/62/20 | 32 erlesen | Einfach, verständlich; einfache Tees bleiben anfängerfreundlich, Grün/Oolong sind die Meisterklasse. | Wer sich am Wok müht, bekommt seltener „erlesen“ als jemand, der Schritte auslässt. |
+| **O2 – „erlesen“ ab 0,75 statt 0,80** | 0/51/49 | 18/56/26 | 15/47/38 | Ein Wert; mehr Spitzentee für normale Spieler (auf erlesenen Blättern nachlässig 90 → 120 von 200), Sorgfältige unverändert. | Lücke zu „zufällig“ bleibt; „erlesen“ wird etwas gewöhnlicher. |
+| **O3 – Wok-Fenster 0,32 statt 0,24** | 0/51/49 | 15/68/17 | 14/51/35 | Wok verzeiht mehr (Sorgfalt 0,35 → 0,48), nachlässig trifft öfter die Wunschsorte (55 → 65 %). | Kaum mehr „erlesen“; Wok verliert Spannung. |
+| B – nur Austrieb/Goldspitze heben die Grenze | 0/91/9 | 18/80/2 | 15/83/2 | Strengste Lesart, „erlesen“ wird selten und besonders. | Gartenpflege zählt für die Spitze nicht mehr; Spitzentee hängt an 1 Ernte pro Strauch. |
+| C – Herkunftsgewicht 0,45 statt 0,3 | 0/51/49 | 21/52/27 | 26/36/38 | Gartenpflege zählt mehr. | Mehr „gut“ bei schwachen Blättern; Werkstatt-Sorgfalt zählt weniger. |
+
+**6. Mischverhältnis** (Brühen verbraucht jetzt 1 Portion pro Kanne; Werkstatt: 1 Blatt = 1 Portion):
+Teestrauch erste Ernte nach 14 Tagen, dann 2–3 Blätter alle 3 Tage (Ø 2,5 je Ernte, 5,8 je Woche); Minze nach
+4 Tagen 2–3 Stück – Kräuter sind reichlich, Teeblätter knapp.
+
+| Tee | Aufgüsse je Kanne | Kannen je Ernte: pur / 1+1=2 / 1+1=1 | Tassen je Ernte: pur / =2 / =1 |
+|---|---|---|---|
+| Weiß | 4 | 2,5 / 5 / 2,5 | 10 / 20 / 10 |
+| Grün | 3 | 2,5 / 5 / 2,5 | 8 / 15 / 8 |
+| Oolong | 6 | 2,5 / 5 / 2,5 | 15 / 30 / 15 |
+| Schwarz | 3 | 2,5 / 5 / 2,5 | 8 / 15 / 8 |
+
+- **1+1=2** verdoppelt die Kannen aus den knappen Teeblättern und gibt den reichlichen Kräutern einen Zweck.
+  Nebenwirkung: Wert 4 (Tee) + 2 (Kraut) = 6 Gold wird zu 2 × 6 = 12 Gold – Mischen ist dann immer die
+  bessere Wahl, sobald es einen Verkauf gibt.
+- **1+1=1** macht Mischen zur reinen Geschmacksfrage; Kräuter werden zum „Preis“ für die Noten, pure Tees sind
+  gleichwertig.
+
+**Empfehlung:** Alles so lassen (Option A), Mischverhältnis vorerst **1+1=2** – Teeblätter sind knapp, die
+Teeschleife soll sich nach den 14 Tagen bis zur ersten Ernte nicht karg anfühlen. Mit dem Teeladen den Goldwert
+der Mischung prüfen (z. B. 3 + 3 × (Stufe − 1) je Portion statt 6, dann 6 → 6 Gold). Falls Playtests „erlesen“
+für normale Spieler als zu selten melden: zuerst **O2** (ein Wert in `ProcessingSettings`).
+
 ## Annahmen
 
 1. **Speicherdienst legt Inventar und Uhr in jeder Szene an.** Folge: Auch eine direkt gestartete
@@ -161,6 +236,8 @@
 
 ## Editor-Checklisten pro Commit
 
+- **E12** (Auswertung): *Processing → Simulate 100 Batches* → Konsole zeigt je Bot zusätzlich „by origin“ und
+  „by tea … steps“. Test Runner: `WorkshopEvaluationTests` grün (Ausgabe = Tabellen oben). Keine Werte geändert.
 - **D11** (Brühtisch): *Brewing → Build Sandbox*, dann *Processing → Build Workshop* (und umgekehrt) →
   `Teewerkstatt` hat `TeaWorkshop` **und** `Bruehtisch`; Build Settings enthalten `BrewingSandbox`. Play in der
   Werkstatt: Tee einpacken, zum Tisch oben rechts → „Brühtisch – Tee aufgießen“ erscheint → E → Brühen mit „Deine
