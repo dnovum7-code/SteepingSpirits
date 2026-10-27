@@ -21,7 +21,7 @@
 |---|---|---|
 | A1 | Branch + Merge Brühen | erledigt (Tests: Brühen 77, Zutaten 12, Garten 108, Jump'n'Run 137, Werkstatt 142) |
 | A2 | `PLAYTEST_NOTES.md` | erledigt (Datei fehlte → mit Vorlagen angelegt, keine Befunde) |
-| A3 | `CLAUDE.md` | offen |
+| A3 | `CLAUDE.md` | erledigt (Tastentabelle folgt in B6, Speicherdienst in B4) |
 | B4 | Gemeinsamer Speicherdienst (Inventar + Uhr) | offen |
 | B5 | Builder zerstören sich nicht mehr gegenseitig | offen |
 | B6 | Tastentabelle, Kollisionen | offen |
@@ -41,4 +41,5 @@ _(werden ergänzt)_
 
 - **A1** (Merge): Unity öffnen → Konsole ohne Fehler. Menü *SteepingSpirits → Brewing → Build Sandbox* ist da und
   baut die Sandbox; Play → Brühen wie bisher. Test Runner → EditMode: alle Module grün.
+- **A3** (nur Doku): `CLAUDE.md` im Repo-Wurzelverzeichnis lesen.
 - **A2** (nur Doku): `Docs/PLAYTEST_NOTES.md` hat die Abschnitte Werkstatt, Brühen, Garten, Jump'n'Run mit Vorlage.
