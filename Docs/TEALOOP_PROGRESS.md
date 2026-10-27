@@ -23,7 +23,7 @@
 | A2 | `PLAYTEST_NOTES.md` | erledigt (Datei fehlte → mit Vorlagen angelegt, keine Befunde) |
 | A3 | `CLAUDE.md` | erledigt (Tastentabelle folgt in B6, Speicherdienst in B4) |
 | B4 | Gemeinsamer Speicherdienst (Inventar + Uhr) | erledigt (15 Tests; Unity: ungeprüft) |
-| B5 | Builder zerstören sich nicht mehr gegenseitig | offen |
+| B5 | Builder zerstören sich nicht mehr gegenseitig | erledigt (Unity: ungeprüft) |
 | B6 | Tastentabelle, Kollisionen | offen |
 | C7 | Erste Teestrauch-Ernte = `tea_leaf_first` | offen |
 | D8 | `ForProcessedTea` + `ProcessedBrewParams` | offen |
@@ -48,6 +48,24 @@
   und Kompost an. Unbekannte IDs warten in `pending` und kommen zurück, sobald eine Szene sie registriert
   (z. B. Tränke der Wiese, die erst in `TestMeadow.Start` angemeldet werden).
 
+## Builder (B5)
+
+- Gewählt: **„jeder Builder entfernt nur, was er selbst angelegt hat“** (kleiner als ein Anmelde-System, und
+  robust gegen jede Reihenfolge). Helfer `Core/Editor/OwnedSceneObjects`: Szene öffnen (oder neu anlegen),
+  nur die eigenen Wurzelobjekte (per Name) entfernen, neu aufbauen, speichern.
+- Geteilte Szenen und ihre Besitzer:
+
+| Szene | Objekt | Besitzer (Builder) |
+|---|---|---|
+| `TestMeadow.unity` | `TestMeadow`, `HubPortal` | *JumpNRun → Build Levels* |
+| `TestMeadow.unity` | `TeegartenPortal` | *Plantation → Build Garden* |
+| `Teegarten.unity` | `TeaGarden` | *Plantation → Build Garden* |
+| `Teegarten.unity` | `TeewerkstattTuer` | *Processing → Build Workshop* |
+| `Teewerkstatt.unity` | `TeaWorkshop` | *Processing → Build Workshop* |
+
+- Folge: *Build Garden* nach *Build Workshop* lässt die Werkstatttür stehen; *Build Levels* nach *Build Garden*
+  lässt den Garten-Eingang auf der Wiese stehen. Die Hinweise „danach nochmal bauen“ entfallen.
+
 ## Annahmen
 
 1. **Speicherdienst legt Inventar und Uhr in jeder Szene an.** Folge: Auch eine direkt gestartete
@@ -58,6 +76,10 @@
 
 - **A1** (Merge): Unity öffnen → Konsole ohne Fehler. Menü *SteepingSpirits → Brewing → Build Sandbox* ist da und
   baut die Sandbox; Play → Brühen wie bisher. Test Runner → EditMode: alle Module grün.
+- **B5** (Builder): Reihenfolge testen: *Processing → Build Workshop*, dann *Plantation → Build Garden* →
+  `Teegarten` öffnen: Hierarchy hat `TeaGarden` **und** `TeewerkstattTuer`. Dann *JumpNRun → Build Levels* →
+  `TestMeadow` hat `TestMeadow`, `HubPortal` **und** `TeegartenPortal`. Jeden Builder zweimal laufen lassen:
+  kein Objekt doppelt.
 - **B4** (Speicherdienst): Test Runner → `SteepingSpirits.SaveGame.Tests.EditMode` grün (`dotnet test
   Tests/SaveGame.DotNet`). Werkstatt: Tee einpacken → Inventar (I) zeigt ihn → Stop → Play → Tee ist noch im
   Inventar, Uhrzeit/Datum sind wie vorher. In `persistentDataPath` liegt `game_save.json`. Hierarchy im Play:

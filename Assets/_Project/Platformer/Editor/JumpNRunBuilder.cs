@@ -89,10 +89,12 @@ namespace SteepingSpirits.Platformer.EditorTools
         /// <summary>
         /// The meadow builds itself at runtime (TestMeadow). The builder only adds
         /// one extra object next to it: the portal to the Jump'n'Run clearing.
+        /// Objects other builders put into the meadow (garden entrance) stay.
         /// </summary>
         private static string BuildMeadowScene()
         {
-            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            // The meadow is shared (the garden adds its entrance): replace only our own objects.
+            Scene scene = SteepingSpirits.Core.EditorTools.OwnedSceneObjects.OpenForBuilder(MeadowScene, "TestMeadow", "HubPortal");
             new GameObject("TestMeadow").AddComponent<TestMeadow>();
 
             var portal = new GameObject("HubPortal");

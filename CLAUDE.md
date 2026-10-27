@@ -40,6 +40,9 @@ Tests/<Modul>.DotNet/   dotnet-Testprojekt außerhalb von Assets/ (.gitignore-Au
 - Module kennen sich nicht direkt; gemeinsame Daten laufen über den Zutaten-Katalog, Inventar/Vorratsschrank
   und Events. Fremden Modul-Code nur lesen, außer der Auftrag gibt ihn frei.
 - Tuning-Werte immer in ScriptableObjects/Daten-Dateien; Builder legen Assets einmal an und überschreiben sie nie.
+- **Builder und geteilte Szenen:** nie mit `NewScene` neu anlegen, sondern `OwnedSceneObjects.OpenForBuilder(pfad,
+  eigeneWurzelobjekte…)` – jeder Builder ersetzt nur seine eigenen Wurzelobjekte. Besitzer-Tabelle in
+  `Docs/TEALOOP_PROGRESS.md` (B5).
 
 ## Zutaten-ID-Grammatik
 

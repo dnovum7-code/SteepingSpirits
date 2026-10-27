@@ -22,6 +22,7 @@ namespace SteepingSpirits.Plantation.EditorTools
         public const string PlantFolder = DataFolder + "/Plants";
         public const string LayoutPath = "Assets/_Project/Plantation/Layouts/Teegarten.txt";
         public const string MeadowPortalName = "TeegartenPortal";
+        public const string GardenRootName = "TeaGarden";
 
         /// <summary>Where the garden entrance stands on the meadow: below the climbing portal (-17, 0) and the clearing portal (-17, 3).</summary>
         public static readonly Vector2 MeadowPortalPosition = new Vector2(-17f, -3f);
@@ -56,8 +57,9 @@ namespace SteepingSpirits.Plantation.EditorTools
             }
 
             EnsureFolder(SceneFolder);
-            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = new GameObject("TeaGarden").AddComponent<TeaGarden>();
+            // The garden scene is shared (the workshop adds its door): replace only our own object.
+            Scene scene = SteepingSpirits.Core.EditorTools.OwnedSceneObjects.OpenForBuilder(GardenScene, GardenRootName);
+            var root = new GameObject(GardenRootName).AddComponent<TeaGarden>();
             root.Configure(layout, settings, audio, MeadowScene);
             EditorSceneManager.SaveScene(scene, GardenScene);
 

@@ -19,6 +19,7 @@ namespace SteepingSpirits.Processing.EditorTools
         public const string DataFolder = "Assets/_Project/Processing/Data";
         public const string LayoutPath = "Assets/_Project/Processing/Layouts/Werkstatt.txt";
         public const string GardenDoorName = "TeewerkstattTuer";
+        public const string WorkshopRootName = "TeaWorkshop";
 
         /// <summary>
         /// Where the door stands in the garden: on the hedge at the east end of the long path
@@ -53,8 +54,9 @@ namespace SteepingSpirits.Processing.EditorTools
             }
 
             EnsureFolder(SceneFolder);
-            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            new GameObject("TeaWorkshop").AddComponent<TeaWorkshop>().Configure(layout, settings, audio, GardenScene);
+            // Replace only our own root object, so other modules may add things to the workshop scene.
+            Scene scene = SteepingSpirits.Core.EditorTools.OwnedSceneObjects.OpenForBuilder(WorkshopScene, WorkshopRootName);
+            new GameObject(WorkshopRootName).AddComponent<TeaWorkshop>().Configure(layout, settings, audio, GardenScene);
             EditorSceneManager.SaveScene(scene, WorkshopScene);
             RegisterInBuildSettings(WorkshopScene);
             bool door = AddGardenDoor();
