@@ -21,6 +21,9 @@ namespace SteepingSpirits.Processing.EditorTools
         public const string GardenDoorName = "TeewerkstattTuer";
         public const string WorkshopRootName = "TeaWorkshop";
 
+        /// <summary>Menu of the brewing module that places the brewing table (called by name, no module reference).</summary>
+        private const string BrewingTableMenu = "SteepingSpirits/Brewing/Add Brewing Table To Workshop";
+
         /// <summary>
         /// Where the door stands in the garden: on the hedge at the east end of the long path
         /// (garden layout cell 21,6); the player reaches it from the path cell next to it.
@@ -60,6 +63,8 @@ namespace SteepingSpirits.Processing.EditorTools
             EditorSceneManager.SaveScene(scene, WorkshopScene);
             RegisterInBuildSettings(WorkshopScene);
             bool door = AddGardenDoor();
+            // Brewing places its table into the workshop; it survives this rebuild, and is added here if it is missing.
+            EditorApplication.ExecuteMenuItem(BrewingTableMenu);
             EditorSceneManager.OpenScene(WorkshopScene, OpenSceneMode.Single);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

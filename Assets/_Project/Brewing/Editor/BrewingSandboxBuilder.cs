@@ -23,6 +23,14 @@ namespace SteepingSpirits.Brewing.EditorTools
         private const string SceneFolder = "Assets/_Project/Brewing/Scenes";
         private const string ScenePath = SceneFolder + "/BrewingSandbox.unity";
 
+        // The brewing table in the workshop (owned root object, see Docs/TEALOOP_PROGRESS.md B5).
+        public const string WorkshopScene = "Assets/Scenes/Teewerkstatt.unity";
+        public const string TableName = "Bruehtisch";
+        public const string TableMenu = "SteepingSpirits/Brewing/Add Brewing Table To Workshop";
+
+        /// <summary>Free floor cell in the north-east corner of the workshop layout (Werkstatt.txt, cell 13,7).</summary>
+        public static readonly Vector2 TablePosition = new Vector2(13.5f, 7.5f);
+
         [MenuItem("SteepingSpirits/Brewing/Build Sandbox")]
         public static void BuildSandbox()
         {
@@ -52,9 +60,54 @@ namespace SteepingSpirits.Brewing.EditorTools
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             BuildScene(tuning, teas, audioSet);
             EditorSceneManager.SaveScene(scene, ScenePath);
+            RegisterInBuildSettings(ScenePath);
+            bool table = AddTableToWorkshop();
+            if (table) EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             AssetDatabase.Refresh();
 
-            Debug.Log($"[Brewing] Sandbox built: {ScenePath}. Press Play.");
+            Debug.Log($"[Brewing] Sandbox built: {ScenePath}" + (table ? " (+ brewing table in the workshop)" : "") + ". Press Play.");
+        }
+
+        /// <summary>
+        /// The only change to the workshop: one brewing table (root object "Bruehtisch") in Teewerkstatt.unity.
+        /// Build Workshop keeps it (it only replaces its own root) and calls this menu, so any order works.
+        /// </summary>
+        [MenuItem(TableMenu)]
+        public static void AddTableMenu()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            if (AddTableToWorkshop()) Debug.Log("[Brewing] Brewing table added to " + WorkshopScene);
+        }
+
+        private static bool AddTableToWorkshop()
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(WorkshopScene) == null)
+            {
+                Debug.LogWarning("[Brewing] " + WorkshopScene + " not found – no brewing table added. Build the workshop (SteepingSpirits → Processing → Build Workshop).");
+                return false;
+            }
+
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null)
+            {
+                Debug.LogWarning("[Brewing] " + ScenePath + " not found – build the brewing scene first (SteepingSpirits → Brewing → Build Sandbox).");
+                return false;
+            }
+
+            Scene workshop = SteepingSpirits.Core.EditorTools.OwnedSceneObjects.OpenForBuilder(WorkshopScene, TableName);
+            var go = new GameObject(TableName);
+            go.transform.position = TablePosition;
+            go.AddComponent<SteepingSpirits.Brewing.Integration.BrewingTable>().Configure(ScenePath);
+            EditorSceneManager.SaveScene(workshop, WorkshopScene);
+            RegisterInBuildSettings(ScenePath);
+            return true;
+        }
+
+        private static void RegisterInBuildSettings(string path)
+        {
+            var scenes = new System.Collections.Generic.List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
+            if (scenes.Exists(s => s.path == path)) return;
+            scenes.Add(new EditorBuildSettingsScene(path, true));
+            EditorBuildSettings.scenes = scenes.ToArray();
         }
 
         // ---------------- Assets ----------------

@@ -61,7 +61,7 @@ tea_leaf  ·  tea_leaf+q3  ·  tea_oolong:dark/honeyed.roasty+q3  ·  tea_blend:
 
 - `ScenePortal.Load` nur für echte Ortswechsel, deren Rückweg über `ScenePortal.PreviousScenePath` geht
   (Wiese ↔ Garten, Wiese ↔ Lichtung).
-- Unterorte (Werkstatt im Garten, Brühen in der Werkstatt) laden mit eigenem Lader ohne `PreviousScenePath`
+- Unterorte (Werkstatt im Garten, Brühen am Brühtisch der Werkstatt) laden mit eigenem Lader ohne `PreviousScenePath`
   zu verändern (`WorkshopSceneLoader`), sonst führt das Gartentor danach in die Werkstatt statt zur Wiese.
 
 ## Uhr-Regel
@@ -100,7 +100,7 @@ Zeile der eigenen Szene prüfen. Debug ist überall **F1**, Zeit vorspulen **F2/
 | **Wiese** (`GameInput`) | Angriff Leertaste/J/Maus · Ansprechen E/F · Dialog weiter E/F/Leertaste/Enter · Inventar I · Questlog B · Abbrechen Esc · Cheats F1/^ · Hilfe N | Angriff X · Ansprechen A · Dialog A · Inventar Y · Questlog Select · Abbrechen B |
 | **Jump'n'Run / Lichtung** (`JumpNRunKeys`, frei belegbar) | Springen Leertaste/C · Dash Shift/X · Festhalten K/Strg · Tür: hoch oder E/F · Debug F1/^ · Hilfe N · Aufnahme F5/F6 | Springen A · Dash X · Festhalten LB/RB/RT · Tür: hoch (A springt nur) |
 | **Teegarten** (`GardenInput`) | Benutzen Leertaste/J/E/F/Maus · Werkzeug 1–5/Mausrad · Saat Q · 1×3-Kanne R · Gartenhilfe H · Debug F1 · nächster Tag F2 · Werkstatttür E/Leertaste | Benutzen A/X · Werkzeug LB/RB · Saat ←/→ · Kanne ↑ · Hilfe ↓ |
-| **Teewerkstatt** (`WorkshopInput`) | Benutzen Leertaste/J/E/F · Kneten/Anfachen Leertaste/J/Maus · Schließen/fertig Esc · Debug F1 · Vorspulen F2/F3 | Benutzen A/X · Kneten A/X oder Stick-Kreis · Anfachen A/X/RT · Schließen B · Fensterwahl Steuerkreuz |
+| **Teewerkstatt** (`WorkshopInput`) | Benutzen Leertaste/J/E/F · Kneten/Anfachen Leertaste/J/Maus · Schließen/fertig Esc · Brühtisch: Benutzen · Debug F1 · Vorspulen F2/F3 | Benutzen A/X · Kneten A/X oder Stick-Kreis · Anfachen A/X/RT · Schließen B · Fensterwahl Steuerkreuz |
 | **Brühen** (`BrewInput`) | Eigener Tee ←/→ + Leertaste · Grundtee 1–4 (nur Sandbox/Debug) · Feuer F · Zurückschöpfen S · Vorwärmen W · Aufgießen/Herausheben Leertaste · Thermometer T · Funke E · Wasser Q · Neu R · Zurück in die Werkstatt Esc · Debug F1 | Eigener Tee LB/RB + A (in der Teewahl) · Grundtee Steuerkreuz · Feuer X · Schöpfen Y · Vorwärmen LB (beim Erhitzen) · Aufgießen A · Funke RB (beim Ziehen) · Wasser Select · Neu Start · Zurück B |
 
 Behobene Kollision (B6): In Jump'n'Run-Szenen war Pad A zugleich „Springen“ und „Tür betreten“ (`LevelDoor`).

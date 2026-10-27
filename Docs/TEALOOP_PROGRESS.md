@@ -29,7 +29,7 @@
 | D8 | `ForProcessedTea` + `ProcessedBrewParams` | erledigt (Brühen 90 Tests) |
 | D9 | Teewahl aus Inventar/Vorratsschrank | erledigt (Brühen 92, TeaLoop 6 Tests; Unity: ungeprüft) |
 | D10 | Ergebnis: Noten, `tea_tart` | erledigt (TeaLoop 7 Tests; Unity: ungeprüft) |
-| D11 | Brühen aus der Welt erreichbar | offen |
+| D11 | Brühen aus der Welt erreichbar | erledigt (TeaLoop 8 Tests; Unity: ungeprüft) |
 | E12 | Simulator-Auswertung | offen |
 | F13 | Abschlussbericht | offen |
 
@@ -62,6 +62,7 @@
 | `Teegarten.unity` | `TeaGarden` | *Plantation → Build Garden* |
 | `Teegarten.unity` | `TeewerkstattTuer` | *Processing → Build Workshop* |
 | `Teewerkstatt.unity` | `TeaWorkshop` | *Processing → Build Workshop* |
+| `Teewerkstatt.unity` | `Bruehtisch` | *Brewing → Build Sandbox* / *Add Brewing Table To Workshop* (D11) |
 
 - Folge: *Build Garden* nach *Build Workshop* lässt die Werkstatttür stehen; *Build Levels* nach *Build Garden*
   lässt den Garten-Eingang auf der Wiese stehen. Die Hinweise „danach nochmal bauen“ entfallen.
@@ -128,6 +129,23 @@
   dem Neustart wieder auf.
 - Test: Vertrag Brühen ↔ Garten (`TartCompostTests`): die herbe Item-ID steht in der Standardliste des Komposters.
 
+## Brühtisch (D11)
+
+- Kleinste Lösung: ein **Brühtisch in der Teewerkstatt** (Wurzelobjekt `Bruehtisch`, Komponente
+  `BrewingTable` aus dem Brühen-Modul) auf der freien Zelle 13,7 (Nordostecke). Davor stehen, Benutzen-Taste
+  (E/Leertaste/J/F, Pad A/X) → die Brüh-Szene öffnet mit der Teewahl der eigenen Tees; **Esc/B** in der Teewahl
+  oder im Ergebnis führt zurück in die Werkstatt. Ohne eigenen Tee bleibt man in der Werkstatt, der Tisch sagt
+  „Noch keine eigenen Tees – …“.
+- Szenenwechsel über `WorkshopSceneLoader` (Unterort) – `ScenePortal.PreviousScenePath` bleibt unberührt, das
+  Gartentor führt danach weiter zur Wiese. Die Rückkehr kennt `BrewHandoff.ReturnScenePath`.
+- Ist ein Werkstattfenster offen (Figur gesperrt), reagiert der Tisch nicht. Ein Test sichert, dass im Umkreis
+  von zwei Zellen keine Station steht – die Benutzen-Taste hat dort also nur eine Bedeutung.
+- Bauen in jeder Reihenfolge: *Build Sandbox* stellt den Tisch in die Werkstatt (wenn es sie gibt) und trägt die
+  Brüh-Szene in die Build-Liste ein; *Build Workshop* ersetzt nur `TeaWorkshop` und ruft danach das Menü
+  *Brewing → Add Brewing Table To Workshop* per Namen auf (keine Modul-Referenz) – fehlt die Brüh-Szene noch,
+  kommt nur eine Warnung.
+- Der Teeladen kommt später; bis dahin ist der Werkstatt-Tisch der einzige Weg aus der Welt.
+
 ## Annahmen
 
 1. **Speicherdienst legt Inventar und Uhr in jeder Szene an.** Folge: Auch eine direkt gestartete
@@ -135,9 +153,19 @@
    (beides bleibt gespeichert, nichts geht verloren).
 2. **`tea_tart` nur aus eigenen Tees.** Die Grundtees der Sandbox sind Übung und kosten nichts; gäben sie
    Kompost-Futter, ließe sich der Komposter beliebig füllen.
+3. **Teewahl erst am Brühplatz, nicht am Tisch.** In der Werkstatt bewegen ←/→ die Figur; die Teewahl der
+   Brüh-Szene (D9) ist schon da. „Öffnet das Brühen mit gewähltem Tee“ heißt hier: mit der Auswahl der eigenen
+   Tees, ein Druck auf die Leertaste brüht. `BrewHandoff.RequestedTeaId` bleibt als Einhak-Punkt für den Teeladen.
+4. **Die Brüh-Sandbox ist zugleich der Brühplatz.** Aus der Welt geöffnet sind die Grundtees gesperrt (nur F1);
+   eine eigene Teehaus-Szene lohnt erst mit dem Teeladen. Zurück steht man am Werkstatt-Eingang, nicht am Tisch.
 
 ## Editor-Checklisten pro Commit
 
+- **D11** (Brühtisch): *Brewing → Build Sandbox*, dann *Processing → Build Workshop* (und umgekehrt) →
+  `Teewerkstatt` hat `TeaWorkshop` **und** `Bruehtisch`; Build Settings enthalten `BrewingSandbox`. Play in der
+  Werkstatt: Tee einpacken, zum Tisch oben rechts → „Brühtisch – Tee aufgießen“ erscheint → E → Brühen mit „Deine
+  Tees“, Grundtees 1–4 gesperrt. Brühen, Esc → wieder in der Werkstatt, Tee eine Portion weniger. Werkstatt →
+  Garten → Gartentor führt zur Wiese (nicht in die Werkstatt). Ohne eigenen Tee: Tisch zeigt den Hinweis.
 - **D10** (Ergebnis): Sandbox, eigenen Tee mit Noten brühen → Ergebniskarte zeigt „Im Tee: …“. Absichtlich zu
   lange ziehen (herb) → Karte sagt „Ein herber Nachklang. Den Rest gießt du in den Krug …“, Inventar hat
   „Herber Tee“. Im Teegarten am Komposter abgeben → wird angenommen. Grundtee herb → kein `tea_tart`.

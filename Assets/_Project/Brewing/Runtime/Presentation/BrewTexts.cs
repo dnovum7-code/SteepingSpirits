@@ -36,6 +36,8 @@ namespace SteepingSpirits.Brewing.Presentation
         public const string OwnTeaKeys = "[←/→] Tee wählen   [Leertaste] brühen";
         public const string BaseTeasHeader = "Grundtees (Sandbox/Debug):";
         public const string BackKey = "[Esc] zurück in die Werkstatt";
+        public const string TableLabel = "Brühtisch – Tee aufgießen";
+        public const string TableNoScene = "Der Brühtisch ist noch nicht aufgebaut (Brewing → Build Sandbox).";
         public const string ResultPromptOwn = "[←/→] anderer Tee   ·   [R] neu beginnen";
 
         public static string OwnTeaLine(string name, int count, int index, int total) =>
